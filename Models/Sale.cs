@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace BakeryBI.Models
 {
         public class Sale
+
         {
             public string customer_id { get; set; }
             public string store_name { get; set; }

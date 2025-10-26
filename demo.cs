@@ -16,12 +16,12 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BakeryBI
 {
-    public partial class Form1 : Form
+    public partial class demo : Form
     {
         private DataService dataService;
         private List<Sale> currentSales;
         private List<Sale> allSales;
-        public Form1()
+        public demo()
         {
             InitializeComponent();
             dataService = new DataService();

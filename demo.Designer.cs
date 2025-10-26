@@ -1,6 +1,6 @@
 ﻿namespace BakeryBI
 {
-    partial class Form1
+    partial class demo
     {
         /// <summary>
         ///  Required designer variable.
