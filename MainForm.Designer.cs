@@ -2,15 +2,8 @@
 {
     partial class MainForm
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -22,413 +15,429 @@
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
-            panelFilters = new Panel();
-            btnReset = new Button();
-            btnFilter = new Button();
-            dtpEndDate = new DateTimePicker();
-            dtpStartDate = new DateTimePicker();
-            cboCustomerType = new ComboBox();
-            cboProduct = new ComboBox();
-            cboStore = new ComboBox();
-            lblEndDate = new Label();
-            lblStartDate = new Label();
-            lblCustomer = new Label();
-            lblProduct = new Label();
-            lblStore = new Label();
-            lblTitle = new Label();
-            tabControl = new TabControl();
-            tabData = new TabPage();
-            dgvSales = new DataGridView();
-            tabSalesCosts = new TabPage();
-            chartSalesCosts = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            panelMaxMin = new Panel();
-            lblMinProduct = new Label();
-            lblMaxProduct = new Label();
-            tabProfit = new TabPage();
-            chartProfitEvolution = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            panelForecast = new Panel();
-            lblForecast = new Label();
-            panelFilters.SuspendLayout();
-            tabControl.SuspendLayout();
-            tabData.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvSales).BeginInit();
-            tabSalesCosts.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)chartSalesCosts).BeginInit();
-            panelMaxMin.SuspendLayout();
-            tabProfit.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)chartProfitEvolution).BeginInit();
-            panelForecast.SuspendLayout();
-            SuspendLayout();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            this.panelFilters = new System.Windows.Forms.Panel();
+            this.btnApplyFilters = new System.Windows.Forms.Button();
+            this.cmbStore = new System.Windows.Forms.ComboBox();
+            this.cmbProduct = new System.Windows.Forms.ComboBox();
+            this.lblProduct = new System.Windows.Forms.Label();
+            this.lblStore = new System.Windows.Forms.Label();
+            this.lblTitle = new System.Windows.Forms.Label();
+            this.dtpFrom = new System.Windows.Forms.DateTimePicker();
+            this.dtpTo = new System.Windows.Forms.DateTimePicker();
+            this.lblDateFrom = new System.Windows.Forms.Label();
+            this.lblDateTo = new System.Windows.Forms.Label();
+            this.tabControl = new System.Windows.Forms.TabControl();
+            this.tabSalesOverTime = new System.Windows.Forms.TabPage();
+            this.splitContainerSales = new System.Windows.Forms.SplitContainer();
+            this.chartSalesOverTime = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.dgvSalesTimeData = new System.Windows.Forms.DataGridView();
+            this.tabMaxMinProducts = new System.Windows.Forms.TabPage();
+            this.panelMaxMin = new System.Windows.Forms.Panel();
+            this.lblMinProduct = new System.Windows.Forms.Label();
+            this.lblMaxProduct = new System.Windows.Forms.Label();
+            this.splitContainerMaxMin = new System.Windows.Forms.SplitContainer();
+            this.chartMaxMinProducts = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.dgvProductSales = new System.Windows.Forms.DataGridView();
+            this.panelFilters.SuspendLayout();
+            this.tabControl.SuspendLayout();
+            this.tabSalesOverTime.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainerSales)).BeginInit();
+            this.splitContainerSales.Panel1.SuspendLayout();
+            this.splitContainerSales.Panel2.SuspendLayout();
+            this.splitContainerSales.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartSalesOverTime)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvSalesTimeData)).BeginInit();
+            this.tabMaxMinProducts.SuspendLayout();
+            this.panelMaxMin.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainerMaxMin)).BeginInit();
+            this.splitContainerMaxMin.Panel1.SuspendLayout();
+            this.splitContainerMaxMin.Panel2.SuspendLayout();
+            this.splitContainerMaxMin.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartMaxMinProducts)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvProductSales)).BeginInit();
+            this.SuspendLayout();
             // 
             // panelFilters
             // 
-            panelFilters.BackColor = Color.LightGray;
-            panelFilters.BorderStyle = BorderStyle.FixedSingle;
-            panelFilters.Controls.Add(btnReset);
-            panelFilters.Controls.Add(btnFilter);
-            panelFilters.Controls.Add(dtpEndDate);
-            panelFilters.Controls.Add(dtpStartDate);
-            panelFilters.Controls.Add(cboCustomerType);
-            panelFilters.Controls.Add(cboProduct);
-            panelFilters.Controls.Add(cboStore);
-            panelFilters.Controls.Add(lblEndDate);
-            panelFilters.Controls.Add(lblStartDate);
-            panelFilters.Controls.Add(lblCustomer);
-            panelFilters.Controls.Add(lblProduct);
-            panelFilters.Controls.Add(lblStore);
-            panelFilters.Controls.Add(lblTitle);
-            panelFilters.Dock = DockStyle.Top;
-            panelFilters.Location = new Point(0, 0);
-            panelFilters.Margin = new Padding(4, 6, 4, 6);
-            panelFilters.Name = "panelFilters";
-            panelFilters.Size = new Size(2100, 223);
-            panelFilters.TabIndex = 0;
+            this.panelFilters.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.panelFilters.Controls.Add(this.lblDateTo);
+            this.panelFilters.Controls.Add(this.lblDateFrom);
+            this.panelFilters.Controls.Add(this.dtpTo);
+            this.panelFilters.Controls.Add(this.dtpFrom);
+            this.panelFilters.Controls.Add(this.btnApplyFilters);
+            this.panelFilters.Controls.Add(this.cmbStore);
+            this.panelFilters.Controls.Add(this.cmbProduct);
+            this.panelFilters.Controls.Add(this.lblProduct);
+            this.panelFilters.Controls.Add(this.lblStore);
+            this.panelFilters.Controls.Add(this.lblTitle);
+            this.panelFilters.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelFilters.Location = new System.Drawing.Point(0, 0);
+            this.panelFilters.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.panelFilters.Name = "panelFilters";
+            this.panelFilters.Size = new System.Drawing.Size(2100, 180);
+            this.panelFilters.TabIndex = 0;
             // 
-            // btnReset
+            // btnApplyFilters
             // 
-            btnReset.BackColor = Color.Gray;
-            btnReset.FlatStyle = FlatStyle.Flat;
-            btnReset.ForeColor = Color.White;
-            btnReset.Location = new Point(960, 131);
-            btnReset.Margin = new Padding(4, 6, 4, 6);
-            btnReset.Name = "btnReset";
-            btnReset.Size = new Size(150, 56);
-            btnReset.TabIndex = 12;
-            btnReset.Text = "Reset";
-            btnReset.UseVisualStyleBackColor = false;
-            btnReset.Click += btnReset_Click;
+            this.btnApplyFilters.BackColor = System.Drawing.Color.MediumSeaGreen;
+            this.btnApplyFilters.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
+            this.btnApplyFilters.ForeColor = System.Drawing.Color.White;
+            this.btnApplyFilters.Location = new System.Drawing.Point(700, 75);
+            this.btnApplyFilters.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.btnApplyFilters.Name = "btnApplyFilters";
+            this.btnApplyFilters.Size = new System.Drawing.Size(200, 50);
+            this.btnApplyFilters.TabIndex = 5;
+            this.btnApplyFilters.Text = "Apply Filters";
+            this.btnApplyFilters.UseVisualStyleBackColor = false;
+            this.btnApplyFilters.Click += new System.EventHandler(this.btnApplyFilters_Click);
             // 
-            // btnFilter
+            // cmbStore
             // 
-            btnFilter.BackColor = Color.DodgerBlue;
-            btnFilter.FlatStyle = FlatStyle.Flat;
-            btnFilter.ForeColor = Color.White;
-            btnFilter.Location = new Point(795, 131);
-            btnFilter.Margin = new Padding(4, 6, 4, 6);
-            btnFilter.Name = "btnFilter";
-            btnFilter.Size = new Size(150, 56);
-            btnFilter.TabIndex = 11;
-            btnFilter.Text = "Apply Filter";
-            btnFilter.UseVisualStyleBackColor = false;
-            btnFilter.Click += btnFilter_Click;
+            this.cmbStore.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbStore.FormattingEnabled = true;
+            this.cmbStore.Location = new System.Drawing.Point(100, 84);
+            this.cmbStore.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.cmbStore.Name = "cmbStore";
+            this.cmbStore.Size = new System.Drawing.Size(250, 38);
+            this.cmbStore.TabIndex = 4;
             // 
-            // dtpEndDate
+            // cmbProduct
             // 
-            dtpEndDate.Format = DateTimePickerFormat.Short;
-            dtpEndDate.Location = new Point(540, 135);
-            dtpEndDate.Margin = new Padding(4, 6, 4, 6);
-            dtpEndDate.Name = "dtpEndDate";
-            dtpEndDate.Size = new Size(223, 35);
-            dtpEndDate.TabIndex = 10;
-            // 
-            // dtpStartDate
-            // 
-            dtpStartDate.Format = DateTimePickerFormat.Short;
-            dtpStartDate.Location = new Point(150, 135);
-            dtpStartDate.Margin = new Padding(4, 6, 4, 6);
-            dtpStartDate.Name = "dtpStartDate";
-            dtpStartDate.Size = new Size(223, 35);
-            dtpStartDate.TabIndex = 9;
-            // 
-            // cboCustomerType
-            // 
-            cboCustomerType.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboCustomerType.FormattingEnabled = true;
-            cboCustomerType.Location = new Point(930, 79);
-            cboCustomerType.Margin = new Padding(4, 6, 4, 6);
-            cboCustomerType.Name = "cboCustomerType";
-            cboCustomerType.Size = new Size(178, 38);
-            cboCustomerType.TabIndex = 8;
-            // 
-            // cboProduct
-            // 
-            cboProduct.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboProduct.FormattingEnabled = true;
-            cboProduct.Location = new Point(540, 79);
-            cboProduct.Margin = new Padding(4, 6, 4, 6);
-            cboProduct.Name = "cboProduct";
-            cboProduct.Size = new Size(223, 38);
-            cboProduct.TabIndex = 7;
-            // 
-            // cboStore
-            // 
-            cboStore.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboStore.FormattingEnabled = true;
-            cboStore.Location = new Point(150, 79);
-            cboStore.Margin = new Padding(4, 6, 4, 6);
-            cboStore.Name = "cboStore";
-            cboStore.Size = new Size(223, 38);
-            cboStore.TabIndex = 6;
-            // 
-            // lblEndDate
-            // 
-            lblEndDate.AutoSize = true;
-            lblEndDate.Location = new Point(405, 141);
-            lblEndDate.Margin = new Padding(4, 0, 4, 0);
-            lblEndDate.Name = "lblEndDate";
-            lblEndDate.Size = new Size(39, 30);
-            lblEndDate.TabIndex = 5;
-            lblEndDate.Text = "To:";
-            // 
-            // lblStartDate
-            // 
-            lblStartDate.AutoSize = true;
-            lblStartDate.Location = new Point(15, 141);
-            lblStartDate.Margin = new Padding(4, 0, 4, 0);
-            lblStartDate.Name = "lblStartDate";
-            lblStartDate.Size = new Size(65, 30);
-            lblStartDate.TabIndex = 4;
-            lblStartDate.Text = "From:";
-            // 
-            // lblCustomer
-            // 
-            lblCustomer.AutoSize = true;
-            lblCustomer.Location = new Point(795, 84);
-            lblCustomer.Margin = new Padding(4, 0, 4, 0);
-            lblCustomer.Name = "lblCustomer";
-            lblCustomer.Size = new Size(107, 30);
-            lblCustomer.TabIndex = 3;
-            lblCustomer.Text = "Customer:";
+            this.cmbProduct.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbProduct.FormattingEnabled = true;
+            this.cmbProduct.Location = new System.Drawing.Point(450, 84);
+            this.cmbProduct.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.cmbProduct.Name = "cmbProduct";
+            this.cmbProduct.Size = new System.Drawing.Size(220, 38);
+            this.cmbProduct.TabIndex = 3;
             // 
             // lblProduct
             // 
-            lblProduct.AutoSize = true;
-            lblProduct.Location = new Point(405, 84);
-            lblProduct.Margin = new Padding(4, 0, 4, 0);
-            lblProduct.Name = "lblProduct";
-            lblProduct.Size = new Size(90, 30);
-            lblProduct.TabIndex = 2;
-            lblProduct.Text = "Product:";
+            this.lblProduct.AutoSize = true;
+            this.lblProduct.Location = new System.Drawing.Point(360, 87);
+            this.lblProduct.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblProduct.Name = "lblProduct";
+            this.lblProduct.Size = new System.Drawing.Size(92, 30);
+            this.lblProduct.TabIndex = 2;
+            this.lblProduct.Text = "Product:";
             // 
             // lblStore
             // 
-            lblStore.AutoSize = true;
-            lblStore.Location = new Point(15, 84);
-            lblStore.Margin = new Padding(4, 0, 4, 0);
-            lblStore.Name = "lblStore";
-            lblStore.Size = new Size(65, 30);
-            lblStore.TabIndex = 1;
-            lblStore.Text = "Store:";
+            this.lblStore.AutoSize = true;
+            this.lblStore.Location = new System.Drawing.Point(15, 87);
+            this.lblStore.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblStore.Name = "lblStore";
+            this.lblStore.Size = new System.Drawing.Size(65, 30);
+            this.lblStore.TabIndex = 1;
+            this.lblStore.Text = "Store:";
             // 
             // lblTitle
             // 
-            lblTitle.AutoSize = true;
-            lblTitle.Font = new Font("Arial", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblTitle.Location = new Point(15, 19);
-            lblTitle.Margin = new Padding(4, 0, 4, 0);
-            lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(481, 33);
-            lblTitle.TabIndex = 0;
-            lblTitle.Text = "BAKERY SALES ANALYSIS - Filters";
+            this.lblTitle.AutoSize = true;
+            this.lblTitle.Font = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Bold);
+            this.lblTitle.Location = new System.Drawing.Point(15, 25);
+            this.lblTitle.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblTitle.Name = "lblTitle";
+            this.lblTitle.Size = new System.Drawing.Size(550, 38);
+            this.lblTitle.TabIndex = 0;
+            this.lblTitle.Text = "BAKERY SALES ANALYSIS - Filters";
+            // 
+            // dtpFrom
+            // 
+            this.dtpFrom.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpFrom.Location = new System.Drawing.Point(100, 130);
+            this.dtpFrom.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.dtpFrom.Name = "dtpFrom";
+            this.dtpFrom.Size = new System.Drawing.Size(200, 35);
+            this.dtpFrom.TabIndex = 6;
+            // 
+            // dtpTo
+            // 
+            this.dtpTo.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpTo.Location = new System.Drawing.Point(400, 130);
+            this.dtpTo.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.dtpTo.Name = "dtpTo";
+            this.dtpTo.Size = new System.Drawing.Size(200, 35);
+            this.dtpTo.TabIndex = 7;
+            // 
+            // lblDateFrom
+            // 
+            this.lblDateFrom.AutoSize = true;
+            this.lblDateFrom.Location = new System.Drawing.Point(15, 135);
+            this.lblDateFrom.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblDateFrom.Name = "lblDateFrom";
+            this.lblDateFrom.Size = new System.Drawing.Size(68, 30);
+            this.lblDateFrom.TabIndex = 8;
+            this.lblDateFrom.Text = "From:";
+            // 
+            // lblDateTo
+            // 
+            this.lblDateTo.AutoSize = true;
+            this.lblDateTo.Location = new System.Drawing.Point(340, 135);
+            this.lblDateTo.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblDateTo.Name = "lblDateTo";
+            this.lblDateTo.Size = new System.Drawing.Size(42, 30);
+            this.lblDateTo.TabIndex = 9;
+            this.lblDateTo.Text = "To:";
             // 
             // tabControl
             // 
-            tabControl.Controls.Add(tabData);
-            tabControl.Controls.Add(tabSalesCosts);
-            tabControl.Controls.Add(tabProfit);
-            tabControl.Dock = DockStyle.Fill;
-            tabControl.Location = new Point(0, 223);
-            tabControl.Margin = new Padding(4, 6, 4, 6);
-            tabControl.Name = "tabControl";
-            tabControl.SelectedIndex = 0;
-            tabControl.Size = new Size(2100, 1277);
-            tabControl.TabIndex = 1;
+            this.tabControl.Controls.Add(this.tabSalesOverTime);
+            this.tabControl.Controls.Add(this.tabMaxMinProducts);
+            this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl.Location = new System.Drawing.Point(0, 180);
+            this.tabControl.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.tabControl.Name = "tabControl";
+            this.tabControl.SelectedIndex = 0;
+            this.tabControl.Size = new System.Drawing.Size(2100, 1320);
+            this.tabControl.TabIndex = 1;
             // 
-            // tabData
+            // tabSalesOverTime
             // 
-            tabData.Controls.Add(dgvSales);
-            tabData.Location = new Point(4, 39);
-            tabData.Margin = new Padding(4, 6, 4, 6);
-            tabData.Name = "tabData";
-            tabData.Padding = new Padding(4, 6, 4, 6);
-            tabData.Size = new Size(2092, 1234);
-            tabData.TabIndex = 0;
-            tabData.Text = "Sales Data";
-            tabData.UseVisualStyleBackColor = true;
+            this.tabSalesOverTime.Controls.Add(this.splitContainerSales);
+            this.tabSalesOverTime.Location = new System.Drawing.Point(4, 39);
+            this.tabSalesOverTime.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.tabSalesOverTime.Name = "tabSalesOverTime";
+            this.tabSalesOverTime.Padding = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.tabSalesOverTime.Size = new System.Drawing.Size(2092, 1277);
+            this.tabSalesOverTime.TabIndex = 0;
+            this.tabSalesOverTime.Text = "Sales Over Time";
+            this.tabSalesOverTime.UseVisualStyleBackColor = true;
             // 
-            // dgvSales
+            // splitContainerSales
             // 
-            dgvSales.AllowUserToAddRows = false;
-            dgvSales.AllowUserToDeleteRows = false;
-            dgvSales.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-            dgvSales.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvSales.Dock = DockStyle.Fill;
-            dgvSales.Location = new Point(4, 6);
-            dgvSales.Margin = new Padding(4, 6, 4, 6);
-            dgvSales.Name = "dgvSales";
-            dgvSales.ReadOnly = true;
-            dgvSales.RowHeadersWidth = 51;
-            dgvSales.RowTemplate.Height = 24;
-            dgvSales.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvSales.Size = new Size(2084, 1222);
-            dgvSales.TabIndex = 0;
+            this.splitContainerSales.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainerSales.Name = "splitContainerSales";
             // 
-            // tabSalesCosts
+            // splitContainerSales.Panel1
             // 
-            tabSalesCosts.Controls.Add(chartSalesCosts);
-            tabSalesCosts.Controls.Add(panelMaxMin);
-            tabSalesCosts.Location = new Point(4, 39);
-            tabSalesCosts.Margin = new Padding(4, 6, 4, 6);
-            tabSalesCosts.Name = "tabSalesCosts";
-            tabSalesCosts.Padding = new Padding(4, 6, 4, 6);
-            tabSalesCosts.Size = new Size(2092, 1234);
-            tabSalesCosts.TabIndex = 1;
-            tabSalesCosts.Text = "Sales & Costs Analysis";
-            tabSalesCosts.UseVisualStyleBackColor = true;
+            this.splitContainerSales.Panel1.Controls.Add(this.chartSalesOverTime);
             // 
-            // chartSalesCosts
+            // splitContainerSales.Panel2
             // 
-            chartSalesCosts.Dock = DockStyle.Fill;
-            chartSalesCosts.Location = new Point(4, 156);
-            chartSalesCosts.Margin = new Padding(4, 6, 4, 6);
-            chartSalesCosts.Name = "chartSalesCosts";
-            chartSalesCosts.Size = new Size(2084, 1072);
-            chartSalesCosts.TabIndex = 0;
-            chartSalesCosts.Text = "chart1";
+            this.splitContainerSales.Panel2.Controls.Add(this.dgvSalesTimeData);
+            this.splitContainerSales.SplitterDistance = 1300;
+            this.splitContainerSales.TabIndex = 0;
+            // 
+            // chartSalesOverTime
+            // 
+            chartArea1.AxisX.Interval = 1D;
+            chartArea1.AxisX.LabelStyle.Angle = -45;
+            chartArea1.AxisX.Title = "Time Period (Month-Year)";
+            chartArea1.AxisY.Title = "Sales Amount ($)";
+            chartArea1.BackColor = System.Drawing.Color.Honeydew;
+            chartArea1.Name = "ChartArea1";
+            this.chartSalesOverTime.ChartAreas.Add(chartArea1);
+            this.chartSalesOverTime.Dock = System.Windows.Forms.DockStyle.Fill;
+            legend1.Alignment = System.Drawing.StringAlignment.Center;
+            legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
+            legend1.Name = "Legend1";
+            this.chartSalesOverTime.Legends.Add(legend1);
+            this.chartSalesOverTime.Location = new System.Drawing.Point(0, 0);
+            this.chartSalesOverTime.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.chartSalesOverTime.Name = "chartSalesOverTime";
+            series1.BorderWidth = 3;
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series1.Color = System.Drawing.Color.Green;
+            series1.Legend = "Legend1";
+            series1.MarkerColor = System.Drawing.Color.DarkGreen;
+            series1.MarkerSize = 8;
+            series1.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
+            series1.Name = "Sales";
+            this.chartSalesOverTime.Series.Add(series1);
+            this.chartSalesOverTime.Size = new System.Drawing.Size(1300, 1265);
+            this.chartSalesOverTime.TabIndex = 0;
+            this.chartSalesOverTime.Text = "chart1";
+            // 
+            // dgvSalesTimeData
+            // 
+            this.dgvSalesTimeData.AllowUserToAddRows = false;
+            this.dgvSalesTimeData.AllowUserToDeleteRows = false;
+            this.dgvSalesTimeData.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvSalesTimeData.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvSalesTimeData.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvSalesTimeData.Location = new System.Drawing.Point(0, 0);
+            this.dgvSalesTimeData.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.dgvSalesTimeData.Name = "dgvSalesTimeData";
+            this.dgvSalesTimeData.ReadOnly = true;
+            this.dgvSalesTimeData.RowHeadersWidth = 51;
+            this.dgvSalesTimeData.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvSalesTimeData.Size = new System.Drawing.Size(780, 1265);
+            this.dgvSalesTimeData.TabIndex = 0;
+            // 
+            // tabMaxMinProducts
+            // 
+            this.tabMaxMinProducts.Controls.Add(this.panelMaxMin);
+            this.tabMaxMinProducts.Controls.Add(this.splitContainerMaxMin);
+            this.tabMaxMinProducts.Location = new System.Drawing.Point(4, 39);
+            this.tabMaxMinProducts.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.tabMaxMinProducts.Name = "tabMaxMinProducts";
+            this.tabMaxMinProducts.Padding = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.tabMaxMinProducts.Size = new System.Drawing.Size(2092, 1277);
+            this.tabMaxMinProducts.TabIndex = 1;
+            this.tabMaxMinProducts.Text = "Max/Min Products";
+            this.tabMaxMinProducts.UseVisualStyleBackColor = true;
             // 
             // panelMaxMin
             // 
-            panelMaxMin.BackColor = Color.WhiteSmoke;
-            panelMaxMin.Controls.Add(lblMinProduct);
-            panelMaxMin.Controls.Add(lblMaxProduct);
-            panelMaxMin.Dock = DockStyle.Top;
-            panelMaxMin.Location = new Point(4, 6);
-            panelMaxMin.Margin = new Padding(4, 6, 4, 6);
-            panelMaxMin.Name = "panelMaxMin";
-            panelMaxMin.Size = new Size(2084, 150);
-            panelMaxMin.TabIndex = 1;
+            this.panelMaxMin.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.panelMaxMin.Controls.Add(this.lblMinProduct);
+            this.panelMaxMin.Controls.Add(this.lblMaxProduct);
+            this.panelMaxMin.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelMaxMin.Location = new System.Drawing.Point(4, 6);
+            this.panelMaxMin.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.panelMaxMin.Name = "panelMaxMin";
+            this.panelMaxMin.Size = new System.Drawing.Size(2084, 100);
+            this.panelMaxMin.TabIndex = 1;
             // 
             // lblMinProduct
             // 
-            lblMinProduct.AutoSize = true;
-            lblMinProduct.Font = new Font("Arial", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblMinProduct.ForeColor = Color.Red;
-            lblMinProduct.Location = new Point(30, 75);
-            lblMinProduct.Margin = new Padding(4, 0, 4, 0);
-            lblMinProduct.Name = "lblMinProduct";
-            lblMinProduct.Size = new Size(80, 29);
-            lblMinProduct.TabIndex = 1;
-            lblMinProduct.Text = "MIN: -";
+            this.lblMinProduct.AutoSize = true;
+            this.lblMinProduct.Font = new System.Drawing.Font("Arial", 11F, System.Drawing.FontStyle.Bold);
+            this.lblMinProduct.ForeColor = System.Drawing.Color.Red;
+            this.lblMinProduct.Location = new System.Drawing.Point(30, 55);
+            this.lblMinProduct.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblMinProduct.Name = "lblMinProduct";
+            this.lblMinProduct.Size = new System.Drawing.Size(90, 32);
+            this.lblMinProduct.TabIndex = 1;
+            this.lblMinProduct.Text = "MIN: -";
             // 
             // lblMaxProduct
             // 
-            lblMaxProduct.AutoSize = true;
-            lblMaxProduct.Font = new Font("Arial", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblMaxProduct.ForeColor = Color.Green;
-            lblMaxProduct.Location = new Point(30, 19);
-            lblMaxProduct.Margin = new Padding(4, 0, 4, 0);
-            lblMaxProduct.Name = "lblMaxProduct";
-            lblMaxProduct.Size = new Size(89, 29);
-            lblMaxProduct.TabIndex = 0;
-            lblMaxProduct.Text = "MAX: -";
+            this.lblMaxProduct.AutoSize = true;
+            this.lblMaxProduct.Font = new System.Drawing.Font("Arial", 11F, System.Drawing.FontStyle.Bold);
+            this.lblMaxProduct.ForeColor = System.Drawing.Color.Green;
+            this.lblMaxProduct.Location = new System.Drawing.Point(30, 15);
+            this.lblMaxProduct.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblMaxProduct.Name = "lblMaxProduct";
+            this.lblMaxProduct.Size = new System.Drawing.Size(100, 32);
+            this.lblMaxProduct.TabIndex = 0;
+            this.lblMaxProduct.Text = "MAX: -";
             // 
-            // tabProfit
+            // splitContainerMaxMin
             // 
-            tabProfit.Controls.Add(chartProfitEvolution);
-            tabProfit.Controls.Add(panelForecast);
-            tabProfit.Location = new Point(4, 39);
-            tabProfit.Margin = new Padding(4, 6, 4, 6);
-            tabProfit.Name = "tabProfit";
-            tabProfit.Size = new Size(2092, 1234);
-            tabProfit.TabIndex = 2;
-            tabProfit.Text = "Profit Evolution";
-            tabProfit.UseVisualStyleBackColor = true;
+            this.splitContainerMaxMin.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainerMaxMin.Name = "splitContainerMaxMin";
             // 
-            // chartProfitEvolution
+            // splitContainerMaxMin.Panel1
             // 
-            chartProfitEvolution.Dock = DockStyle.Fill;
-            chartProfitEvolution.Location = new Point(0, 112);
-            chartProfitEvolution.Margin = new Padding(4, 6, 4, 6);
-            chartProfitEvolution.Name = "chartProfitEvolution";
-            chartProfitEvolution.Size = new Size(2092, 1122);
-            chartProfitEvolution.TabIndex = 0;
-            chartProfitEvolution.Text = "chart2";
+            this.splitContainerMaxMin.Panel1.Controls.Add(this.chartMaxMinProducts);
             // 
-            // panelForecast
+            // splitContainerMaxMin.Panel2
             // 
-            panelForecast.BackColor = Color.LightYellow;
-            panelForecast.Controls.Add(lblForecast);
-            panelForecast.Dock = DockStyle.Top;
-            panelForecast.Location = new Point(0, 0);
-            panelForecast.Margin = new Padding(4, 6, 4, 6);
-            panelForecast.Name = "panelForecast";
-            panelForecast.Size = new Size(2092, 112);
-            panelForecast.TabIndex = 1;
+            this.splitContainerMaxMin.Panel2.Controls.Add(this.dgvProductSales);
+            this.splitContainerMaxMin.SplitterDistance = 1300;
+            this.splitContainerMaxMin.TabIndex = 2;
             // 
-            // lblForecast
+            // chartMaxMinProducts
             // 
-            lblForecast.AutoSize = true;
-            lblForecast.Font = new Font("Arial", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblForecast.ForeColor = Color.DarkBlue;
-            lblForecast.Location = new Point(30, 28);
-            lblForecast.Margin = new Padding(4, 0, 4, 0);
-            lblForecast.Name = "lblForecast";
-            lblForecast.Size = new Size(134, 29);
-            lblForecast.TabIndex = 0;
-            lblForecast.Text = "Forecast: -";
+            chartArea2.AxisX.Interval = 1D;
+            chartArea2.AxisX.LabelStyle.Angle = -45;
+            chartArea2.AxisX.Title = "Product";
+            chartArea2.AxisY.Title = "Sales Amount ($)";
+            chartArea2.BackColor = System.Drawing.Color.LightYellow;
+            chartArea2.Name = "ChartArea1";
+            this.chartMaxMinProducts.ChartAreas.Add(chartArea2);
+            this.chartMaxMinProducts.Dock = System.Windows.Forms.DockStyle.Fill;
+            legend2.Alignment = System.Drawing.StringAlignment.Center;
+            legend2.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
+            legend2.Name = "Legend1";
+            this.chartMaxMinProducts.Legends.Add(legend2);
+            this.chartMaxMinProducts.Location = new System.Drawing.Point(0, 0);
+            this.chartMaxMinProducts.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.chartMaxMinProducts.Name = "chartMaxMinProducts";
+            series2.ChartArea = "ChartArea1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Column;
+            series2.Legend = "Legend1";
+            series2.Name = "Sales";
+            this.chartMaxMinProducts.Series.Add(series2);
+            this.chartMaxMinProducts.Size = new System.Drawing.Size(1300, 1165);
+            this.chartMaxMinProducts.TabIndex = 0;
+            this.chartMaxMinProducts.Text = "chart2";
+            // 
+            // dgvProductSales
+            // 
+            this.dgvProductSales.AllowUserToAddRows = false;
+            this.dgvProductSales.AllowUserToDeleteRows = false;
+            this.dgvProductSales.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvProductSales.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvProductSales.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvProductSales.Location = new System.Drawing.Point(0, 0);
+            this.dgvProductSales.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.dgvProductSales.Name = "dgvProductSales";
+            this.dgvProductSales.ReadOnly = true;
+            this.dgvProductSales.RowHeadersWidth = 51;
+            this.dgvProductSales.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvProductSales.Size = new System.Drawing.Size(780, 1165);
+            this.dgvProductSales.TabIndex = 0;
             // 
             // MainForm
             // 
-            AutoScaleDimensions = new SizeF(12F, 30F);
-            AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(2100, 1500);
-            Controls.Add(tabControl);
-            Controls.Add(panelFilters);
-            Margin = new Padding(4, 6, 4, 6);
-            Name = "MainForm";
-            StartPosition = FormStartPosition.CenterScreen;
-            Text = "Bakery BI - Decision Support System";
-            Load += MainForm_Load;
-            panelFilters.ResumeLayout(false);
-            panelFilters.PerformLayout();
-            tabControl.ResumeLayout(false);
-            tabData.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dgvSales).EndInit();
-            tabSalesCosts.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)chartSalesCosts).EndInit();
-            panelMaxMin.ResumeLayout(false);
-            panelMaxMin.PerformLayout();
-            tabProfit.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)chartProfitEvolution).EndInit();
-            panelForecast.ResumeLayout(false);
-            panelForecast.PerformLayout();
-            ResumeLayout(false);
-
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 30F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(2100, 1500);
+            this.Controls.Add(this.tabControl);
+            this.Controls.Add(this.panelFilters);
+            this.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Bakery BI - Sales Analysis";
+            this.Load += new System.EventHandler(this.MainForm_Load);
+            this.panelFilters.ResumeLayout(false);
+            this.panelFilters.PerformLayout();
+            this.tabControl.ResumeLayout(false);
+            this.tabSalesOverTime.ResumeLayout(false);
+            this.splitContainerSales.Panel1.ResumeLayout(false);
+            this.splitContainerSales.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainerSales)).EndInit();
+            this.splitContainerSales.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.chartSalesOverTime)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvSalesTimeData)).EndInit();
+            this.tabMaxMinProducts.ResumeLayout(false);
+            this.panelMaxMin.ResumeLayout(false);
+            this.panelMaxMin.PerformLayout();
+            this.splitContainerMaxMin.Panel1.ResumeLayout(false);
+            this.splitContainerMaxMin.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainerMaxMin)).EndInit();
+            this.splitContainerMaxMin.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.chartMaxMinProducts)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvProductSales)).EndInit();
+            this.ResumeLayout(false);
         }
 
         #endregion
 
         private System.Windows.Forms.Panel panelFilters;
-        private System.Windows.Forms.Label lblTitle;
-        private System.Windows.Forms.Label lblStore;
+        private System.Windows.Forms.Button btnApplyFilters;
+        private System.Windows.Forms.ComboBox cmbStore;
+        private System.Windows.Forms.ComboBox cmbProduct;
         private System.Windows.Forms.Label lblProduct;
-        private System.Windows.Forms.Label lblCustomer;
-        private System.Windows.Forms.Label lblStartDate;
-        private System.Windows.Forms.Label lblEndDate;
-        private System.Windows.Forms.ComboBox cboStore;
-        private System.Windows.Forms.ComboBox cboProduct;
-        private System.Windows.Forms.ComboBox cboCustomerType;
-        private System.Windows.Forms.DateTimePicker dtpStartDate;
-        private System.Windows.Forms.DateTimePicker dtpEndDate;
-        private System.Windows.Forms.Button btnFilter;
-        private System.Windows.Forms.Button btnReset;
+        private System.Windows.Forms.Label lblStore;
+        private System.Windows.Forms.Label lblTitle;
+        private System.Windows.Forms.DateTimePicker dtpFrom;
+        private System.Windows.Forms.DateTimePicker dtpTo;
+        private System.Windows.Forms.Label lblDateFrom;
+        private System.Windows.Forms.Label lblDateTo;
         private System.Windows.Forms.TabControl tabControl;
-        private System.Windows.Forms.TabPage tabData;
-        private System.Windows.Forms.DataGridView dgvSales;
-        private System.Windows.Forms.TabPage tabSalesCosts;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chartSalesCosts;
+        private System.Windows.Forms.TabPage tabSalesOverTime;
+        private System.Windows.Forms.SplitContainer splitContainerSales;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartSalesOverTime;
+        private System.Windows.Forms.DataGridView dgvSalesTimeData;
+        private System.Windows.Forms.TabPage tabMaxMinProducts;
         private System.Windows.Forms.Panel panelMaxMin;
-        private System.Windows.Forms.Label lblMaxProduct;
         private System.Windows.Forms.Label lblMinProduct;
-        private System.Windows.Forms.TabPage tabProfit;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chartProfitEvolution;
-        private System.Windows.Forms.Panel panelForecast;
-        private System.Windows.Forms.Label lblForecast;
+        private System.Windows.Forms.Label lblMaxProduct;
+        private System.Windows.Forms.SplitContainer splitContainerMaxMin;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartMaxMinProducts;
+        private System.Windows.Forms.DataGridView dgvProductSales;
     }
 }

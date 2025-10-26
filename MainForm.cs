@@ -4,9 +4,8 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using BakeryBI.Data;
-using BakeryBI.Utils;
 using System.Windows.Forms.DataVisualization.Charting;
+using BakeryBI.Data;
 
 namespace BakeryBI
 {
@@ -15,45 +14,36 @@ namespace BakeryBI
         private List<SalesRecord> allSalesData;
         private List<SalesRecord> filteredData;
         private SalesDataLoader dataLoader;
-        private ForecastCalculator forecastCalculator;
 
         public MainForm()
         {
             InitializeComponent();
             dataLoader = new SalesDataLoader();
-            forecastCalculator = new ForecastCalculator();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
             LoadData();
-            SetupCharts();
             PopulateFilters();
-            ApplyFilter();
+            ApplyFilters();
         }
 
         private void LoadData()
         {
             try
             {
-                string csvPath = System.IO.Path.Combine(Application.StartupPath, "bakery_sales_cleaned.csv");
-
-                if (!System.IO.File.Exists(csvPath))
-                {
-                    csvPath = "bakery_sales_cleaned.csv";
-                }
-
+                string csvPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bakery_sales_cleaned.csv");
                 allSalesData = dataLoader.LoadFromCsv(csvPath);
 
-                if (allSalesData.Count == 0)
+                if (allSalesData == null || allSalesData.Count == 0)
                 {
-                    MessageBox.Show("No data loaded from CSV file.", "Warning",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("No data loaded. Please check the CSV file.",
+                        "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
-                    MessageBox.Show($"Successfully loaded {allSalesData.Count} records!", "Success",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"Successfully loaded {allSalesData.Count} records!",
+                        "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
@@ -64,246 +54,91 @@ namespace BakeryBI
             }
         }
 
-        private void SetupCharts()
-        {
-            // Chart 1: Sales/Costs over time
-            SetupSalesCostsOverTimeChart();
-
-            // Chart 2: Max/Min highlighting
-            SetupMaxMinChart();
-        }
-
-        private void SetupSalesCostsOverTimeChart()
-        {
-            chartSalesCosts.Series.Clear();
-            chartSalesCosts.ChartAreas.Clear();
-            chartSalesCosts.Legends.Clear();
-
-            ChartArea chartArea = new ChartArea("TimeArea");
-            chartArea.AxisX.Title = "Time Period (Month-Year)";
-            chartArea.AxisY.Title = "Amount ($)";
-            chartArea.AxisX.Interval = 1;
-            chartArea.AxisX.LabelStyle.Angle = -45;
-            chartArea.BackColor = Color.Honeydew;
-            chartSalesCosts.ChartAreas.Add(chartArea);
-
-            // Sales line
-            Series salesSeries = new Series("Sales")
-            {
-                ChartType = SeriesChartType.Line,
-                Color = Color.Green,
-                BorderWidth = 3,
-                MarkerStyle = MarkerStyle.Circle,
-                MarkerSize = 6,
-                MarkerColor = Color.DarkGreen
-            };
-            chartSalesCosts.Series.Add(salesSeries);
-
-            // Costs line
-            Series costsSeries = new Series("Costs")
-            {
-                ChartType = SeriesChartType.Line,
-                Color = Color.Red,
-                BorderWidth = 3,
-                MarkerStyle = MarkerStyle.Square,
-                MarkerSize = 6,
-                MarkerColor = Color.DarkRed
-            };
-            chartSalesCosts.Series.Add(costsSeries);
-
-            Legend legend = new Legend("Legend")
-            {
-                Docking = Docking.Top,
-                Alignment = StringAlignment.Center
-            };
-            chartSalesCosts.Legends.Add(legend);
-
-            chartSalesCosts.Titles.Clear();
-            chartSalesCosts.Titles.Add(new Title("Sales & Costs Over Time by Product Type",
-                Docking.Top, new Font("Arial", 14, FontStyle.Bold), Color.DarkGreen));
-        }
-
-        private void SetupMaxMinChart()
-        {
-            chartProfitEvolution.Series.Clear();
-            chartProfitEvolution.ChartAreas.Clear();
-            chartProfitEvolution.Legends.Clear();
-
-            ChartArea chartArea = new ChartArea("MaxMinArea");
-            chartArea.AxisX.Title = "Product";
-            chartArea.AxisY.Title = "Total Sales ($)";
-            chartArea.AxisX.Interval = 1;
-            chartArea.AxisX.LabelStyle.Angle = -45;
-            chartArea.BackColor = Color.LavenderBlush;
-            chartProfitEvolution.ChartAreas.Add(chartArea);
-
-            Series maxMinSeries = new Series("Sales")
-            {
-                ChartType = SeriesChartType.Column,
-                Color = Color.SteelBlue,
-                BorderWidth = 1,
-                BorderColor = Color.DarkBlue
-            };
-            chartProfitEvolution.Series.Add(maxMinSeries);
-
-            Legend legend = new Legend("Legend")
-            {
-                Docking = Docking.Top,
-                Alignment = StringAlignment.Center
-            };
-            chartProfitEvolution.Legends.Add(legend);
-
-            chartProfitEvolution.Titles.Clear();
-            chartProfitEvolution.Titles.Add(new Title("Product Sales - Max & Min Highlighted",
-                Docking.Top, new Font("Arial", 14, FontStyle.Bold), Color.DarkBlue));
-        }
-
         private void PopulateFilters()
         {
             if (allSalesData == null || allSalesData.Count == 0)
                 return;
 
             // Populate Store filter
-            cboStore.Items.Clear();
-            cboStore.Items.Add("All Stores");
-            var stores = allSalesData
-                .Select(r => r.StoreName)
-                .Where(s => !string.IsNullOrEmpty(s))
-                .Distinct()
-                .OrderBy(s => s);
+            cmbStore.Items.Clear();
+            cmbStore.Items.Add("All Stores");
+            var stores = allSalesData.Select(r => r.StoreName).Distinct().OrderBy(s => s).ToList();
             foreach (var store in stores)
-                cboStore.Items.Add(store);
-            cboStore.SelectedIndex = 0;
+            {
+                cmbStore.Items.Add(store);
+            }
+            cmbStore.SelectedIndex = 0;
 
             // Populate Product filter
-            cboProduct.Items.Clear();
-            cboProduct.Items.Add("All Products");
-            var products = allSalesData
-                .Select(r => r.ProductName)
-                .Where(p => !string.IsNullOrEmpty(p))
-                .Distinct()
-                .OrderBy(p => p);
+            cmbProduct.Items.Clear();
+            cmbProduct.Items.Add("All Products");
+            var products = allSalesData.Select(r => r.ProductName).Distinct().OrderBy(p => p).ToList();
             foreach (var product in products)
-                cboProduct.Items.Add(product);
-            cboProduct.SelectedIndex = 0;
-
-            // Populate Customer Type filter
-            cboCustomerType.Items.Clear();
-            cboCustomerType.Items.Add("All Types");
-            cboCustomerType.Items.Add("Firm");
-            cboCustomerType.Items.Add("Individual");
-            cboCustomerType.SelectedIndex = 0;
-
-            // Set date range
-            if (allSalesData.Count > 0)
             {
-                dtpStartDate.Value = allSalesData.Min(r => r.TransactionDate);
-                dtpEndDate.Value = allSalesData.Max(r => r.TransactionDate);
+                cmbProduct.Items.Add(product);
             }
+            cmbProduct.SelectedIndex = 0;
+
+            // Initialize DateTimePickers
+            var minDate = allSalesData.Min(r => r.TransactionDate);
+            var maxDate = allSalesData.Max(r => r.TransactionDate);
+
+            dtpFrom.MinDate = minDate;
+            dtpFrom.MaxDate = maxDate;
+            dtpFrom.Value = minDate;
+
+            dtpTo.MinDate = minDate;
+            dtpTo.MaxDate = maxDate;
+            dtpTo.Value = maxDate;
         }
 
-        private void btnFilter_Click(object sender, EventArgs e)
+        private void btnApplyFilters_Click(object sender, EventArgs e)
         {
-            ApplyFilter();
+            ApplyFilters();
         }
 
-        private void btnReset_Click(object sender, EventArgs e)
-        {
-            cboStore.SelectedIndex = 0;
-            cboProduct.SelectedIndex = 0;
-            cboCustomerType.SelectedIndex = 0;
-
-            if (allSalesData != null && allSalesData.Count > 0)
-            {
-                dtpStartDate.Value = allSalesData.Min(r => r.TransactionDate);
-                dtpEndDate.Value = allSalesData.Max(r => r.TransactionDate);
-            }
-
-            ApplyFilter();
-        }
-
-        private void ApplyFilter()
+        private void ApplyFilters()
         {
             if (allSalesData == null || allSalesData.Count == 0)
-            {
-                MessageBox.Show("No data available to filter.", "Information",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
-            }
 
-            filteredData = allSalesData.AsEnumerable().ToList();
+            filteredData = allSalesData.ToList();
 
-            // Apply store filter
-            if (cboStore.SelectedIndex > 0)
+            // Apply Date Range filter
+            DateTime dateFrom = dtpFrom.Value.Date;
+            DateTime dateTo = dtpTo.Value.Date.AddDays(1).AddSeconds(-1); // End of day
+            filteredData = filteredData.Where(r => r.TransactionDate >= dateFrom && r.TransactionDate <= dateTo).ToList();
+
+            // Apply Store filter
+            if (cmbStore.SelectedIndex > 0)
             {
-                string selectedStore = cboStore.SelectedItem.ToString();
+                string selectedStore = cmbStore.SelectedItem.ToString();
                 filteredData = filteredData.Where(r => r.StoreName == selectedStore).ToList();
             }
 
-            // Apply product filter
-            if (cboProduct.SelectedIndex > 0)
+            // Apply Product filter
+            if (cmbProduct.SelectedIndex > 0)
             {
-                string selectedProduct = cboProduct.SelectedItem.ToString();
+                string selectedProduct = cmbProduct.SelectedItem.ToString();
                 filteredData = filteredData.Where(r => r.ProductName == selectedProduct).ToList();
             }
 
-            // Apply customer type filter
-            if (cboCustomerType.SelectedIndex > 0)
-            {
-                string selectedType = cboCustomerType.SelectedItem.ToString();
-                filteredData = filteredData.Where(r => r.CustomerType == selectedType).ToList();
-            }
-
-            // Apply date range filter
-            filteredData = filteredData.Where(r =>
-                r.TransactionDate.Date >= dtpStartDate.Value.Date &&
-                r.TransactionDate.Date <= dtpEndDate.Value.Date).ToList();
-
-            // Update UI - Only 2 charts needed
-            UpdateDataGrid();
-            UpdateSalesCostsOverTimeChart();  // Bullet 1
-            UpdateMaxMinChart();               // Bullet 2
-            UpdateForecast();                  // Bullet 3
+            // Update both tabs
+            UpdateSalesOverTimeTab();
+            UpdateMaxMinProductsTab();
         }
 
-        private void UpdateDataGrid()
+        #region Sales Over Time Tab
+
+        private void UpdateSalesOverTimeTab()
         {
-            DataTable dt = new DataTable();
-
-            dt.Columns.Add("Store", typeof(string));
-            dt.Columns.Add("Date", typeof(DateTime));
-            dt.Columns.Add("Product", typeof(string));
-            dt.Columns.Add("Quantity", typeof(int));
-            dt.Columns.Add("Final Amount", typeof(decimal));
-            dt.Columns.Add("Profit", typeof(decimal));
-            dt.Columns.Add("Customer Type", typeof(string));
-
-            foreach (var record in filteredData)
-            {
-                dt.Rows.Add(
-                    record.StoreName,
-                    record.TransactionDate,
-                    record.ProductName,
-                    record.Quantity,
-                    record.FinalAmount,
-                    record.Profit,
-                    record.CustomerType
-                );
-            }
-
-            dgvSales.DataSource = dt;
-
-            if (dgvSales.Columns.Contains("Final Amount"))
-                dgvSales.Columns["Final Amount"].DefaultCellStyle.Format = "C2";
-            if (dgvSales.Columns.Contains("Profit"))
-                dgvSales.Columns["Profit"].DefaultCellStyle.Format = "C2";
+            UpdateSalesOverTimeChart();
+            UpdateSalesOverTimeDataGrid();
         }
 
-        // BULLET 1: Sales/Costs over time
-        private void UpdateSalesCostsOverTimeChart()
+        private void UpdateSalesOverTimeChart()
         {
-            chartSalesCosts.Series["Sales"].Points.Clear();
-            chartSalesCosts.Series["Costs"].Points.Clear();
+            chartSalesOverTime.Series["Sales"].Points.Clear();
 
             if (filteredData == null || filteredData.Count == 0)
                 return;
@@ -314,7 +149,6 @@ namespace BakeryBI
                 {
                     Period = $"{g.Key.MonthName} {g.Key.Year}",
                     TotalSales = g.Sum(r => r.FinalAmount),
-                    TotalCosts = g.Sum(r => r.TotalCost),
                     Year = g.Key.Year,
                     Month = g.Key.Month
                 })
@@ -324,21 +158,66 @@ namespace BakeryBI
 
             foreach (var item in timeData)
             {
-                chartSalesCosts.Series["Sales"].Points.AddXY(item.Period, item.TotalSales);
-                chartSalesCosts.Series["Costs"].Points.AddXY(item.Period, item.TotalCosts);
+                chartSalesOverTime.Series["Sales"].Points.AddXY(item.Period, item.TotalSales);
             }
         }
 
-        // BULLET 2: Max/Min highlighting
-        private void UpdateMaxMinChart()
+        private void UpdateSalesOverTimeDataGrid()
         {
-            chartProfitEvolution.Series["Sales"].Points.Clear();
+            if (filteredData == null || filteredData.Count == 0)
+            {
+                dgvSalesTimeData.DataSource = null;
+                return;
+            }
+
+            // Create DataTable with aggregated data (Month-Year, Total Sales)
+            var timeData = filteredData
+                .GroupBy(r => new { r.Year, r.Month, r.MonthName })
+                .Select(g => new
+                {
+                    MonthYear = $"{g.Key.MonthName} {g.Key.Year}",
+                    TotalSales = g.Sum(r => r.FinalAmount),
+                    Year = g.Key.Year,
+                    Month = g.Key.Month
+                })
+                .OrderBy(x => x.Year)
+                .ThenBy(x => x.Month)
+                .ToList();
+
+            DataTable dt = new DataTable();
+            dt.Columns.Add("Month-Year", typeof(string));
+            dt.Columns.Add("Total Sales", typeof(decimal));
+
+            foreach (var item in timeData)
+            {
+                dt.Rows.Add(item.MonthYear, item.TotalSales);
+            }
+
+            dgvSalesTimeData.DataSource = dt;
+
+            // Format currency column
+            if (dgvSalesTimeData.Columns.Contains("Total Sales"))
+                dgvSalesTimeData.Columns["Total Sales"].DefaultCellStyle.Format = "C2";
+        }
+
+        #endregion
+
+        #region Max/Min Products Tab
+
+        private void UpdateMaxMinProductsTab()
+        {
+            UpdateMaxMinProductsChart();
+            UpdateMaxMinProductsDataGrid();
+        }
+
+        private void UpdateMaxMinProductsChart()
+        {
+            chartMaxMinProducts.Series["Sales"].Points.Clear();
 
             if (filteredData == null || filteredData.Count == 0)
             {
                 lblMaxProduct.Text = "MAX: No data";
                 lblMinProduct.Text = "MIN: No data";
-                lblForecast.Text = "No data for analysis";
                 return;
             }
 
@@ -353,76 +232,83 @@ namespace BakeryBI
                 .ToList();
 
             if (productSales.Count == 0)
+            {
+                lblMaxProduct.Text = "MAX: No data";
+                lblMinProduct.Text = "MIN: No data";
                 return;
+            }
 
             // Find max and min
             var maxProduct = productSales.First();
             var minProduct = productSales.Last();
 
+            // Update labels
+            lblMaxProduct.Text = $"MAX: {maxProduct.Product} - ${maxProduct.TotalSales:N2}";
+            lblMinProduct.Text = $"MIN: {minProduct.Product} - ${minProduct.TotalSales:N2}";
+
             // Add all products to chart
             foreach (var item in productSales)
             {
-                int pointIndex = chartProfitEvolution.Series["Sales"].Points.AddXY(item.Product, item.TotalSales);
+                int pointIndex = chartMaxMinProducts.Series["Sales"].Points.AddXY(item.Product, item.TotalSales);
 
                 // Highlight MAX in green
                 if (item.Product == maxProduct.Product)
                 {
-                    chartProfitEvolution.Series["Sales"].Points[pointIndex].Color = Color.Green;
-                    chartProfitEvolution.Series["Sales"].Points[pointIndex].Label = $"MAX\n${item.TotalSales:N0}";
-                    chartProfitEvolution.Series["Sales"].Points[pointIndex].LabelForeColor = Color.DarkGreen;
-                    chartProfitEvolution.Series["Sales"].Points[pointIndex].Font = new Font("Arial", 9, FontStyle.Bold);
+                    chartMaxMinProducts.Series["Sales"].Points[pointIndex].Color = Color.Green;
+                    chartMaxMinProducts.Series["Sales"].Points[pointIndex].Label = $"MAX\n${item.TotalSales:N0}";
+                    chartMaxMinProducts.Series["Sales"].Points[pointIndex].LabelForeColor = Color.DarkGreen;
+                    chartMaxMinProducts.Series["Sales"].Points[pointIndex].Font = new Font("Arial", 9, FontStyle.Bold);
                 }
                 // Highlight MIN in red
                 else if (item.Product == minProduct.Product)
                 {
-                    chartProfitEvolution.Series["Sales"].Points[pointIndex].Color = Color.Red;
-                    chartProfitEvolution.Series["Sales"].Points[pointIndex].Label = $"MIN\n${item.TotalSales:N0}";
-                    chartProfitEvolution.Series["Sales"].Points[pointIndex].LabelForeColor = Color.DarkRed;
-                    chartProfitEvolution.Series["Sales"].Points[pointIndex].Font = new Font("Arial", 9, FontStyle.Bold);
+                    chartMaxMinProducts.Series["Sales"].Points[pointIndex].Color = Color.Red;
+                    chartMaxMinProducts.Series["Sales"].Points[pointIndex].Label = $"MIN\n${item.TotalSales:N0}";
+                    chartMaxMinProducts.Series["Sales"].Points[pointIndex].LabelForeColor = Color.DarkRed;
+                    chartMaxMinProducts.Series["Sales"].Points[pointIndex].Font = new Font("Arial", 9, FontStyle.Bold);
                 }
                 else
                 {
-                    chartProfitEvolution.Series["Sales"].Points[pointIndex].Color = Color.SteelBlue;
+                    chartMaxMinProducts.Series["Sales"].Points[pointIndex].Color = Color.SteelBlue;
                 }
             }
-
-            // Update labels
-            lblMaxProduct.Text = $"🔼 MAX: {maxProduct.Product} - ${maxProduct.TotalSales:N2}";
-            lblMinProduct.Text = $"🔽 MIN: {minProduct.Product} - ${minProduct.TotalSales:N2}";
         }
 
-        // BULLET 3: Forecasting
-        private void UpdateForecast()
+        private void UpdateMaxMinProductsDataGrid()
         {
             if (filteredData == null || filteredData.Count == 0)
             {
-                lblForecast.Text = "📊 Forecast: No data available";
+                dgvProductSales.DataSource = null;
                 return;
             }
 
-            // Get monthly sales data
-            var monthlyData = filteredData
-                .GroupBy(r => new { r.Year, r.Month })
+            // Create DataTable with aggregated product sales
+            var productSales = filteredData
+                .GroupBy(r => r.ProductName)
                 .Select(g => new
                 {
-                    Period = g.Key.Year * 12 + g.Key.Month,
+                    Product = g.Key,
                     TotalSales = g.Sum(r => r.FinalAmount)
                 })
-                .OrderBy(x => x.Period)
+                .OrderByDescending(x => x.TotalSales)
                 .ToList();
 
-            if (monthlyData.Count < 2)
+            DataTable dt = new DataTable();
+            dt.Columns.Add("Product Name", typeof(string));
+            dt.Columns.Add("Total Sales", typeof(decimal));
+
+            foreach (var item in productSales)
             {
-                lblForecast.Text = "📊 Forecast: Need at least 2 periods for trend analysis";
-                return;
+                dt.Rows.Add(item.Product, item.TotalSales);
             }
 
-            // Calculate forecast
-            var salesValues = monthlyData.Select(m => m.TotalSales).ToList();
-            var forecast = forecastCalculator.CalculateLinearForecast(salesValues);
+            dgvProductSales.DataSource = dt;
 
-            lblForecast.Text = $"📊 Next Period Forecast: ${forecast.ForecastedValue:N2} | " +
-                             $"Trend: {forecast.TrendDirection} (${Math.Abs(forecast.Slope):N2}/period)";
+            // Format currency column
+            if (dgvProductSales.Columns.Contains("Total Sales"))
+                dgvProductSales.Columns["Total Sales"].DefaultCellStyle.Format = "C2";
         }
+
+        #endregion
     }
 }
