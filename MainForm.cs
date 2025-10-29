@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using BakeryBI.Data;
+using BakeryBI.Utils;
 
 namespace BakeryBI
 {
@@ -14,6 +15,7 @@ namespace BakeryBI
         private List<SalesRecord> allSalesData;
         private List<SalesRecord> filteredData;
         private SalesDataLoader dataLoader;
+        private List<string> selectedClientTypes = new List<string>();
 
         public MainForm()
         {
@@ -26,6 +28,7 @@ namespace BakeryBI
             LoadData();
             PopulateFilters();
             ApplyFilters();
+            InitializeCustomControlsAndEventsForSalesAnalysis();
         }
 
         private void LoadData()
@@ -310,5 +313,217 @@ namespace BakeryBI
         }
 
         #endregion
+
+        //Sales analysis
+        private void InitializeCustomControlsAndEventsForSalesAnalysis()
+        {
+            cmbForecastMonths.Items.AddRange(Enumerable.Range(1, 12).Cast<object>().ToArray());
+            cmbForecastMonths.SelectedIndex = 2;
+
+            PopulateClientTypeFilters();
+
+            tabControl.SelectedIndexChanged += tabControl_SelectedIndexChanged;
+
+            cmbForecastMonths.SelectedIndexChanged += cmbForecastMonths_SelectedIndexChanged;
+        }
+        private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (tabControl.SelectedTab == tabFutureSalesEstimation)
+            {
+                cmbForecastMonths_SelectedIndexChanged(null, null);
+            }
+            else if (tabControl.SelectedTab == tabEvolutionOfProfits)
+            {
+                RenderProfitEvolutionChart(allSalesData, selectedClientTypes);
+            }
+        }
+        private void cmbForecastMonths_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbForecastMonths.SelectedItem != null && allSalesData.Any())
+            {
+                int forecastMonths = (int)cmbForecastMonths.SelectedItem;
+                RenderSalesEstimationChart(allSalesData, forecastMonths);
+            }
+        }
+        private void ClientTypeCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox cb = sender as CheckBox;
+            string clientType = cb.Tag.ToString();
+
+            // Update the selected client types list
+            if (cb.Checked)
+            {
+                if (!selectedClientTypes.Contains(clientType)) selectedClientTypes.Add(clientType);
+            }
+            else
+            {
+                selectedClientTypes.Remove(clientType);
+            }
+
+            // Trigger chart update with new filters
+            RenderProfitEvolutionChart(allSalesData, selectedClientTypes);
+        }
+        private void PopulateClientTypeFilters()
+        {
+            pnlClientTypeFilters.Controls.Clear();
+
+            var clientTypes = allSalesData.Select(x => x.CustomerType).Distinct().OrderBy(x => x).ToList();
+
+            int xOffset = 10;
+
+            foreach (var clientType in clientTypes)
+            {
+                var cb = new CheckBox
+                {
+                    Text = clientType,
+                    Tag = clientType,
+                    Checked = true,
+                    Location = new Point(xOffset, 5),
+                    AutoSize = true
+                };
+
+                cb.CheckedChanged += ClientTypeCheckBox_CheckedChanged;
+
+                pnlClientTypeFilters.Controls.Add(cb);
+                xOffset += cb.Width + 10;
+            }
+            selectedClientTypes = clientTypes;
+        }
+        private void RenderSalesEstimationChart(List<SalesRecord> filteredData, int forecastMonths)
+        {
+            chartFutureSalesEstimation.Series.Clear();
+            chartFutureSalesEstimation.ChartAreas.Clear();
+
+            // Calculate actual monthly sales for both chart and table
+            var monthlySalesSummary = filteredData
+                .GroupBy(r => new DateTime(r.TransactionDate.Year, r.TransactionDate.Month, 1))
+                .OrderBy(g => g.Key)
+                .Select(g => new
+                {
+                    Month = g.Key,
+                    TotalSales = g.Sum(r => r.FinalAmount)
+                })
+                .ToList();
+
+            // Populate Data Table (dgvSalesData)
+
+            dgvSalesData.DataSource = monthlySalesSummary;
+            dgvSalesData.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
+
+            if (!monthlySalesSummary.Any()) return;
+
+            // Chart Setup
+            var chartArea = new ChartArea("SalesArea");
+            chartArea.AxisX.Title = "Month";
+            chartArea.AxisY.Title = "Total Sales (Revenue)";
+            chartArea.AxisX.IntervalType = DateTimeIntervalType.Months;
+            chartArea.AxisX.LabelStyle.Format = "MMM yy";
+            chartFutureSalesEstimation.ChartAreas.Add(chartArea);
+
+            // Get forecast and trend points
+            var trendAndForecastPoints = SalesUtility.CalculateTrendAndForecast(filteredData, forecastMonths);
+
+            // Actual Sales Series (Column series)
+            var actualSeries = new Series("Actual Sales")
+            {
+                ChartType = SeriesChartType.Column,
+                Color = Color.LightBlue,
+                XValueType = ChartValueType.DateTime
+            };
+            monthlySalesSummary.ForEach(p => actualSeries.Points.AddXY(p.Month.ToOADate(), (double)p.TotalSales));
+            chartFutureSalesEstimation.Series.Add(actualSeries);
+
+            // Trend and Forecast Series (Line series)
+            var trendSeries = new Series("Trend & Forecast")
+            {
+                ChartType = SeriesChartType.Line,
+                Color = Color.Red,
+                BorderWidth = 3,
+                XValueType = ChartValueType.DateTime
+            };
+
+            foreach (var p in trendAndForecastPoints)
+            {
+                System.Windows.Forms.DataVisualization.Charting.DataPoint chartPoint = new System.Windows.Forms.DataVisualization.Charting.DataPoint(p.Date.ToOADate(), (double)p.Value);
+                if (p.IsForecast)
+                {
+                    chartPoint.BorderDashStyle = ChartDashStyle.Dash;
+                    chartPoint.MarkerStyle = MarkerStyle.Circle;
+                }
+                trendSeries.Points.Add(chartPoint);
+            }
+
+            chartFutureSalesEstimation.Series.Add(trendSeries);
+            chartFutureSalesEstimation.Titles.Clear();
+            chartFutureSalesEstimation.Titles.Add("Future Sales Estimation (Monthly Revenue Trend)");
+            chartFutureSalesEstimation.ChartAreas["SalesArea"].RecalculateAxesScale();
+        }
+
+
+        private void RenderProfitEvolutionChart(List<SalesRecord> rawData, List<string> selectedClientTypes)
+        {
+            chartEvolutionOfProfits.Series.Clear();
+            chartEvolutionOfProfits.ChartAreas.Clear();
+            chartEvolutionOfProfits.Legends.Clear();
+
+            // Filter Data based on ClientType selection
+            var filteredData = SalesUtility.ApplyFilters(rawData, selectedClientTypes);
+
+            // Aggregate Data for Chart AND Table (Segmented by StoreName)
+            var monthlyProfitSummary = filteredData
+                .GroupBy(r => new { Date = new DateTime(r.TransactionDate.Year, r.TransactionDate.Month, 1), r.StoreName })
+                .OrderBy(g => g.Key.Date)
+                .Select(g => new
+                {
+                    Month = g.Key.Date,
+                    Store = g.Key.StoreName,
+                    Profit = g.Sum(r => r.Profit) // decimal
+                })
+                .ToList();
+
+            // Populate Data Table (dgvProfitData)
+            dgvProfitData.DataSource = monthlyProfitSummary;
+            dgvProfitData.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
+
+            if (!monthlyProfitSummary.Any())
+            {
+                chartEvolutionOfProfits.Titles.Clear();
+                chartEvolutionOfProfits.Titles.Add("No Data Available for Selected Client Types.");
+                return;
+            }
+
+            // Chart Setup
+            var chartArea = new ChartArea("ProfitArea");
+            chartArea.AxisX.Title = "Month of Transaction";
+            chartArea.AxisY.Title = "Profit ($\text{FinalAmount} - \text{TotalCost}$)";
+            chartArea.AxisX.IntervalType = DateTimeIntervalType.Months;
+            chartArea.AxisX.LabelStyle.Format = "MMM yy";
+            chartEvolutionOfProfits.ChartAreas.Add(chartArea);
+            chartEvolutionOfProfits.Legends.Add(new Legend("StoreLegend"));
+
+            // Create Chart Series
+            var storeGroups = monthlyProfitSummary
+                .GroupBy(r => r.Store)
+                .ToList();
+
+            foreach (var storeGroup in storeGroups)
+            {
+                var series = new Series(storeGroup.Key)
+                {
+                    ChartType = SeriesChartType.Line,
+                    XValueType = ChartValueType.DateTime,
+                    BorderWidth = 2
+                };
+
+                // Populate series (casting decimal Profit to double for charting)
+                storeGroup.ToList().ForEach(p => series.Points.AddXY(p.Month.ToOADate(), (double)p.Profit));
+
+                chartEvolutionOfProfits.Series.Add(series);
+            }
+
+            chartEvolutionOfProfits.Titles.Clear();
+            chartEvolutionOfProfits.Titles.Add("Evolution of Monthly Profit by Store");
+            chartEvolutionOfProfits.ChartAreas["ProfitArea"].RecalculateAxesScale();
+        }
     }
 }
