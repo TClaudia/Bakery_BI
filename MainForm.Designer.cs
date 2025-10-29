@@ -17,18 +17,18 @@
 
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend5 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea6 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend6 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea7 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend7 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea8 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend8 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series8 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
             panelFilters = new Panel();
             lblDateTo = new Label();
             lblDateFrom = new Label();
@@ -59,6 +59,7 @@
             dgvSalesData = new DataGridView();
             tabEvolutionOfProfits = new TabPage();
             splitContainerEvolutionOfProfit = new SplitContainer();
+            pnlStoreFilters = new Panel();
             chartEvolutionOfProfits = new System.Windows.Forms.DataVisualization.Charting.Chart();
             pnlClientTypeFilters = new Panel();
             dgvProfitData = new DataGridView();
@@ -265,31 +266,31 @@
             // 
             // chartSalesOverTime
             // 
-            chartArea5.AxisX.Interval = 1D;
-            chartArea5.AxisX.LabelStyle.Angle = -45;
-            chartArea5.AxisX.Title = "Time Period (Month-Year)";
-            chartArea5.AxisY.Title = "Sales Amount ($)";
-            chartArea5.BackColor = Color.Honeydew;
-            chartArea5.Name = "ChartArea1";
-            chartSalesOverTime.ChartAreas.Add(chartArea5);
+            chartArea1.AxisX.Interval = 1D;
+            chartArea1.AxisX.LabelStyle.Angle = -45;
+            chartArea1.AxisX.Title = "Time Period (Month-Year)";
+            chartArea1.AxisY.Title = "Sales Amount ($)";
+            chartArea1.BackColor = Color.Honeydew;
+            chartArea1.Name = "ChartArea1";
+            chartSalesOverTime.ChartAreas.Add(chartArea1);
             chartSalesOverTime.Dock = DockStyle.Fill;
-            legend5.Alignment = StringAlignment.Center;
-            legend5.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
-            legend5.Name = "Legend1";
-            chartSalesOverTime.Legends.Add(legend5);
+            legend1.Alignment = StringAlignment.Center;
+            legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
+            legend1.Name = "Legend1";
+            chartSalesOverTime.Legends.Add(legend1);
             chartSalesOverTime.Location = new Point(0, 0);
             chartSalesOverTime.Margin = new Padding(2, 3, 2, 3);
             chartSalesOverTime.Name = "chartSalesOverTime";
-            series5.BorderWidth = 3;
-            series5.ChartArea = "ChartArea1";
-            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series5.Color = Color.Green;
-            series5.Legend = "Legend1";
-            series5.MarkerColor = Color.DarkGreen;
-            series5.MarkerSize = 8;
-            series5.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
-            series5.Name = "Sales";
-            chartSalesOverTime.Series.Add(series5);
+            series1.BorderWidth = 3;
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series1.Color = Color.Green;
+            series1.Legend = "Legend1";
+            series1.MarkerColor = Color.DarkGreen;
+            series1.MarkerSize = 8;
+            series1.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
+            series1.Name = "Sales";
+            chartSalesOverTime.Series.Add(series1);
             chartSalesOverTime.Size = new Size(895, 406);
             chartSalesOverTime.TabIndex = 0;
             chartSalesOverTime.Text = "chart1";
@@ -380,25 +381,25 @@
             // 
             // chartMaxMinProducts
             // 
-            chartArea6.AxisX.Interval = 1D;
-            chartArea6.AxisX.LabelStyle.Angle = -45;
-            chartArea6.AxisX.Title = "Product";
-            chartArea6.AxisY.Title = "Sales Amount ($)";
-            chartArea6.BackColor = Color.LightYellow;
-            chartArea6.Name = "ChartArea1";
-            chartMaxMinProducts.ChartAreas.Add(chartArea6);
+            chartArea2.AxisX.Interval = 1D;
+            chartArea2.AxisX.LabelStyle.Angle = -45;
+            chartArea2.AxisX.Title = "Product";
+            chartArea2.AxisY.Title = "Sales Amount ($)";
+            chartArea2.BackColor = Color.LightYellow;
+            chartArea2.Name = "ChartArea1";
+            chartMaxMinProducts.ChartAreas.Add(chartArea2);
             chartMaxMinProducts.Dock = DockStyle.Fill;
-            legend6.Alignment = StringAlignment.Center;
-            legend6.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
-            legend6.Name = "Legend1";
-            chartMaxMinProducts.Legends.Add(legend6);
+            legend2.Alignment = StringAlignment.Center;
+            legend2.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
+            legend2.Name = "Legend1";
+            chartMaxMinProducts.Legends.Add(legend2);
             chartMaxMinProducts.Location = new Point(0, 0);
             chartMaxMinProducts.Margin = new Padding(2, 3, 2, 3);
             chartMaxMinProducts.Name = "chartMaxMinProducts";
-            series6.ChartArea = "ChartArea1";
-            series6.Legend = "Legend1";
-            series6.Name = "Sales";
-            chartMaxMinProducts.Series.Add(series6);
+            series2.ChartArea = "ChartArea1";
+            series2.Legend = "Legend1";
+            series2.Name = "Sales";
+            chartMaxMinProducts.Series.Add(series2);
             chartMaxMinProducts.Size = new Size(893, 406);
             chartMaxMinProducts.TabIndex = 0;
             chartMaxMinProducts.Text = "chart2";
@@ -450,17 +451,17 @@
             // 
             // chartFutureSalesEstimation
             // 
-            chartArea7.Name = "ChartArea1";
-            chartFutureSalesEstimation.ChartAreas.Add(chartArea7);
+            chartArea3.Name = "ChartArea1";
+            chartFutureSalesEstimation.ChartAreas.Add(chartArea3);
             chartFutureSalesEstimation.Dock = DockStyle.Fill;
-            legend7.Name = "Legend1";
-            chartFutureSalesEstimation.Legends.Add(legend7);
+            legend3.Name = "Legend1";
+            chartFutureSalesEstimation.Legends.Add(legend3);
             chartFutureSalesEstimation.Location = new Point(0, 23);
             chartFutureSalesEstimation.Name = "chartFutureSalesEstimation";
-            series7.ChartArea = "ChartArea1";
-            series7.Legend = "Legend1";
-            series7.Name = "Series1";
-            chartFutureSalesEstimation.Series.Add(series7);
+            series3.ChartArea = "ChartArea1";
+            series3.Legend = "Legend1";
+            series3.Name = "Series1";
+            chartFutureSalesEstimation.Series.Add(series3);
             chartFutureSalesEstimation.Size = new Size(750, 383);
             chartFutureSalesEstimation.TabIndex = 1;
             chartFutureSalesEstimation.Text = "chart1";
@@ -502,6 +503,7 @@
             // 
             // splitContainerEvolutionOfProfit.Panel1
             // 
+            splitContainerEvolutionOfProfit.Panel1.Controls.Add(pnlStoreFilters);
             splitContainerEvolutionOfProfit.Panel1.Controls.Add(chartEvolutionOfProfits);
             splitContainerEvolutionOfProfit.Panel1.Controls.Add(pnlClientTypeFilters);
             // 
@@ -512,20 +514,28 @@
             splitContainerEvolutionOfProfit.SplitterDistance = 750;
             splitContainerEvolutionOfProfit.TabIndex = 0;
             // 
+            // pnlStoreFilters
+            // 
+            pnlStoreFilters.Dock = DockStyle.Top;
+            pnlStoreFilters.Location = new Point(0, 30);
+            pnlStoreFilters.Name = "pnlStoreFilters";
+            pnlStoreFilters.Size = new Size(750, 100);
+            pnlStoreFilters.TabIndex = 2;
+            // 
             // chartEvolutionOfProfits
             // 
-            chartArea8.Name = "ChartArea1";
-            chartEvolutionOfProfits.ChartAreas.Add(chartArea8);
-            chartEvolutionOfProfits.Dock = DockStyle.Fill;
-            legend8.Name = "Legend1";
-            chartEvolutionOfProfits.Legends.Add(legend8);
-            chartEvolutionOfProfits.Location = new Point(0, 50);
+            chartArea4.Name = "ChartArea1";
+            chartEvolutionOfProfits.ChartAreas.Add(chartArea4);
+            chartEvolutionOfProfits.Dock = DockStyle.Bottom;
+            legend4.Name = "Legend1";
+            chartEvolutionOfProfits.Legends.Add(legend4);
+            chartEvolutionOfProfits.Location = new Point(0, 130);
             chartEvolutionOfProfits.Name = "chartEvolutionOfProfits";
-            series8.ChartArea = "ChartArea1";
-            series8.Legend = "Legend1";
-            series8.Name = "Series1";
-            chartEvolutionOfProfits.Series.Add(series8);
-            chartEvolutionOfProfits.Size = new Size(750, 356);
+            series4.ChartArea = "ChartArea1";
+            series4.Legend = "Legend1";
+            series4.Name = "Series1";
+            chartEvolutionOfProfits.Series.Add(series4);
+            chartEvolutionOfProfits.Size = new Size(750, 276);
             chartEvolutionOfProfits.TabIndex = 1;
             chartEvolutionOfProfits.Text = "chart1";
             // 
@@ -534,7 +544,7 @@
             pnlClientTypeFilters.Dock = DockStyle.Top;
             pnlClientTypeFilters.Location = new Point(0, 0);
             pnlClientTypeFilters.Name = "pnlClientTypeFilters";
-            pnlClientTypeFilters.Size = new Size(750, 50);
+            pnlClientTypeFilters.Size = new Size(750, 30);
             pnlClientTypeFilters.TabIndex = 0;
             // 
             // dgvProfitData
@@ -629,5 +639,6 @@
         private Panel pnlClientTypeFilters;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartEvolutionOfProfits;
         private DataGridView dgvProfitData;
+        private Panel pnlStoreFilters;
     }
 }
