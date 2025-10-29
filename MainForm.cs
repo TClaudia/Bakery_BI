@@ -16,6 +16,7 @@ namespace BakeryBI
         private List<SalesRecord> filteredData;
         private SalesDataLoader dataLoader;
         private List<string> selectedClientTypes = new List<string>();
+        private List<string> selectedStoreNames = new List<string>();
 
         public MainForm()
         {
@@ -126,9 +127,17 @@ namespace BakeryBI
                 filteredData = filteredData.Where(r => r.ProductName == selectedProduct).ToList();
             }
 
+            if (allSalesData.Any())
+            {
+                SyncClientTypeCheckBoxStates();
+                SyncStoreCheckBoxStates();
+            }
+
             // Update both tabs
             UpdateSalesOverTimeTab();
             UpdateMaxMinProductsTab();
+            UpdateFutureSalesEstimationTab();
+            UpdateEvolutionOfProfitsTab();
         }
 
         #region Sales Over Time Tab
@@ -315,101 +324,30 @@ namespace BakeryBI
         #endregion
 
         //Sales analysis
-        private void InitializeCustomControlsAndEventsForSalesAnalysis()
-        {
-            cmbForecastMonths.Items.AddRange(Enumerable.Range(1, 12).Cast<object>().ToArray());
-            cmbForecastMonths.SelectedIndex = 2;
 
-            PopulateClientTypeFilters();
-
-            tabControl.SelectedIndexChanged += tabControl_SelectedIndexChanged;
-
-            cmbForecastMonths.SelectedIndexChanged += cmbForecastMonths_SelectedIndexChanged;
-        }
-        private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (tabControl.SelectedTab == tabFutureSalesEstimation)
-            {
-                cmbForecastMonths_SelectedIndexChanged(null, null);
-            }
-            else if (tabControl.SelectedTab == tabEvolutionOfProfits)
-            {
-                RenderProfitEvolutionChart(allSalesData, selectedClientTypes);
-            }
-        }
-        private void cmbForecastMonths_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cmbForecastMonths.SelectedItem != null && allSalesData.Any())
-            {
-                int forecastMonths = (int)cmbForecastMonths.SelectedItem;
-                RenderSalesEstimationChart(allSalesData, forecastMonths);
-            }
-        }
-        private void ClientTypeCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            CheckBox cb = sender as CheckBox;
-            string clientType = cb.Tag.ToString();
-
-            // Update the selected client types list
-            if (cb.Checked)
-            {
-                if (!selectedClientTypes.Contains(clientType)) selectedClientTypes.Add(clientType);
-            }
-            else
-            {
-                selectedClientTypes.Remove(clientType);
-            }
-
-            // Trigger chart update with new filters
-            RenderProfitEvolutionChart(allSalesData, selectedClientTypes);
-        }
-        private void PopulateClientTypeFilters()
-        {
-            pnlClientTypeFilters.Controls.Clear();
-
-            var clientTypes = allSalesData.Select(x => x.CustomerType).Distinct().OrderBy(x => x).ToList();
-
-            int xOffset = 10;
-
-            foreach (var clientType in clientTypes)
-            {
-                var cb = new CheckBox
-                {
-                    Text = clientType,
-                    Tag = clientType,
-                    Checked = true,
-                    Location = new Point(xOffset, 5),
-                    AutoSize = true
-                };
-
-                cb.CheckedChanged += ClientTypeCheckBox_CheckedChanged;
-
-                pnlClientTypeFilters.Controls.Add(cb);
-                xOffset += cb.Width + 10;
-            }
-            selectedClientTypes = clientTypes;
-        }
         private void RenderSalesEstimationChart(List<SalesRecord> filteredData, int forecastMonths)
         {
+            // Prepare for fresh redraw of the chart
             chartFutureSalesEstimation.Series.Clear();
             chartFutureSalesEstimation.ChartAreas.Clear();
 
             // Calculate actual monthly sales for both chart and table
             var monthlySalesSummary = filteredData
-                .GroupBy(r => new DateTime(r.TransactionDate.Year, r.TransactionDate.Month, 1))
-                .OrderBy(g => g.Key)
-                .Select(g => new
+                // Groups data per month by considering all transactions for the month are associated to the first day of the month in which they occured
+                .GroupBy(x => new DateTime(x.TransactionDate.Year, x.TransactionDate.Month, 1))
+                //Output is sorted chronologically
+                .OrderBy(x => x.Key)
+                // TotalSales per month is calculated by adding all the values for the month in the FinalAmount column
+                .Select(x => new
                 {
-                    Month = g.Key,
-                    TotalSales = g.Sum(r => r.FinalAmount)
+                    Month = x.Key,
+                    TotalSales = x.Sum(x => x.FinalAmount)
                 })
                 .ToList();
 
             // Populate Data Table (dgvSalesData)
-
             dgvSalesData.DataSource = monthlySalesSummary;
             dgvSalesData.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
-
             if (!monthlySalesSummary.Any()) return;
 
             // Chart Setup
@@ -459,25 +397,33 @@ namespace BakeryBI
             chartFutureSalesEstimation.ChartAreas["SalesArea"].RecalculateAxesScale();
         }
 
-
         private void RenderProfitEvolutionChart(List<SalesRecord> rawData, List<string> selectedClientTypes)
         {
+            // Prepare for fresh redraw of the chart
             chartEvolutionOfProfits.Series.Clear();
             chartEvolutionOfProfits.ChartAreas.Clear();
             chartEvolutionOfProfits.Legends.Clear();
 
-            // Filter Data based on ClientType selection
-            var filteredData = SalesUtility.ApplyFilters(rawData, selectedClientTypes);
+            // Applies global filters
+            List<SalesRecord> basedFilteredData = this.filteredData.ToList();
 
-            // Aggregate Data for Chart AND Table (Segmented by StoreName)
-            var monthlyProfitSummary = filteredData
+            // Applies tab specific filters
+            var fullyFilteredData = basedFilteredData
+                .Where(x => selectedClientTypes.Contains(x.CustomerType))
+                .Where(x => selectedStoreNames.Contains(x.StoreName))
+                .ToList();
+
+            var monthlyProfitSummary = fullyFilteredData
+                // Groups the sales data by Month (all transactions are considered for the 1st of the source month) and Store Name
                 .GroupBy(r => new { Date = new DateTime(r.TransactionDate.Year, r.TransactionDate.Month, 1), r.StoreName })
+                // Orders the entries by Month
                 .OrderBy(g => g.Key.Date)
+                // Calculates the Profit by Month per Store
                 .Select(g => new
                 {
                     Month = g.Key.Date,
                     Store = g.Key.StoreName,
-                    Profit = g.Sum(r => r.Profit) // decimal
+                    Profit = g.Sum(r => r.Profit)
                 })
                 .ToList();
 
@@ -502,9 +448,7 @@ namespace BakeryBI
             chartEvolutionOfProfits.Legends.Add(new Legend("StoreLegend"));
 
             // Create Chart Series
-            var storeGroups = monthlyProfitSummary
-                .GroupBy(r => r.Store)
-                .ToList();
+            var storeGroups = monthlyProfitSummary.GroupBy(r => r.Store).ToList();
 
             foreach (var storeGroup in storeGroups)
             {
@@ -524,6 +468,198 @@ namespace BakeryBI
             chartEvolutionOfProfits.Titles.Clear();
             chartEvolutionOfProfits.Titles.Add("Evolution of Monthly Profit by Store");
             chartEvolutionOfProfits.ChartAreas["ProfitArea"].RecalculateAxesScale();
+        }
+
+        private void InitializeCustomControlsAndEventsForSalesAnalysis()
+        {
+            cmbForecastMonths.Items.AddRange(Enumerable.Range(1, 12).Cast<object>().ToArray());
+            cmbForecastMonths.SelectedIndex = 2;
+
+            PopulateClientTypeFilters();
+            InitializeDefaultStoreFiler();
+
+            PopulateStoreFilters();
+
+            tabControl.SelectedIndexChanged += tabControl_SelectedIndexChanged;
+
+            cmbForecastMonths.SelectedIndexChanged += cmbForecastMonths_SelectedIndexChanged;
+        }
+        private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (tabControl.SelectedTab == tabFutureSalesEstimation)
+            {
+                cmbForecastMonths_SelectedIndexChanged(null, null);
+            }
+            else if (tabControl.SelectedTab == tabEvolutionOfProfits)
+            {
+                RenderProfitEvolutionChart(allSalesData, selectedClientTypes);
+            }
+        }
+        private void cmbForecastMonths_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbForecastMonths.SelectedItem != null && allSalesData.Any())
+            {
+                int forecastMonths = (int)cmbForecastMonths.SelectedItem;
+                RenderSalesEstimationChart(allSalesData, forecastMonths);
+            }
+        }
+        private void ClientTypeCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox cb = sender as CheckBox;
+            string clientType = cb.Tag.ToString();
+
+            if (cb.Checked)
+            {
+                if (!selectedClientTypes.Contains(clientType)) selectedClientTypes.Add(clientType);
+            }
+            else
+            {
+                selectedClientTypes.Remove(clientType);
+            }
+
+            RenderProfitEvolutionChart(allSalesData, selectedClientTypes);
+        }
+
+        private void StoreCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox cb = sender as CheckBox;
+            string storeName = cb.Tag.ToString();
+
+            if (cb.Checked)
+            {
+                if (!selectedStoreNames.Contains(storeName)) selectedStoreNames.Add(storeName);
+            }
+            else selectedStoreNames.Remove(storeName);
+
+            RenderProfitEvolutionChart(allSalesData, selectedClientTypes);
+        }
+        private void PopulateClientTypeFilters()
+        {
+            pnlClientTypeFilters.Controls.Clear();
+
+            var clientTypes = allSalesData.Select(x => x.CustomerType).Distinct().OrderBy(x => x).ToList();
+
+            int xOffset = 10;
+
+            foreach (var clientType in clientTypes)
+            {
+                var cb = new CheckBox
+                {
+                    Text = clientType,
+                    Tag = clientType,
+                    Checked = true,
+                    Location = new Point(xOffset, 5),
+                    AutoSize = true
+                };
+
+                cb.CheckedChanged += ClientTypeCheckBox_CheckedChanged;
+
+                pnlClientTypeFilters.Controls.Add(cb);
+                xOffset += cb.Width + 10;
+            }
+            selectedClientTypes = clientTypes;
+        }
+
+        private void PopulateStoreFilters()
+        {
+            pnlStoreFilters.Controls.Clear();
+
+            var storeNames = allSalesData.Select(x => x.StoreName).Distinct().OrderBy(x => x).ToList();
+
+            const int ColumnCount = 5;
+            const int Margin = 10;
+            const int ControlHeight = 25;
+            const int ColumnWidth = 150;
+
+            int xOffset = Margin;
+            int yOffset = Margin;
+
+            for (int i = 0; i < storeNames.Count; i++)
+            {
+                string storeName = storeNames[i];
+
+                var cb = new CheckBox
+                {
+                    Text = storeName,
+                    Tag = storeName,
+                    Checked = true,
+                    Location = new Point(xOffset, yOffset),
+                    Width = ColumnWidth - Margin,
+                    AutoSize = false
+                };
+
+                cb.CheckedChanged += StoreCheckBox_CheckedChanged;
+
+                pnlStoreFilters.Controls.Add(cb);
+
+                if ((i + 1) % ColumnCount == 0)
+                {
+                    xOffset = Margin;
+                    yOffset += ControlHeight + Margin;
+                }
+                else xOffset += ColumnWidth;
+            }
+            selectedStoreNames = storeNames;
+        }
+        private void InitializeDefaultStoreFiler()
+        {
+            if (allSalesData == null || !allSalesData.Any()) return;
+            selectedStoreNames = allSalesData.Select(x => x.StoreName).Distinct().OrderBy(x => x).ToList();
+        }
+
+        private void SyncClientTypeCheckBoxStates()
+        {
+            // Iterate through all CheckBox controls in the filter panel
+            foreach (CheckBox cb in pnlClientTypeFilters.Controls.OfType<CheckBox>())
+            {
+                string clientType = cb.Tag.ToString();
+
+                // If the global list contains the client type, the box should be checked.
+                cb.Checked = selectedClientTypes.Contains(clientType);
+            }
+        }
+        private void SyncStoreCheckBoxStates()
+        {
+            if (filteredData == null || !filteredData.Any()) return;
+
+            // 1. Determine which stores still exist in the data after primary filtering
+            var storesInCurrentData = filteredData.Select(r => r.StoreName).Distinct().ToList();
+
+            // 2. Iterate through all CheckBox controls in the filter panel (assuming pnlStoreFilters still exists)
+            foreach (CheckBox cb in pnlStoreFilters.Controls.OfType<CheckBox>())
+            {
+                string storeName = cb.Tag.ToString();
+
+                // Disable the checkbox if the store doesn't exist in the current filtered data, 
+                // but keep the checked state based on the global filter list.
+                cb.Enabled = storesInCurrentData.Contains(storeName);
+
+                // Crucial: The CHECKED state must still reflect the user's manual selection (selectedStoreNames)
+                cb.Checked = selectedStoreNames.Contains(storeName);
+
+                // Optional: Add visual cue for disabled control
+                if (!cb.Enabled)
+                {
+                    cb.ForeColor = Color.DarkGray;
+                }
+                else
+                {
+                    cb.ForeColor = Color.Black;
+                }
+            }
+        }
+        private void UpdateFutureSalesEstimationTab()
+        {
+            if (cmbForecastMonths.SelectedItem != null && filteredData.Any())
+            {
+                int forecastMonths = (int)cmbForecastMonths.SelectedItem;
+                RenderSalesEstimationChart(filteredData, forecastMonths);
+            }
+        }
+
+        private void UpdateEvolutionOfProfitsTab()
+        {
+            RenderProfitEvolutionChart(filteredData, selectedClientTypes);
         }
     }
 }
