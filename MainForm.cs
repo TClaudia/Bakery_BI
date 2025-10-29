@@ -25,6 +25,8 @@ namespace BakeryBI
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            InitializeMaxMinProductsChart();
+            InitializeSalesOverTimeChart();
             LoadData();
             PopulateFilters();
             ApplyFilters();
@@ -109,7 +111,7 @@ namespace BakeryBI
 
             // Apply Date Range filter
             DateTime dateFrom = dtpFrom.Value.Date;
-            DateTime dateTo = dtpTo.Value.Date.AddDays(1).AddSeconds(-1); // End of day
+            DateTime dateTo = dtpTo.Value.Date.AddDays(1).AddSeconds(-1); 
             filteredData = filteredData.Where(r => r.TransactionDate >= dateFrom && r.TransactionDate <= dateTo).ToList();
 
             // Apply Store filter
@@ -153,16 +155,27 @@ namespace BakeryBI
                     Period = $"{g.Key.MonthName} {g.Key.Year}",
                     TotalSales = g.Sum(r => r.FinalAmount),
                     Year = g.Key.Year,
-                    Month = g.Key.Month
+                    Month = g.Key.Month,
+                    SortKey = new DateTime(g.Key.Year, g.Key.Month, 1)
                 })
-                .OrderBy(x => x.Year)
-                .ThenBy(x => x.Month)
+                .OrderBy(x => x.SortKey)
                 .ToList();
 
+            // ADD EACH MONTH TO CHART
             foreach (var item in timeData)
             {
-                chartSalesOverTime.Series["Sales"].Points.AddXY(item.Period, item.TotalSales);
+                int pointIndex = chartSalesOverTime.Series["Sales"].Points.AddXY(
+                    item.SortKey.ToOADate(),      
+                    (double)item.TotalSales       // Cast to double
+                );
+                chartSalesOverTime.Series["Sales"].Points[pointIndex].Label = $"${item.TotalSales:N0}";
+                chartSalesOverTime.Series["Sales"].Points[pointIndex].Font = new Font("Arial", 8F);
             }
+
+            var chartArea = chartSalesOverTime.ChartAreas[0];
+            chartArea.AxisX.Minimum = timeData.First().SortKey.ToOADate();
+            chartArea.AxisX.Maximum = timeData.Last().SortKey.ToOADate();
+            chartArea.RecalculateAxesScale();
         }
 
         private void UpdateSalesOverTimeDataGrid()
@@ -215,7 +228,9 @@ namespace BakeryBI
 
         private void UpdateMaxMinProductsChart()
         {
-            chartMaxMinProducts.Series["Sales"].Points.Clear();
+            var salesSeries = chartMaxMinProducts.Series["Sales"];
+            salesSeries.Points.Clear();
+            salesSeries.ChartType = SeriesChartType.Column;
 
             if (filteredData == null || filteredData.Count == 0)
             {
@@ -226,55 +241,66 @@ namespace BakeryBI
 
             var productSales = filteredData
                 .GroupBy(r => r.ProductName)
-                .Select(g => new
-                {
-                    Product = g.Key,
-                    TotalSales = g.Sum(r => r.FinalAmount)
-                })
+                .Select(g => new { Product = g.Key, TotalSales = g.Sum(r => r.FinalAmount) })
                 .OrderByDescending(x => x.TotalSales)
                 .ToList();
 
-            if (productSales.Count == 0)
-            {
-                lblMaxProduct.Text = "MAX: No data";
-                lblMinProduct.Text = "MIN: No data";
-                return;
-            }
+            if (productSales.Count == 0) return;
 
-            // Find max and min
             var maxProduct = productSales.First();
             var minProduct = productSales.Last();
 
-            // Update labels
             lblMaxProduct.Text = $"MAX: {maxProduct.Product} - ${maxProduct.TotalSales:N2}";
+            lblMaxProduct.ForeColor = Color.Green;
             lblMinProduct.Text = $"MIN: {minProduct.Product} - ${minProduct.TotalSales:N2}";
+            lblMinProduct.ForeColor = Color.Red;
 
-            // Add all products to chart
+            // Add all points
+            int index = 0;
             foreach (var item in productSales)
             {
-                int pointIndex = chartMaxMinProducts.Series["Sales"].Points.AddXY(item.Product, item.TotalSales);
+                int pointIndex = salesSeries.Points.AddXY(index, (double)item.TotalSales);
 
-                // Highlight MAX in green
                 if (item.Product == maxProduct.Product)
                 {
-                    chartMaxMinProducts.Series["Sales"].Points[pointIndex].Color = Color.Green;
-                    chartMaxMinProducts.Series["Sales"].Points[pointIndex].Label = $"MAX\n${item.TotalSales:N0}";
-                    chartMaxMinProducts.Series["Sales"].Points[pointIndex].LabelForeColor = Color.DarkGreen;
-                    chartMaxMinProducts.Series["Sales"].Points[pointIndex].Font = new Font("Arial", 9, FontStyle.Bold);
+                    salesSeries.Points[pointIndex].Color = Color.Green;
+                    salesSeries.Points[pointIndex].Label = $"MAX\n${item.TotalSales:N0}";
+                    salesSeries.Points[pointIndex].LabelForeColor = Color.DarkGreen;
+                    salesSeries.Points[pointIndex].Font = new Font("Arial", 9, FontStyle.Bold);
                 }
-                // Highlight MIN in red
                 else if (item.Product == minProduct.Product)
                 {
-                    chartMaxMinProducts.Series["Sales"].Points[pointIndex].Color = Color.Red;
-                    chartMaxMinProducts.Series["Sales"].Points[pointIndex].Label = $"MIN\n${item.TotalSales:N0}";
-                    chartMaxMinProducts.Series["Sales"].Points[pointIndex].LabelForeColor = Color.DarkRed;
-                    chartMaxMinProducts.Series["Sales"].Points[pointIndex].Font = new Font("Arial", 9, FontStyle.Bold);
+                    salesSeries.Points[pointIndex].Color = Color.Red;
+                    salesSeries.Points[pointIndex].Label = $"MIN\n${item.TotalSales:N0}";
+                    salesSeries.Points[pointIndex].LabelForeColor = Color.DarkRed;
+                    salesSeries.Points[pointIndex].Font = new Font("Arial", 9, FontStyle.Bold);
                 }
                 else
                 {
-                    chartMaxMinProducts.Series["Sales"].Points[pointIndex].Color = Color.SteelBlue;
+                    salesSeries.Points[pointIndex].Color = Color.SteelBlue;
                 }
+                index++;
             }
+
+            var chartArea = chartMaxMinProducts.ChartAreas[0];
+            chartArea.AxisX.CustomLabels.Clear();  
+
+            for (int i = 0; i < productSales.Count; i++)
+            {
+                CustomLabel label = new CustomLabel();
+                label.FromPosition = i - 0.5;
+                label.ToPosition = i + 0.5;
+                label.Text = productSales[i].Product;  // Set product name
+                chartArea.AxisX.CustomLabels.Add(label);
+            }
+
+            chartArea.AxisX.Minimum = -0.5;
+            chartArea.AxisX.Maximum = productSales.Count - 0.5;
+            chartArea.AxisX.Interval = 1;
+            chartArea.AxisX.LabelStyle.Angle = -45;
+            chartArea.AxisX.LabelStyle.Font = new Font("Arial", 9, FontStyle.Bold);
+            chartArea.RecalculateAxesScale();
+            chartMaxMinProducts.Invalidate();
         }
 
         private void UpdateMaxMinProductsDataGrid()
@@ -307,11 +333,13 @@ namespace BakeryBI
 
             dgvProductSales.DataSource = dt;
 
+            // ⭐ Simple header configuration (like your working example)
+            dgvProductSales.ColumnHeadersVisible = true;
+
             // Format currency column
             if (dgvProductSales.Columns.Contains("Total Sales"))
                 dgvProductSales.Columns["Total Sales"].DefaultCellStyle.Format = "C2";
         }
-
         #endregion
 
         //Sales analysis
@@ -524,6 +552,76 @@ namespace BakeryBI
             chartEvolutionOfProfits.Titles.Clear();
             chartEvolutionOfProfits.Titles.Add("Evolution of Monthly Profit by Store");
             chartEvolutionOfProfits.ChartAreas["ProfitArea"].RecalculateAxesScale();
+        }
+        private void InitializeSalesOverTimeChart()
+        {
+            chartSalesOverTime.Series.Clear();
+            chartSalesOverTime.ChartAreas.Clear();
+
+            // Create Chart Area
+            ChartArea chartArea = new ChartArea("SalesArea");
+            chartArea.AxisX.Title = "Time Period (Month-Year)";
+            chartArea.AxisY.Title = "Sales Amount ($)";
+
+            // Configure X-axis for DateTime
+            chartArea.AxisX.IntervalType = DateTimeIntervalType.Months;  
+            chartArea.AxisX.LabelStyle.Format = "MMM yyyy";              
+            chartArea.AxisX.LabelStyle.Angle = -45;
+            chartArea.AxisX.MajorGrid.LineColor = Color.LightGray;
+            chartArea.AxisY.MajorGrid.LineColor = Color.LightGray;
+            chartArea.BackColor = Color.WhiteSmoke;
+            chartSalesOverTime.ChartAreas.Add(chartArea);
+
+            // Create Series
+            Series series = new Series("Sales");
+            series.ChartType = SeriesChartType.Line;
+            series.Color = Color.Green;
+            series.BorderWidth = 3;
+            series.MarkerStyle = MarkerStyle.Circle;
+            series.MarkerSize = 8;
+            series.MarkerColor = Color.DarkGreen;
+            series.XValueType = ChartValueType.DateTime;  
+            chartSalesOverTime.Series.Add(series);
+
+            // Add Legend
+            Legend legend = new Legend();
+            legend.Docking = Docking.Top;
+            chartSalesOverTime.Legends.Add(legend);
+        }
+        private void InitializeMaxMinProductsChart()
+        {
+            chartMaxMinProducts.Series.Clear();
+            chartMaxMinProducts.ChartAreas.Clear();
+            chartMaxMinProducts.Legends.Clear();
+
+            ChartArea chartArea = new ChartArea("ProductArea");
+            chartArea.AxisX.Title = "Product";
+            chartArea.AxisY.Title = "Sales Amount ($)";
+
+           
+            chartArea.AxisX.Interval = 1;
+            chartArea.AxisX.IntervalType = DateTimeIntervalType.NotSet;  
+            chartArea.AxisX.IsMarginVisible = true;
+
+            chartArea.AxisX.LabelStyle.Angle = -45;
+            chartArea.AxisX.MajorGrid.LineColor = Color.LightGray;
+            chartArea.AxisY.MajorGrid.LineColor = Color.LightGray;
+            chartArea.AxisY.IsStartedFromZero = true;
+            chartArea.BackColor = Color.LightYellow;
+
+            chartMaxMinProducts.ChartAreas.Add(chartArea);
+
+            Series series = new Series("Sales");
+            series.ChartType = SeriesChartType.Column;
+            series.Color = Color.SteelBlue;
+            series.BorderWidth = 1;
+            series["PointWidth"] = "0.9";  // Width of bars
+
+            chartMaxMinProducts.Series.Add(series);
+
+            Legend legend = new Legend("ProductLegend");
+            legend.Docking = Docking.Top;
+            chartMaxMinProducts.Legends.Add(legend);
         }
     }
 }

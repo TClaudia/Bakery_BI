@@ -216,7 +216,7 @@
             lblTitle.Name = "lblTitle";
             lblTitle.Size = new Size(329, 22);
             lblTitle.TabIndex = 0;
-            lblTitle.Text = "BAKERY SALES ANALYSIS - Filters";
+            lblTitle.Text = "BAKERY SALES ANALYSIS";
             // 
             // tabControl
             // 
@@ -312,8 +312,8 @@
             // 
             // tabMaxMinProducts
             // 
-            tabMaxMinProducts.Controls.Add(panelMaxMin);
             tabMaxMinProducts.Controls.Add(splitContainerMaxMin);
+            tabMaxMinProducts.Controls.Add(panelMaxMin);
             tabMaxMinProducts.Location = new Point(4, 24);
             tabMaxMinProducts.Margin = new Padding(2, 3, 2, 3);
             tabMaxMinProducts.Name = "tabMaxMinProducts";
@@ -396,10 +396,12 @@
             chartMaxMinProducts.Margin = new Padding(2, 3, 2, 3);
             chartMaxMinProducts.Name = "chartMaxMinProducts";
             series6.ChartArea = "ChartArea1";
+            series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Column;  // ⭐ ADD THIS LINE
             series6.Legend = "Legend1";
             series6.Name = "Sales";
             chartMaxMinProducts.Series.Add(series6);
             chartMaxMinProducts.Size = new Size(893, 406);
+            chartMaxMinProducts.TabIndex = 0;
             chartMaxMinProducts.TabIndex = 0;
             chartMaxMinProducts.Text = "chart2";
             // 
@@ -408,7 +410,8 @@
             dgvProductSales.AllowUserToAddRows = false;
             dgvProductSales.AllowUserToDeleteRows = false;
             dgvProductSales.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvProductSales.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvProductSales.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;  // Should be there
+            dgvProductSales.ColumnHeadersVisible = true;
             dgvProductSales.Dock = DockStyle.Fill;
             dgvProductSales.Location = new Point(0, 0);
             dgvProductSales.Margin = new Padding(2, 3, 2, 3);
