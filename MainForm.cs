@@ -1185,13 +1185,11 @@ namespace BakeryBI
                 chartDataRow = 2;
 
                 // Get all unique months from both actual sales and trend/forecast
-
-                var allMonths = monthlySalesSummary.Select(m => m.Month)
-
-                    .Union(trendAndForecastPoints.Select(t => t.Date))
-
+                // Normalize all dates to first of month to ensure consistency
+                var allMonths = monthlySalesSummary.Select(m => new DateTime(m.Month.Year, m.Month.Month, 1))
+                    .Union(trendAndForecastPoints.Select(t => new DateTime(t.Date.Year, t.Date.Month, 1)))
+                    .Distinct() // Ensure no duplicates
                     .OrderBy(m => m)
-
                     .ToList();
 
 
@@ -1359,25 +1357,34 @@ namespace BakeryBI
                         monthlySalesSummary.Select(m => new DateTime(m.Month.Year, m.Month.Month, 1))
                     );
 
+                    // Get the last historical month - this is the definitive cutoff point
+                    // Forecast should only appear for months STRICTLY AFTER this month
+                    DateTime? lastHistoricalMonth = monthlySalesSummary.Any() 
+                        ? new DateTime(monthlySalesSummary.Max(m => m.Month).Year, monthlySalesSummary.Max(m => m.Month).Month, 1)
+                        : null;
+
                     foreach (var month in allMonths)
 
                     {
 
-                        // Only show forecast dot if:
-                        // 1. The point is marked as forecast in trendAndForecastPoints
-                        // 2. AND there's no actual historical sales data for that month
-                        
                         // Normalize dates to first of month for accurate comparison
                         var normalizedMonth = new DateTime(month.Year, month.Month, 1);
+                        
+                        // Find forecast point for this month
                         var forecastPoint = trendAndForecastPoints.FirstOrDefault(t => 
                             new DateTime(t.Date.Year, t.Date.Month, 1) == normalizedMonth && t.IsForecast);
                         
-                        // Check if this month has historical data using the pre-built set
+                        // Check if this month has historical data
                         var hasHistoricalData = historicalMonthsSet.Contains(normalizedMonth);
+                        
+                        // Check if this month is strictly after the last historical month
+                        var isAfterLastHistorical = lastHistoricalMonth.HasValue && normalizedMonth > lastHistoricalMonth.Value;
 
-                        // Only set value if it's a forecast month WITHOUT historical data
-                        // For all other cases (historical months or months without forecast), leave cell completely empty
-                        if (forecastPoint != null && !hasHistoricalData)
+                        // Only show forecast dot if ALL of the following are true:
+                        // 1. There's a forecast point for this month
+                        // 2. The month has NO historical data
+                        // 3. The month is STRICTLY AFTER the last historical month (prevents overlap)
+                        if (forecastPoint != null && !hasHistoricalData && isAfterLastHistorical)
 
                         {
 
