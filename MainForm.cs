@@ -1407,7 +1407,9 @@ namespace BakeryBI
 
                     {
 
-                        if (forecastWs.Cells[i, 4].Value2 != null && histLastRow == 0)
+                        Excel.Range cellD = forecastWs.Cells[i, 4] as Excel.Range;
+
+                        if (cellD != null && cellD.Value2 != null && histLastRow == 0)
 
                         {
 
@@ -1415,7 +1417,9 @@ namespace BakeryBI
 
                         }
 
-                        if (forecastWs.Cells[i, 5].Value2 != null)
+                        Excel.Range cellE = forecastWs.Cells[i, 5] as Excel.Range;
+
+                        if (cellE != null && cellE.Value2 != null)
 
                         {
 
@@ -1451,13 +1455,18 @@ namespace BakeryBI
 
                     {
 
-                        Excel.Series histBarsSeries = chart.SeriesCollection().NewSeries();
+                        Excel.SeriesCollection seriesCollection = chart.SeriesCollection() as Excel.SeriesCollection;
+                        Excel.Series histBarsSeries = seriesCollection.NewSeries();
 
                         histBarsSeries.Name = "Historical Sales";
 
-                        histBarsSeries.Values = forecastWs.Range(forecastWs.Cells[2, 3], forecastWs.Cells[histLastRow, 3]);
+                        Excel.Range cellStart1 = forecastWs.Cells[2, 3] as Excel.Range;
+                        Excel.Range cellEnd1 = forecastWs.Cells[histLastRow, 3] as Excel.Range;
+                        histBarsSeries.Values = forecastWs.get_Range(cellStart1, cellEnd1);
 
-                        histBarsSeries.XValues = forecastWs.Range(forecastWs.Cells[2, 1], forecastWs.Cells[histLastRow, 1]);
+                        Excel.Range cellStart2 = forecastWs.Cells[2, 1] as Excel.Range;
+                        Excel.Range cellEnd2 = forecastWs.Cells[histLastRow, 1] as Excel.Range;
+                        histBarsSeries.XValues = forecastWs.get_Range(cellStart2, cellEnd2);
 
                         histBarsSeries.ChartType = Excel.XlChartType.xlColumnClustered;
 
@@ -1473,13 +1482,18 @@ namespace BakeryBI
 
                     {
 
-                        Excel.Series histTrendSeries = chart.SeriesCollection().NewSeries();
+                        Excel.SeriesCollection seriesCollection2 = chart.SeriesCollection() as Excel.SeriesCollection;
+                        Excel.Series histTrendSeries = seriesCollection2.NewSeries();
 
                         histTrendSeries.Name = "Historical Trend";
 
-                        histTrendSeries.Values = forecastWs.Range(forecastWs.Cells[2, 4], forecastWs.Cells[histLastRow, 4]);
+                        Excel.Range cellStart3 = forecastWs.Cells[2, 4] as Excel.Range;
+                        Excel.Range cellEnd3 = forecastWs.Cells[histLastRow, 4] as Excel.Range;
+                        histTrendSeries.Values = forecastWs.get_Range(cellStart3, cellEnd3);
 
-                        histTrendSeries.XValues = forecastWs.Range(forecastWs.Cells[2, 1], forecastWs.Cells[histLastRow, 1]);
+                        Excel.Range cellStart4 = forecastWs.Cells[2, 1] as Excel.Range;
+                        Excel.Range cellEnd4 = forecastWs.Cells[histLastRow, 1] as Excel.Range;
+                        histTrendSeries.XValues = forecastWs.get_Range(cellStart4, cellEnd4);
 
                         histTrendSeries.ChartType = Excel.XlChartType.xlLine;
 
@@ -1497,19 +1511,26 @@ namespace BakeryBI
 
                     {
 
-                        Excel.Series forecastSeries = chart.SeriesCollection().NewSeries();
+                        Excel.SeriesCollection seriesCollection3 = chart.SeriesCollection() as Excel.SeriesCollection;
+                        Excel.Series forecastSeries = seriesCollection3.NewSeries();
 
                         forecastSeries.Name = "Forecast";
 
-                        forecastSeries.Values = forecastWs.Range(forecastWs.Cells[forecastFirstRow, 5], forecastWs.Cells[forecastLastRow, 5]);
+                        Excel.Range cellStart5 = forecastWs.Cells[forecastFirstRow, 5] as Excel.Range;
+                        Excel.Range cellEnd5 = forecastWs.Cells[forecastLastRow, 5] as Excel.Range;
+                        forecastSeries.Values = forecastWs.get_Range(cellStart5, cellEnd5);
 
-                        forecastSeries.XValues = forecastWs.Range(forecastWs.Cells[forecastFirstRow, 1], forecastWs.Cells[forecastLastRow, 1]);
+                        Excel.Range cellStart6 = forecastWs.Cells[forecastFirstRow, 1] as Excel.Range;
+                        Excel.Range cellEnd6 = forecastWs.Cells[forecastLastRow, 1] as Excel.Range;
+                        forecastSeries.XValues = forecastWs.get_Range(cellStart6, cellEnd6);
 
                         forecastSeries.ChartType = Excel.XlChartType.xlLine;
 
                         forecastSeries.Format.Line.ForeColor.RGB = System.Drawing.Color.Red.ToArgb();
 
-                        forecastSeries.Format.Line.DashStyle = Microsoft.Office.Core.MsoLineDashStyle.msoLineDash;
+                        // Set line style to dashed
+                        // Using numeric constant for xlDash (Excel line dash style)
+                        forecastSeries.Format.Line.DashStyle = (int)Excel.XlLineStyle.xlDash;
 
                         forecastSeries.Format.Line.Weight = 2;
 
