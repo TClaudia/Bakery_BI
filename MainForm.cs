@@ -1228,7 +1228,8 @@ namespace BakeryBI
 
 
 
-                    // Trend & Forecast (for all months)
+                    // Trend & Forecast (for ALL months - continuous line through historical and forecast)
+                    // This creates a seamless trend line that extends into the forecast period
 
                     var trendPoint = trendAndForecastPoints.FirstOrDefault(t => t.Date == month);
 
@@ -1396,15 +1397,18 @@ namespace BakeryBI
 
                     forecastSeries.XValues = chartDataSheet.Range[chartDataSheet.Cells[2, 1], chartDataSheet.Cells[lastRow, 1]];
 
-                    forecastSeries.Format.Line.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(Color.Red);
+                    // Hide the line - show only dots (markers) for forecast points
+                    forecastSeries.Format.Line.Visible = 0; // 0 = msoFalse (invisible line)
 
-                    forecastSeries.Format.Line.Weight = 3;
-
-                    forecastSeries.Border.LineStyle = Excel.XlLineStyle.xlDot;
-
+                    // Configure markers (dots) only
                     forecastSeries.MarkerStyle = Excel.XlMarkerStyle.xlMarkerStyleCircle;
 
-                    forecastSeries.MarkerSize = 5;
+                    forecastSeries.MarkerSize = 8; // Larger dots for better visibility
+
+                    // Set marker color to red
+                    forecastSeries.MarkerForegroundColor = System.Drawing.ColorTranslator.ToOle(Color.Red);
+
+                    forecastSeries.MarkerBackgroundColor = System.Drawing.ColorTranslator.ToOle(Color.Red);
 
                 }
 
