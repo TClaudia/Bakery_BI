@@ -1354,7 +1354,10 @@ namespace BakeryBI
 
                     ((Excel.Range)chartDataSheet.Cells[1, forecastCol]).Value2 = "Forecast";
 
-
+                    // Build a set of historical months for fast lookup (normalized to first of month)
+                    var historicalMonthsSet = new HashSet<DateTime>(
+                        monthlySalesSummary.Select(m => new DateTime(m.Month.Year, m.Month.Month, 1))
+                    );
 
                     foreach (var month in allMonths)
 
@@ -1364,12 +1367,13 @@ namespace BakeryBI
                         // 1. The point is marked as forecast in trendAndForecastPoints
                         // 2. AND there's no actual historical sales data for that month
                         
-                        // Normalize dates to first of month for accurate comparison (both should already be normalized, but ensure consistency)
+                        // Normalize dates to first of month for accurate comparison
                         var normalizedMonth = new DateTime(month.Year, month.Month, 1);
                         var forecastPoint = trendAndForecastPoints.FirstOrDefault(t => 
                             new DateTime(t.Date.Year, t.Date.Month, 1) == normalizedMonth && t.IsForecast);
-                        var hasHistoricalData = monthlySalesSummary.Any(m => 
-                            new DateTime(m.Month.Year, m.Month.Month, 1) == normalizedMonth);
+                        
+                        // Check if this month has historical data using the pre-built set
+                        var hasHistoricalData = historicalMonthsSet.Contains(normalizedMonth);
 
                         // Only set value if it's a forecast month WITHOUT historical data
                         // For all other cases (historical months or months without forecast), leave cell completely empty
