@@ -1529,8 +1529,7 @@ namespace BakeryBI
                         forecastSeries.Format.Line.ForeColor.RGB = System.Drawing.Color.Red.ToArgb();
 
                         // Set line style to dashed
-                        // Using numeric constant for xlDash (Excel line dash style)
-                        forecastSeries.Format.Line.DashStyle = (int)Excel.XlLineStyle.xlDash;
+                        forecastSeries.Format.Line.DashStyle = Microsoft.Office.Core.MsoLineDashStyle.msoLineDash;
 
                         forecastSeries.Format.Line.Weight = 2;
 
@@ -1548,9 +1547,15 @@ namespace BakeryBI
 
                     // Format axes
 
-                    chart.Axes(Excel.XlAxisType.xlValue).TickLabels.NumberFormat = "$#,##0";
+                    Excel.Axis valueAxis = chart.Axes(Excel.XlAxisType.xlValue) as Excel.Axis;
+                    if (valueAxis != null)
+                    {
+                        valueAxis.TickLabels.NumberFormat = "$#,##0";
+                    }
 
-                    chart.Axes(Excel.XlAxisType.xlCategory).CategoryType = Excel.XlCategoryType.xlCategoryScale;
+                    // Category axis formatting (CategoryType may not be available on all chart types)
+                    // Excel.Axis categoryAxis = chart.Axes(Excel.XlAxisType.xlCategory) as Excel.Axis;
+                    // Category axis will use default settings
 
 
 
