@@ -1177,13 +1177,12 @@ namespace BakeryBI
                     forecastDataRow++;
                 }
 
-                // Populate chart data: Month, Actual Sales, Actual Sales Line (for trendline), Forecast (Dots)
+                // Populate chart data: Month, Actual Sales, Forecast (Dots)
                 int chartDataRow = 1;
 
                 ((Excel.Range)chartDataSheet.Cells[chartDataRow, 1]).Value2 = "Month";
                 ((Excel.Range)chartDataSheet.Cells[chartDataRow, 2]).Value2 = "Actual Sales";
-                ((Excel.Range)chartDataSheet.Cells[chartDataRow, 3]).Value2 = "Actual Sales Line";
-                ((Excel.Range)chartDataSheet.Cells[chartDataRow, 4]).Value2 = "Forecast";
+                ((Excel.Range)chartDataSheet.Cells[chartDataRow, 3]).Value2 = "Forecast";
 
                 chartDataRow = 2;
 
@@ -1227,20 +1226,7 @@ namespace BakeryBI
                         ((Excel.Range)chartDataSheet.Cells[chartDataRow, 2]).Value2 = "";
                     }
 
-                    // Column 3: Actual Sales Line (same as Column 2, but for line series - used for trendline calculation)
-                    // This will be invisible but needed for Excel to calculate the trendline
-                    // IMPORTANT: Only populate for historical months (not forecast months)
-                    if (actualSales != null)
-                    {
-                        ((Excel.Range)chartDataSheet.Cells[chartDataRow, 3]).Value2 = (double)actualSales.TotalSales;
-                    }
-                    else
-                    {
-                        // Leave empty for forecast months - this ensures trendline only uses historical data
-                        ((Excel.Range)chartDataSheet.Cells[chartDataRow, 3]).Value2 = "";
-                    }
-
-                    // Column 4: Forecast - use Excel's FORECAST.LINEAR function for forecast months
+                    // Column 3: Forecast - use Excel's FORECAST.LINEAR function for forecast months
                     // Only calculate forecast for months after the last historical month
                     bool isForecastMonth = lastHistoricalMonth.HasValue && normalizedMonth > lastHistoricalMonth.Value;
                     
@@ -1264,11 +1250,11 @@ namespace BakeryBI
                         // This is Excel's native function, similar to how trendlines work
                         string forecastFormula = $"=FORECAST.LINEAR({xValue},{knownYsRange},{knownXsRange})";
                         
-                        ((Excel.Range)chartDataSheet.Cells[chartDataRow, 4]).Formula = forecastFormula;
+                        ((Excel.Range)chartDataSheet.Cells[chartDataRow, 3]).Formula = forecastFormula;
                     }
                     else
                     {
-                        ((Excel.Range)chartDataSheet.Cells[chartDataRow, 4]).Value2 = "";
+                        ((Excel.Range)chartDataSheet.Cells[chartDataRow, 3]).Value2 = "";
                     }
 
                     chartDataRow++;
@@ -1280,8 +1266,8 @@ namespace BakeryBI
 
                 int lastRow = chartDataRow - 1;
 
-                // Chart range includes: Month, Actual Sales, Trend & Forecast (Historical), Forecast (Dots)
-                Excel.Range chartRange = chartDataSheet.Range[chartDataSheet.Cells[1, 1], chartDataSheet.Cells[lastRow, 4]];
+                // Chart range includes: Month, Actual Sales, Forecast (Dots)
+                Excel.Range chartRange = chartDataSheet.Range[chartDataSheet.Cells[1, 1], chartDataSheet.Cells[lastRow, 3]];
 
                 
 
@@ -1339,15 +1325,16 @@ namespace BakeryBI
                 // IMPORTANT: Limit the series to only historical data rows to prevent trendline extension
                 if (seriesCollection.Count >= 2 && firstHistoricalRow > 0 && lastHistoricalRow > 0)
                 {
-                    Excel.Series actualSalesLineSeries = (Excel.Series)seriesCollection.Item(2);
+                    // Create a new line series from Actual Sales data (Column 2) for trendline calculation
+                    Excel.Series actualSalesLineSeries = (Excel.Series)seriesCollection.NewSeries();
                     actualSalesLineSeries.Name = "Actual Sales Line";
                     actualSalesLineSeries.ChartType = Excel.XlChartType.xlLine;
                     
                     // Set the series to only use historical data (not forecast months)
-                    // This ensures the trendline only calculates from historical data
+                    // Use Column 2 (Actual Sales) but only for historical rows
                     Excel.Range historicalValuesRange = chartDataSheet.Range[
-                        chartDataSheet.Cells[firstHistoricalRow, 3], 
-                        chartDataSheet.Cells[lastHistoricalRow, 3]];
+                        chartDataSheet.Cells[firstHistoricalRow, 2], 
+                        chartDataSheet.Cells[lastHistoricalRow, 2]];
                     Excel.Range historicalXValuesRange = chartDataSheet.Range[
                         chartDataSheet.Cells[firstHistoricalRow, 1], 
                         chartDataSheet.Cells[lastHistoricalRow, 1]];
@@ -1378,8 +1365,8 @@ namespace BakeryBI
 
 
 
-                // Series 3: Forecast (Dots only - from Forecast Data sheet, Type = "Forecast")
-                // Data is already populated in column 4 from Forecast Data sheet
+                // Series 3: Forecast (Dots only - calculated using FORECAST.LINEAR function)
+                // Data is already populated in column 3 using Excel's FORECAST.LINEAR function
                 if (seriesCollection.Count >= 3)
                 {
                     Excel.Series forecastSeries = (Excel.Series)seriesCollection.Item(3);
@@ -1400,7 +1387,7 @@ namespace BakeryBI
                 else if (forecastDataList.Any(f => f.Type == "Forecast"))
                 {
                     // Add forecast series if it doesn't exist yet
-                    Excel.Range forecastRange = chartDataSheet.Range[chartDataSheet.Cells[1, 4], chartDataSheet.Cells[lastRow, 4]];
+                    Excel.Range forecastRange = chartDataSheet.Range[chartDataSheet.Cells[1, 3], chartDataSheet.Cells[lastRow, 3]];
                     Excel.Series forecastSeries = (Excel.Series)seriesCollection.NewSeries();
                     
                     forecastSeries.Name = "Forecast";
