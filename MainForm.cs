@@ -1261,8 +1261,6 @@ namespace BakeryBI
 
                     histSeries.Fill.Color = System.Drawing.Color.Blue;
 
-                    histSeries.Fill.Transparency = 30; // Make it slightly transparent
-
                 }
 
 
@@ -1284,8 +1282,6 @@ namespace BakeryBI
                     forecastSeries.Header = "Forecast";
 
                     forecastSeries.Fill.Color = System.Drawing.Color.Red;
-
-                    forecastSeries.Fill.Transparency = 30;
 
                 }
 
