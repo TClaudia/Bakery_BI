@@ -1161,6 +1161,70 @@ namespace BakeryBI
 
 
 
+                // Add chart to Forecast Data sheet, positioned next to the data table
+
+                // Chart: Historical Trend vs Forecast Combined Chart (includes prediction)
+
+                var forecastChart = forecastSheet.Drawings.AddChart("ForecastChart", eChartType.Line);
+
+                forecastChart.Title.Text = "Sales Trend and Forecast";
+
+                // Position chart next to data table (starting at column F, row 1)
+
+                forecastChart.SetPosition(0, 0, 5, 0); // Row 0, Column 5 (which is column F)
+
+                forecastChart.SetSize(600, 400);
+
+
+
+                int totalRows = trendAndForecast.Count + 1; // +1 for header row
+
+
+
+                // Add Historical Trend Series (using helper column D)
+
+                var histSeries = forecastChart.Series.Add(
+
+                    forecastSheet.Cells[$"D2:D{totalRows}"],  // Y-axis: Historical Sales (helper column)
+
+                    forecastSheet.Cells[$"A2:A{totalRows}"]   // X-axis: Date
+
+                );
+
+                histSeries.Header = "Historical Trend";
+
+                histSeries.Border.Fill.Color = System.Drawing.Color.Blue;
+
+
+
+                // Add Forecast Series (using helper column E) - includes the prediction
+
+                var forecastSeries = forecastChart.Series.Add(
+
+                    forecastSheet.Cells[$"E2:E{totalRows}"],  // Y-axis: Forecast Sales (helper column)
+
+                    forecastSheet.Cells[$"A2:A{totalRows}"]   // X-axis: Date
+
+                );
+
+                forecastSeries.Header = "Forecast";
+
+                forecastSeries.Border.Fill.Color = System.Drawing.Color.Red;
+
+                forecastSeries.Border.LineStyle = eLineStyle.Dash;
+
+
+
+                forecastChart.YAxis.Format = "$#,##0";
+
+                forecastChart.XAxis.Title.Text = "Date";
+
+                forecastChart.YAxis.Title.Text = "Sales Forecast ($)";
+
+                forecastChart.Legend.Position = eLegendPosition.Bottom;
+
+
+
                 // Sheet 3: Raw Dataset (Underlying Data Used for Analysis)
 
                 var rawDataSheet = package.Workbook.Worksheets.Add("Raw Dataset");
@@ -1340,104 +1404,6 @@ namespace BakeryBI
                 // Auto-fit columns
 
                 rawDataSheet.Cells.AutoFitColumns();
-
-
-
-                // Create Charts Sheet
-
-                var chartsSheet = package.Workbook.Worksheets.Add("Charts");
-
-
-
-                // Chart 1: Monthly Sales Trend Line Chart
-
-                var monthlyChart = chartsSheet.Drawings.AddChart("MonthlySalesChart", eChartType.Line);
-
-                monthlyChart.Title.Text = "Monthly Sales Trend";
-
-                monthlyChart.SetPosition(1, 0, 0, 0);
-
-                monthlyChart.SetSize(800, 400);
-
-
-
-                // Add data series for monthly sales
-
-                var monthlySeries = monthlyChart.Series.Add(
-
-                    monthlySheet.Cells[$"B2:B{monthlySales.Count + 1}"],  // Y-axis: Total Sales
-
-                    monthlySheet.Cells[$"A2:A{monthlySales.Count + 1}"]   // X-axis: Month
-
-                );
-
-                monthlySeries.Header = "Total Sales";
-
-                monthlyChart.YAxis.Format = "$#,##0";
-
-                monthlyChart.XAxis.Title.Text = "Month";
-
-                monthlyChart.YAxis.Title.Text = "Total Sales ($)";
-
-
-
-                // Chart 2: Historical Trend vs Forecast Combined Chart
-
-                var forecastChart = chartsSheet.Drawings.AddChart("ForecastChart", eChartType.Line);
-
-                forecastChart.Title.Text = "Sales Trend and Forecast";
-
-                forecastChart.SetPosition(1, 0, 450, 0);
-
-                forecastChart.SetSize(800, 400);
-
-
-
-                int totalRows = trendAndForecast.Count + 1; // +1 for header row
-
-
-
-                // Add Historical Trend Series (using helper column D)
-
-                var histSeries = forecastChart.Series.Add(
-
-                    forecastSheet.Cells[$"D2:D{totalRows}"],  // Y-axis: Historical Sales (helper column)
-
-                    forecastSheet.Cells[$"A2:A{totalRows}"]   // X-axis: Date
-
-                );
-
-                histSeries.Header = "Historical Trend";
-
-                histSeries.Border.Fill.Color = System.Drawing.Color.Blue;
-
-
-
-                // Add Forecast Series (using helper column E)
-
-                var forecastSeries = forecastChart.Series.Add(
-
-                    forecastSheet.Cells[$"E2:E{totalRows}"],  // Y-axis: Forecast Sales (helper column)
-
-                    forecastSheet.Cells[$"A2:A{totalRows}"]   // X-axis: Date
-
-                );
-
-                forecastSeries.Header = "Forecast";
-
-                forecastSeries.Border.Fill.Color = System.Drawing.Color.Red;
-
-                forecastSeries.Border.LineStyle = eLineStyle.Dash;
-
-
-
-                forecastChart.YAxis.Format = "$#,##0";
-
-                forecastChart.XAxis.Title.Text = "Date";
-
-                forecastChart.YAxis.Title.Text = "Sales Forecast ($)";
-
-                forecastChart.Legend.Position = eLegendPosition.Bottom;
 
 
 
