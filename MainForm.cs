@@ -1176,29 +1176,49 @@ namespace BakeryBI
                     
                     // Add icon set conditional formatting
                     // AddIconSetCondition() doesn't take parameters - it just creates the condition
-                    Excel.FormatCondition iconSet = (Excel.FormatCondition)salesForecastRange.FormatConditions.AddIconSetCondition();
+                    // With embedded interop types, casting can fail - work with object directly
+                    object iconSetObj = salesForecastRange.FormatConditions.AddIconSetCondition();
                     
-                    // Get IconSets collection using reflection (required with embedded interop types)
-                    // Application.IconSets might not be directly accessible
+                    // Try to cast, but if it fails, we'll work with the object directly using reflection
+                    Excel.FormatCondition iconSet = null;
+                    try
+                    {
+                        iconSet = iconSetObj as Excel.FormatCondition;
+                        if (iconSet == null && iconSetObj != null)
+                        {
+                            // Try explicit cast
+                            iconSet = (Excel.FormatCondition)iconSetObj;
+                        }
+                    }
+                    catch
+                    {
+                        // Casting failed - we'll use reflection to work with iconSetObj directly
+                        iconSet = null;
+                    }
+                    
+                    // Get IconSets collection using reflection (required for embedded interop types)
+                    // Use iconSetObj if iconSet is null (casting failed)
+                    object formatConditionObj = iconSet != null ? (object)iconSet : iconSetObj;
+                    
                     try
                     {
                         System.Reflection.PropertyInfo iconSetsProp = forecastSheet.Application.GetType().GetProperty("IconSets");
                         if (iconSetsProp != null)
                         {
-                            object iconSetsObj = iconSetsProp.GetValue(forecastSheet.Application);
-                            if (iconSetsObj != null)
+                            object iconSetsCollection = iconSetsProp.GetValue(forecastSheet.Application);
+                            if (iconSetsCollection != null)
                             {
                                 // Get the 3 Traffic Lights icon set from the collection
-                                System.Reflection.PropertyInfo indexer = iconSetsObj.GetType().GetProperty("Item");
+                                System.Reflection.PropertyInfo indexer = iconSetsCollection.GetType().GetProperty("Item");
                                 if (indexer != null)
                                 {
-                                    object trafficLightsIconSet = indexer.GetValue(iconSetsObj, new object[] { Excel.XlIconSet.xl3TrafficLights1 });
+                                    object trafficLightsIconSet = indexer.GetValue(iconSetsCollection, new object[] { Excel.XlIconSet.xl3TrafficLights1 });
                                     
                                     // Set IconSet property using reflection
-                                    System.Reflection.PropertyInfo iconSetProp = iconSet.GetType().GetProperty("IconSet");
+                                    System.Reflection.PropertyInfo iconSetProp = formatConditionObj.GetType().GetProperty("IconSet");
                                     if (iconSetProp != null && iconSetProp.CanWrite)
                                     {
-                                        iconSetProp.SetValue(iconSet, trafficLightsIconSet, null);
+                                        iconSetProp.SetValue(formatConditionObj, trafficLightsIconSet, null);
                                     }
                                 }
                             }
@@ -1213,13 +1233,14 @@ namespace BakeryBI
                     // Configure icon criteria to use Number type referencing helper formula cells
                     // This allows automatic updates when threshold percentages change
                     // Access IconCriteria using reflection and set properties individually
+                    // Use formatConditionObj (which is either iconSet or iconSetObj) for reflection
                     try
                     {
                         // Get IconCriteria property
-                        System.Reflection.PropertyInfo iconCriteriaProp = iconSet.GetType().GetProperty("IconCriteria");
+                        System.Reflection.PropertyInfo iconCriteriaProp = formatConditionObj.GetType().GetProperty("IconCriteria");
                         if (iconCriteriaProp != null)
                         {
-                            object criteriaObj = iconCriteriaProp.GetValue(iconSet);
+                            object criteriaObj = iconCriteriaProp.GetValue(formatConditionObj);
                             if (criteriaObj != null)
                             {
                                 // Get the calculated values from helper cells
