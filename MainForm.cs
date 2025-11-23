@@ -11,7 +11,7 @@ using OfficeOpenXml;
 using OfficeOpenXml.Drawing.Chart;
 using System.IO;
 using OfficeOpenXml.Drawing;
-using Microsoft.Office.Interop.Excel;
+using Excel = Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
 
 namespace BakeryBI
@@ -1357,15 +1357,15 @@ namespace BakeryBI
 
             // Add charts using Microsoft.Office.Interop.Excel
 
-            Application excelApp = null;
+            Excel.Application excelApp = null;
 
-            Workbook workbook = null;
+            Excel.Workbook workbook = null;
 
             try
 
             {
 
-                excelApp = new Application();
+                excelApp = new Excel.Application();
 
                 excelApp.Visible = false;
 
@@ -1379,7 +1379,7 @@ namespace BakeryBI
 
                 // Get the Forecast Data worksheet
 
-                Worksheet forecastWs = workbook.Worksheets["Forecast Data"] as Worksheet;
+                Excel.Worksheet forecastWs = workbook.Worksheets["Forecast Data"] as Excel.Worksheet;
 
                 if (forecastWs != null)
 
@@ -1387,7 +1387,7 @@ namespace BakeryBI
 
                     // Find the last row with data in column A
 
-                    int lastRow = forecastWs.Cells[forecastWs.Rows.Count, 1].End[XlDirection.xlUp].Row;
+                    int lastRow = forecastWs.Cells[forecastWs.Rows.Count, 1].End[Excel.XlDirection.xlUp].Row;
 
 
 
@@ -1429,17 +1429,17 @@ namespace BakeryBI
 
                     // Create a combo chart (bars + lines)
 
-                    ChartObjects chartObjects = forecastWs.ChartObjects() as ChartObjects;
+                    Excel.ChartObjects chartObjects = forecastWs.ChartObjects() as Excel.ChartObjects;
 
-                    ChartObject chartObject = chartObjects.Add(400, 10, 600, 400) as ChartObject; // Position next to data (column F)
+                    Excel.ChartObject chartObject = chartObjects.Add(400, 10, 600, 400) as Excel.ChartObject; // Position next to data (column F)
 
-                    Chart chart = chartObject.Chart;
+                    Excel.Chart chart = chartObject.Chart;
 
 
 
                     // Set initial chart type
 
-                    chart.ChartType = XlChartType.xlColumnClustered;
+                    chart.ChartType = Excel.XlChartType.xlColumnClustered;
 
 
 
@@ -1449,7 +1449,7 @@ namespace BakeryBI
 
                     {
 
-                        Series histBarsSeries = chart.SeriesCollection().NewSeries();
+                        Excel.Series histBarsSeries = chart.SeriesCollection().NewSeries();
 
                         histBarsSeries.Name = "Historical Sales";
 
@@ -1457,7 +1457,7 @@ namespace BakeryBI
 
                         histBarsSeries.XValues = forecastWs.Range(forecastWs.Cells[2, 1], forecastWs.Cells[histLastRow, 1]);
 
-                        histBarsSeries.ChartType = XlChartType.xlColumnClustered;
+                        histBarsSeries.ChartType = Excel.XlChartType.xlColumnClustered;
 
                         histBarsSeries.Format.Fill.ForeColor.RGB = System.Drawing.Color.LightBlue.ToArgb();
 
@@ -1471,7 +1471,7 @@ namespace BakeryBI
 
                     {
 
-                        Series histTrendSeries = chart.SeriesCollection().NewSeries();
+                        Excel.Series histTrendSeries = chart.SeriesCollection().NewSeries();
 
                         histTrendSeries.Name = "Historical Trend";
 
@@ -1479,7 +1479,7 @@ namespace BakeryBI
 
                         histTrendSeries.XValues = forecastWs.Range(forecastWs.Cells[2, 1], forecastWs.Cells[histLastRow, 1]);
 
-                        histTrendSeries.ChartType = XlChartType.xlLine;
+                        histTrendSeries.ChartType = Excel.XlChartType.xlLine;
 
                         histTrendSeries.Format.Line.ForeColor.RGB = System.Drawing.Color.Blue.ToArgb();
 
@@ -1495,7 +1495,7 @@ namespace BakeryBI
 
                     {
 
-                        Series forecastSeries = chart.SeriesCollection().NewSeries();
+                        Excel.Series forecastSeries = chart.SeriesCollection().NewSeries();
 
                         forecastSeries.Name = "Forecast";
 
@@ -1503,7 +1503,7 @@ namespace BakeryBI
 
                         forecastSeries.XValues = forecastWs.Range(forecastWs.Cells[forecastFirstRow, 1], forecastWs.Cells[forecastLastRow, 1]);
 
-                        forecastSeries.ChartType = XlChartType.xlLine;
+                        forecastSeries.ChartType = Excel.XlChartType.xlLine;
 
                         forecastSeries.Format.Line.ForeColor.RGB = System.Drawing.Color.Red.ToArgb();
 
@@ -1525,9 +1525,9 @@ namespace BakeryBI
 
                     // Format axes
 
-                    chart.Axes(XlAxisType.xlValue).TickLabels.NumberFormat = "$#,##0";
+                    chart.Axes(Excel.XlAxisType.xlValue).TickLabels.NumberFormat = "$#,##0";
 
-                    chart.Axes(XlAxisType.xlCategory).CategoryType = XlCategoryType.xlCategoryScale;
+                    chart.Axes(Excel.XlAxisType.xlCategory).CategoryType = Excel.XlCategoryType.xlCategoryScale;
 
 
 
@@ -1535,7 +1535,7 @@ namespace BakeryBI
 
                     chart.HasLegend = true;
 
-                    chart.Legend.Position = XlLegendPosition.xlLegendPositionBottom;
+                    chart.Legend.Position = Excel.XlLegendPosition.xlLegendPositionBottom;
 
                 }
 
