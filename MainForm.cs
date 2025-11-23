@@ -1344,11 +1344,24 @@ namespace BakeryBI
 
                 // Series 2: Actual Sales Line (for trendline calculation)
                 // Create a line series with actual sales data - trendlines work on line/scatter charts
-                if (seriesCollection.Count >= 2)
+                // IMPORTANT: Limit the series to only historical data rows to prevent trendline extension
+                if (seriesCollection.Count >= 2 && firstHistoricalRow > 0 && lastHistoricalRow > 0)
                 {
                     Excel.Series actualSalesLineSeries = (Excel.Series)seriesCollection.Item(2);
                     actualSalesLineSeries.Name = "Actual Sales Line";
                     actualSalesLineSeries.ChartType = Excel.XlChartType.xlLine;
+                    
+                    // Set the series to only use historical data (not forecast months)
+                    // This ensures the trendline only calculates from historical data
+                    Excel.Range historicalValuesRange = chartDataSheet.Range[
+                        chartDataSheet.Cells[firstHistoricalRow, 3], 
+                        chartDataSheet.Cells[lastHistoricalRow, 3]];
+                    Excel.Range historicalXValuesRange = chartDataSheet.Range[
+                        chartDataSheet.Cells[firstHistoricalRow, 1], 
+                        chartDataSheet.Cells[lastHistoricalRow, 1]];
+                    
+                    actualSalesLineSeries.Values = historicalValuesRange;
+                    actualSalesLineSeries.XValues = historicalXValuesRange;
                     
                     // Make this series invisible (we only need it for the trendline)
                     actualSalesLineSeries.Format.Line.Visible = 0; // Hide the line
