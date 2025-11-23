@@ -1138,7 +1138,7 @@ namespace BakeryBI
                 lowThresholdCell.Value2 = 33;
                 lowThresholdCell.NumberFormat = "0";
                 lowThresholdCell.Interior.Color = System.Drawing.ColorTranslator.ToOle(Color.LightYellow);
-                string lowThresholdRef = lowThresholdCell.Address(true, false, Excel.XlReferenceStyle.xlA1, false, null);
+                string lowThresholdRef = lowThresholdCell.get_Address(true, false, Excel.XlReferenceStyle.xlA1, false, null);
                 
                 // High threshold cell
                 Excel.Range highThresholdLabel = forecastSheet.Cells[++configRow, 1];
@@ -1147,7 +1147,7 @@ namespace BakeryBI
                 highThresholdCell.Value2 = 67;
                 highThresholdCell.NumberFormat = "0";
                 highThresholdCell.Interior.Color = System.Drawing.ColorTranslator.ToOle(Color.LightYellow);
-                string highThresholdRef = highThresholdCell.Address(true, false, Excel.XlReferenceStyle.xlA1, false, null);
+                string highThresholdRef = highThresholdCell.get_Address(true, false, Excel.XlReferenceStyle.xlA1, false, null);
                 
                 // Apply icon set conditional formatting to Sales Forecast column (Column C)
                 int lastDataRow = row - 1;
@@ -1161,7 +1161,7 @@ namespace BakeryBI
                     lowValueLabel.Value2 = "Low Threshold Value:";
                     lowValueCell.Formula = $"=PERCENTILE($C$2:$C${lastDataRow},{lowThresholdRef}/100)";
                     lowValueCell.NumberFormat = "$#,##0.00";
-                    string lowValueRef = lowValueCell.Address(true, false, Excel.XlReferenceStyle.xlA1, false, null);
+                    string lowValueRef = lowValueCell.get_Address(true, false, Excel.XlReferenceStyle.xlA1, false, null);
                     
                     configRow++;
                     Excel.Range highValueLabel = forecastSheet.Cells[configRow, 1];
@@ -1169,7 +1169,7 @@ namespace BakeryBI
                     highValueLabel.Value2 = "High Threshold Value:";
                     highValueCell.Formula = $"=PERCENTILE($C$2:$C${lastDataRow},{highThresholdRef}/100)";
                     highValueCell.NumberFormat = "$#,##0.00";
-                    string highValueRef = highValueCell.Address(true, false, Excel.XlReferenceStyle.xlA1, false, null);
+                    string highValueRef = highValueCell.get_Address(true, false, Excel.XlReferenceStyle.xlA1, false, null);
                     
                     // Use Range with string notation for simplicity
                     Excel.Range salesForecastRange = forecastSheet.Range[$"C2:C{lastDataRow}"];
