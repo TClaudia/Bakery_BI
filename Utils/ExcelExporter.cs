@@ -98,6 +98,169 @@ namespace BakeryBI.Utils
                 ((Excel.Range)monthlySheet.Cells[summaryRow, 1]).Value2 = "Total Transactions:";
                 ((Excel.Range)monthlySheet.Cells[summaryRow, 2]).Value2 = monthlySales.Sum(x => x.TransactionCount);
 
+                // Add conditional formatting parameters (user-editable thresholds)
+                int configRow = summaryRow + 3;
+                Excel.Range thresholdHeader = monthlySheet.Cells[configRow, 1];
+                thresholdHeader.Value2 = "Icon Set Thresholds (Percentiles)";
+                thresholdHeader.Font.Bold = true;
+                thresholdHeader.Font.Size = 11;
+
+                // Low threshold cell
+                Excel.Range lowThresholdLabel = monthlySheet.Cells[++configRow, 1];
+                Excel.Range lowThresholdCell = monthlySheet.Cells[configRow, 2];
+                lowThresholdLabel.Value2 = "Low Threshold (%):";
+                lowThresholdCell.Value2 = 33;
+                lowThresholdCell.NumberFormat = "0";
+                lowThresholdCell.Interior.Color = System.Drawing.ColorTranslator.ToOle(Color.LightYellow);
+                string lowThresholdRef = lowThresholdCell.get_Address(true, false, Excel.XlReferenceStyle.xlA1, false, null);
+
+                // High threshold cell
+                Excel.Range highThresholdLabel = monthlySheet.Cells[++configRow, 1];
+                Excel.Range highThresholdCell = monthlySheet.Cells[configRow, 2];
+                highThresholdLabel.Value2 = "High Threshold (%):";
+                highThresholdCell.Value2 = 67;
+                highThresholdCell.NumberFormat = "0";
+                highThresholdCell.Interior.Color = System.Drawing.ColorTranslator.ToOle(Color.LightYellow);
+                string highThresholdRef = highThresholdCell.get_Address(true, false, Excel.XlReferenceStyle.xlA1, false, null);
+
+                // Apply icon set conditional formatting to Total Sales column (Column B)
+                int lastDataRow = row - 1;
+                if (lastDataRow >= 2)
+                {
+                    configRow++;
+                    Excel.Range lowValueLabel = monthlySheet.Cells[configRow, 1];
+                    Excel.Range lowValueCell = monthlySheet.Cells[configRow, 2];
+                    lowValueLabel.Value2 = "Low Threshold Value:";
+                    lowValueCell.Formula = $"=PERCENTILE($B$2:$B${lastDataRow},{lowThresholdRef}/100)";
+                    lowValueCell.NumberFormat = "$#,##0.00";
+                    string lowValueRef = lowValueCell.get_Address(true, false, Excel.XlReferenceStyle.xlA1, false, null);
+
+                    configRow++;
+                    Excel.Range highValueLabel = monthlySheet.Cells[configRow, 1];
+                    Excel.Range highValueCell = monthlySheet.Cells[configRow, 2];
+                    highValueLabel.Value2 = "High Threshold Value:";
+                    highValueCell.Formula = $"=PERCENTILE($B$2:$B${lastDataRow},{highThresholdRef}/100)";
+                    highValueCell.NumberFormat = "$#,##0.00";
+                    string highValueRef = highValueCell.get_Address(true, false, Excel.XlReferenceStyle.xlA1, false, null);
+
+                    // Use Range with string notation for simplicity
+                    Excel.Range totalSalesRange = monthlySheet.Range[$"B2:B{lastDataRow}"];
+
+                    object iconSetObj = totalSalesRange.FormatConditions.AddIconSetCondition();
+
+                    // Try to cast, but if it fails, we'll work with the object directly using reflection
+                    Excel.FormatCondition iconSet = null;
+                    try
+                    {
+                        iconSet = iconSetObj as Excel.FormatCondition;
+                        if (iconSet == null && iconSetObj != null)
+                        {
+                            iconSet = (Excel.FormatCondition)iconSetObj;
+                        }
+                    }
+                    catch
+                    {
+                        iconSet = null;
+                    }
+
+                    object formatConditionObj = iconSet != null ? (object)iconSet : iconSetObj;
+
+                    try
+                    {
+                        System.Reflection.PropertyInfo iconSetsProp = monthlySheet.Application.GetType().GetProperty("IconSets");
+                        if (iconSetsProp != null)
+                        {
+                            object iconSetsCollection = iconSetsProp.GetValue(monthlySheet.Application);
+                            if (iconSetsCollection != null)
+                            {
+                                // Get the 3 Traffic Lights icon set from the collection
+                                System.Reflection.PropertyInfo indexer = iconSetsCollection.GetType().GetProperty("Item");
+                                if (indexer != null)
+                                {
+                                    object trafficLightsIconSet = indexer.GetValue(iconSetsCollection, new object[] { Excel.XlIconSet.xl3TrafficLights1 });
+
+                                    // Set IconSet property using reflection
+                                    System.Reflection.PropertyInfo iconSetProp = formatConditionObj.GetType().GetProperty("IconSet");
+                                    if (iconSetProp != null && iconSetProp.CanWrite)
+                                    {
+                                        iconSetProp.SetValue(formatConditionObj, trafficLightsIconSet, null);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        // If setting IconSet fails, Excel will use default icon set
+                        // Users can manually change it in Excel if needed
+                    }
+
+                    try
+                    {
+                        // Get IconCriteria property
+                        System.Reflection.PropertyInfo iconCriteriaProp = formatConditionObj.GetType().GetProperty("IconCriteria");
+                        if (iconCriteriaProp != null)
+                        {
+                            object criteriaObj = iconCriteriaProp.GetValue(formatConditionObj);
+                            if (criteriaObj != null)
+                            {
+                                // Get the calculated values from helper cells
+                                double lowThresholdValue = (double)lowValueCell.Value2;
+                                double highThresholdValue = (double)highValueCell.Value2;
+
+                                // Get Item method to access individual criteria
+                                System.Reflection.MethodInfo itemMethod = criteriaObj.GetType().GetMethod("Item", new Type[] { typeof(int) });
+                                if (itemMethod != null)
+                                {
+                                    // Icon 1 (Red): Values <= Low threshold value
+                                    object item1 = itemMethod.Invoke(criteriaObj, new object[] { 1 });
+                                    if (item1 != null)
+                                    {
+                                        System.Reflection.PropertyInfo type1 = item1.GetType().GetProperty("Type");
+                                        System.Reflection.PropertyInfo value1 = item1.GetType().GetProperty("Value");
+                                        if (type1 != null) type1.SetValue(item1, Excel.XlConditionValueTypes.xlConditionValueNumber);
+                                        if (value1 != null) value1.SetValue(item1, lowThresholdValue);
+                                    }
+
+                                    // Icon 2 (Yellow): Values between Low and High threshold values
+                                    object item2 = itemMethod.Invoke(criteriaObj, new object[] { 2 });
+                                    if (item2 != null)
+                                    {
+                                        System.Reflection.PropertyInfo type2 = item2.GetType().GetProperty("Type");
+                                        System.Reflection.PropertyInfo value2 = item2.GetType().GetProperty("Value");
+                                        if (type2 != null) type2.SetValue(item2, Excel.XlConditionValueTypes.xlConditionValueNumber);
+                                        if (value2 != null) value2.SetValue(item2, highThresholdValue);
+                                    }
+
+                                    // Icon 3 (Green): Values >= High threshold value
+                                    object item3 = itemMethod.Invoke(criteriaObj, new object[] { 3 });
+                                    if (item3 != null)
+                                    {
+                                        System.Reflection.PropertyInfo type3 = item3.GetType().GetProperty("Type");
+                                        System.Reflection.PropertyInfo value3 = item3.GetType().GetProperty("Value");
+                                        if (type3 != null) type3.SetValue(item3, Excel.XlConditionValueTypes.xlConditionValueNumber);
+                                        if (value3 != null) value3.SetValue(item3, highThresholdValue);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        // If setting criteria fails, Excel will use default criteria
+                        // Users can manually adjust in Excel if needed
+                    }
+
+                    // Add helpful note for users
+                    configRow++;
+                    Excel.Range noteCell = monthlySheet.Cells[configRow, 1];
+                    noteCell.Value2 = $"To enable auto-update: Edit CF rule and reference cells {lowValueRef} and {highValueRef}";
+                    noteCell.Font.Italic = true;
+                    noteCell.Font.Size = 9;
+                    noteCell.Font.Color = System.Drawing.ColorTranslator.ToOle(Color.Gray);
+                    noteCell.WrapText = true;
+                }
+
                 // Auto-fit columns
                 monthlySheet.Columns.AutoFit();
 
