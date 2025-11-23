@@ -1400,7 +1400,7 @@ namespace BakeryBI
 
                     forecastSeries.Format.Line.Weight = 3;
 
-                    forecastSeries.Format.Line.DashStyle = 2; // 2 = msoLineDash (dashed line)
+                    forecastSeries.Border.LineStyle = Excel.XlLineStyle.xlDot;
 
                     forecastSeries.MarkerStyle = Excel.XlMarkerStyle.xlMarkerStyleCircle;
 
