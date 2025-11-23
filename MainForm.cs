@@ -10,9 +10,6 @@ using BakeryBI.Utils;
 using OfficeOpenXml;
 using OfficeOpenXml.Drawing.Chart;
 using System.IO;
-using OfficeOpenXml.Drawing;
-using Excel = Microsoft.Office.Interop.Excel;
-using System.Runtime.InteropServices;
 
 namespace BakeryBI
 {
@@ -1345,341 +1342,109 @@ namespace BakeryBI
 
 
 
+                // Create Charts Sheet
+
+                var chartsSheet = package.Workbook.Worksheets.Add("Charts");
+
+
+
+                // Chart 1: Monthly Sales Trend Line Chart
+
+                var monthlyChart = chartsSheet.Drawings.AddChart("MonthlySalesChart", eChartType.Line);
+
+                monthlyChart.Title.Text = "Monthly Sales Trend";
+
+                monthlyChart.SetPosition(1, 0, 0, 0);
+
+                monthlyChart.SetSize(800, 400);
+
+
+
+                // Add data series for monthly sales
+
+                var monthlySeries = monthlyChart.Series.Add(
+
+                    monthlySheet.Cells[$"B2:B{monthlySales.Count + 1}"],  // Y-axis: Total Sales
+
+                    monthlySheet.Cells[$"A2:A{monthlySales.Count + 1}"]   // X-axis: Month
+
+                );
+
+                monthlySeries.Header = "Total Sales";
+
+                monthlyChart.YAxis.Format = "$#,##0";
+
+                monthlyChart.XAxis.Title.Text = "Month";
+
+                monthlyChart.YAxis.Title.Text = "Total Sales ($)";
+
+
+
+                // Chart 2: Historical Trend vs Forecast Combined Chart
+
+                var forecastChart = chartsSheet.Drawings.AddChart("ForecastChart", eChartType.Line);
+
+                forecastChart.Title.Text = "Sales Trend and Forecast";
+
+                forecastChart.SetPosition(1, 0, 450, 0);
+
+                forecastChart.SetSize(800, 400);
+
+
+
+                int totalRows = trendAndForecast.Count + 1; // +1 for header row
+
+
+
+                // Add Historical Trend Series (using helper column D)
+
+                var histSeries = forecastChart.Series.Add(
+
+                    forecastSheet.Cells[$"D2:D{totalRows}"],  // Y-axis: Historical Sales (helper column)
+
+                    forecastSheet.Cells[$"A2:A{totalRows}"]   // X-axis: Date
+
+                );
+
+                histSeries.Header = "Historical Trend";
+
+                histSeries.LineColor = System.Drawing.Color.Blue;
+
+
+
+                // Add Forecast Series (using helper column E)
+
+                var forecastSeries = forecastChart.Series.Add(
+
+                    forecastSheet.Cells[$"E2:E{totalRows}"],  // Y-axis: Forecast Sales (helper column)
+
+                    forecastSheet.Cells[$"A2:A{totalRows}"]   // X-axis: Date
+
+                );
+
+                forecastSeries.Header = "Forecast";
+
+                forecastSeries.LineColor = System.Drawing.Color.Red;
+
+                forecastSeries.LineStyle = eLineStyle.Dash;
+
+
+
+                forecastChart.YAxis.Format = "$#,##0";
+
+                forecastChart.XAxis.Title.Text = "Date";
+
+                forecastChart.YAxis.Title.Text = "Sales Forecast ($)";
+
+                forecastChart.Legend.Position = eLegendPosition.Bottom;
+
+
+
                 // Save file
 
                 FileInfo file = new FileInfo(filePath);
 
                 package.SaveAs(file);
-
-            }
-
-
-
-            // Add charts using Microsoft.Office.Interop.Excel (optional - will skip if Excel/Office is not available)
-
-            Excel.Application excelApp = null;
-
-            Excel.Workbook workbook = null;
-
-            try
-
-            {
-
-                // Try to create Excel application - this will fail if Excel/Office is not installed
-
-                excelApp = new Excel.Application();
-
-                excelApp.Visible = false;
-
-                excelApp.DisplayAlerts = false;
-
-
-
-                workbook = excelApp.Workbooks.Open(filePath);
-
-
-
-                // Get the Forecast Data worksheet
-
-                Excel.Worksheet forecastWs = workbook.Worksheets["Forecast Data"] as Excel.Worksheet;
-
-                if (forecastWs != null)
-
-                {
-
-                    // Find the last row with data in column A
-
-                    Excel.Range lastCell = forecastWs.Cells[forecastWs.Rows.Count, 1] as Excel.Range;
-
-                    int lastRow = lastCell.End[Excel.XlDirection.xlUp].Row;
-
-
-
-                    // Find rows with historical data (column D has values) and forecast data (column E has values)
-
-                    int histLastRow = 0;
-
-                    int forecastFirstRow = 0;
-
-                    int forecastLastRow = 0;
-
-
-
-                    for (int i = 2; i <= lastRow; i++)
-
-                    {
-
-                        Excel.Range cellD = forecastWs.Cells[i, 4] as Excel.Range;
-
-                        if (cellD != null && cellD.Value2 != null && histLastRow == 0)
-
-                        {
-
-                            histLastRow = i;
-
-                        }
-
-                        Excel.Range cellE = forecastWs.Cells[i, 5] as Excel.Range;
-
-                        if (cellE != null && cellE.Value2 != null)
-
-                        {
-
-                            if (forecastFirstRow == 0) forecastFirstRow = i;
-
-                            forecastLastRow = i;
-
-                        }
-
-                    }
-
-
-
-                    // Create a combo chart (bars + lines)
-
-                    Excel.ChartObjects chartObjects = forecastWs.ChartObjects() as Excel.ChartObjects;
-
-                    Excel.ChartObject chartObject = chartObjects.Add(400, 10, 600, 400) as Excel.ChartObject; // Position next to data (column F)
-
-                    Excel.Chart chart = chartObject.Chart;
-
-
-
-                    // Set initial chart type
-
-                    chart.ChartType = Excel.XlChartType.xlColumnClustered;
-
-
-
-                    // Add Historical Sales as bars (column C) - only for rows with historical data
-
-                    if (histLastRow > 0)
-
-                    {
-
-                        Excel.SeriesCollection seriesCollection = chart.SeriesCollection() as Excel.SeriesCollection;
-                        Excel.Series histBarsSeries = seriesCollection.NewSeries();
-
-                        histBarsSeries.Name = "Historical Sales";
-
-                        Excel.Range cellStart1 = forecastWs.Cells[2, 3] as Excel.Range;
-                        Excel.Range cellEnd1 = forecastWs.Cells[histLastRow, 3] as Excel.Range;
-                        histBarsSeries.Values = forecastWs.get_Range(cellStart1, cellEnd1);
-
-                        Excel.Range cellStart2 = forecastWs.Cells[2, 1] as Excel.Range;
-                        Excel.Range cellEnd2 = forecastWs.Cells[histLastRow, 1] as Excel.Range;
-                        histBarsSeries.XValues = forecastWs.get_Range(cellStart2, cellEnd2);
-
-                        histBarsSeries.ChartType = Excel.XlChartType.xlColumnClustered;
-
-                        histBarsSeries.Format.Fill.ForeColor.RGB = System.Drawing.Color.LightBlue.ToArgb();
-
-                    }
-
-
-
-                    // Add Historical Trend as line (column D) - only for rows with historical data
-
-                    if (histLastRow > 0)
-
-                    {
-
-                        Excel.SeriesCollection seriesCollection2 = chart.SeriesCollection() as Excel.SeriesCollection;
-                        Excel.Series histTrendSeries = seriesCollection2.NewSeries();
-
-                        histTrendSeries.Name = "Historical Trend";
-
-                        Excel.Range cellStart3 = forecastWs.Cells[2, 4] as Excel.Range;
-                        Excel.Range cellEnd3 = forecastWs.Cells[histLastRow, 4] as Excel.Range;
-                        histTrendSeries.Values = forecastWs.get_Range(cellStart3, cellEnd3);
-
-                        Excel.Range cellStart4 = forecastWs.Cells[2, 1] as Excel.Range;
-                        Excel.Range cellEnd4 = forecastWs.Cells[histLastRow, 1] as Excel.Range;
-                        histTrendSeries.XValues = forecastWs.get_Range(cellStart4, cellEnd4);
-
-                        histTrendSeries.ChartType = Excel.XlChartType.xlLine;
-
-                        histTrendSeries.Format.Line.ForeColor.RGB = System.Drawing.Color.Blue.ToArgb();
-
-                        histTrendSeries.Format.Line.Weight = 2;
-
-                    }
-
-
-
-                    // Add Forecast as dashed line (column E) - only for rows with forecast data
-
-                    if (forecastFirstRow > 0 && forecastLastRow > 0)
-
-                    {
-
-                        Excel.SeriesCollection seriesCollection3 = chart.SeriesCollection() as Excel.SeriesCollection;
-                        Excel.Series forecastSeries = seriesCollection3.NewSeries();
-
-                        forecastSeries.Name = "Forecast";
-
-                        Excel.Range cellStart5 = forecastWs.Cells[forecastFirstRow, 5] as Excel.Range;
-                        Excel.Range cellEnd5 = forecastWs.Cells[forecastLastRow, 5] as Excel.Range;
-                        forecastSeries.Values = forecastWs.get_Range(cellStart5, cellEnd5);
-
-                        Excel.Range cellStart6 = forecastWs.Cells[forecastFirstRow, 1] as Excel.Range;
-                        Excel.Range cellEnd6 = forecastWs.Cells[forecastLastRow, 1] as Excel.Range;
-                        forecastSeries.XValues = forecastWs.get_Range(cellStart6, cellEnd6);
-
-                        forecastSeries.ChartType = Excel.XlChartType.xlLine;
-
-                        forecastSeries.Format.Line.ForeColor.RGB = System.Drawing.Color.Red.ToArgb();
-
-                        // Set line style to dashed using numeric value to avoid Office.Core dependency
-                        // 2 = msoLineDash (dashed line style)
-                        try
-                        {
-                            forecastSeries.Format.Line.DashStyle = 2;
-                        }
-                        catch
-                        {
-                            // If setting dash style fails, line will be solid (still red)
-                        }
-
-                        forecastSeries.Format.Line.Weight = 2;
-
-                    }
-
-
-
-                    // Set chart title
-
-                    chart.HasTitle = true;
-
-                    chart.ChartTitle.Text = "Sales Trend and Forecast";
-
-
-
-                    // Format axes
-
-                    Excel.Axis valueAxis = chart.Axes(Excel.XlAxisType.xlValue) as Excel.Axis;
-                    if (valueAxis != null)
-                    {
-                        valueAxis.TickLabels.NumberFormat = "$#,##0";
-                    }
-
-                    // Category axis formatting (CategoryType may not be available on all chart types)
-                    // Excel.Axis categoryAxis = chart.Axes(Excel.XlAxisType.xlCategory) as Excel.Axis;
-                    // Category axis will use default settings
-
-
-
-                    // Position legend
-
-                    chart.HasLegend = true;
-
-                    chart.Legend.Position = Excel.XlLegendPosition.xlLegendPositionBottom;
-
-                }
-
-
-
-                workbook.Save();
-
-                workbook.Close();
-
-            }
-
-            catch (System.IO.FileNotFoundException ex) when (ex.Message.Contains("office", StringComparison.OrdinalIgnoreCase) || ex.Message.Contains("Office", StringComparison.OrdinalIgnoreCase))
-
-            {
-
-                // Office assembly not found - Excel/Office may not be installed or Office PIA not available
-
-                // Data export was successful, charts are optional - silently continue
-
-                System.Diagnostics.Debug.WriteLine($"Office assembly not found. Charts skipped. Error: {ex.Message}");
-
-            }
-
-            catch (System.Reflection.ReflectionTypeLoadException ex) when (ex.Message.Contains("office", StringComparison.OrdinalIgnoreCase) || ex.Message.Contains("Office", StringComparison.OrdinalIgnoreCase))
-
-            {
-
-                // Office assembly loading failed
-
-                System.Diagnostics.Debug.WriteLine($"Office assembly could not be loaded. Charts skipped. Error: {ex.Message}");
-
-            }
-
-            catch (COMException ex)
-
-            {
-
-                // COM interop error - Excel may not be installed
-
-                System.Diagnostics.Debug.WriteLine($"COM interop error. Charts skipped. Error: {ex.Message}");
-
-            }
-
-            catch (Exception ex) when (ex.Message.Contains("office", StringComparison.OrdinalIgnoreCase) || ex.Message.Contains("Office", StringComparison.OrdinalIgnoreCase) || ex.Message.Contains("assembly", StringComparison.OrdinalIgnoreCase))
-
-            {
-
-                // Office/assembly related errors - silently skip chart creation
-
-                System.Diagnostics.Debug.WriteLine($"Error creating charts (Office assembly issue). Charts skipped. Error: {ex.Message}");
-
-            }
-
-            catch (Exception ex)
-
-            {
-
-                // Other unexpected errors - log but don't show message to user
-
-                System.Diagnostics.Debug.WriteLine($"Unexpected error creating charts: {ex.Message}");
-
-            }
-
-            finally
-
-            {
-
-                try
-
-                {
-
-                    if (workbook != null)
-
-                    {
-
-                        workbook.Close(false); // Close without saving (already saved above)
-
-                        Marshal.ReleaseComObject(workbook);
-
-                        workbook = null;
-
-                    }
-
-                }
-
-                catch { }
-
-                try
-
-                {
-
-                    if (excelApp != null)
-
-                    {
-
-                        excelApp.Quit();
-
-                        Marshal.ReleaseComObject(excelApp);
-
-                        excelApp = null;
-
-                    }
-
-                }
-
-                catch { }
 
             }
 
