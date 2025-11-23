@@ -26,6 +26,8 @@ namespace BakeryBI
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            InitializeMaxMinProductsChart();
+            InitializeSalesOverTimeChart();
             LoadData();
             PopulateFilters();
             ApplyFilters();
@@ -110,7 +112,7 @@ namespace BakeryBI
 
             // Apply Date Range filter
             DateTime dateFrom = dtpFrom.Value.Date;
-            DateTime dateTo = dtpTo.Value.Date.AddDays(1).AddSeconds(-1); // End of day
+            DateTime dateTo = dtpTo.Value.Date.AddDays(1).AddSeconds(-1);
             filteredData = filteredData.Where(r => r.TransactionDate >= dateFrom && r.TransactionDate <= dateTo).ToList();
 
             // Apply Store filter
@@ -162,16 +164,27 @@ namespace BakeryBI
                     Period = $"{g.Key.MonthName} {g.Key.Year}",
                     TotalSales = g.Sum(r => r.FinalAmount),
                     Year = g.Key.Year,
-                    Month = g.Key.Month
+                    Month = g.Key.Month,
+                    SortKey = new DateTime(g.Key.Year, g.Key.Month, 1)
                 })
-                .OrderBy(x => x.Year)
-                .ThenBy(x => x.Month)
+                .OrderBy(x => x.SortKey)
                 .ToList();
 
+            // ADD EACH MONTH TO CHART
             foreach (var item in timeData)
             {
-                chartSalesOverTime.Series["Sales"].Points.AddXY(item.Period, item.TotalSales);
+                int pointIndex = chartSalesOverTime.Series["Sales"].Points.AddXY(
+                    item.SortKey.ToOADate(),
+                    (double)item.TotalSales       // Cast to double
+                );
+                chartSalesOverTime.Series["Sales"].Points[pointIndex].Label = $"${item.TotalSales:N0}";
+                chartSalesOverTime.Series["Sales"].Points[pointIndex].Font = new Font("Arial", 8F);
             }
+
+            var chartArea = chartSalesOverTime.ChartAreas[0];
+            chartArea.AxisX.Minimum = timeData.First().SortKey.ToOADate();
+            chartArea.AxisX.Maximum = timeData.Last().SortKey.ToOADate();
+            chartArea.RecalculateAxesScale();
         }
 
         private void UpdateSalesOverTimeDataGrid()
@@ -224,7 +237,9 @@ namespace BakeryBI
 
         private void UpdateMaxMinProductsChart()
         {
-            chartMaxMinProducts.Series["Sales"].Points.Clear();
+            var salesSeries = chartMaxMinProducts.Series["Sales"];
+            salesSeries.Points.Clear();
+            salesSeries.ChartType = SeriesChartType.Column;
 
             if (filteredData == null || filteredData.Count == 0)
             {
@@ -235,55 +250,66 @@ namespace BakeryBI
 
             var productSales = filteredData
                 .GroupBy(r => r.ProductName)
-                .Select(g => new
-                {
-                    Product = g.Key,
-                    TotalSales = g.Sum(r => r.FinalAmount)
-                })
+                .Select(g => new { Product = g.Key, TotalSales = g.Sum(r => r.FinalAmount) })
                 .OrderByDescending(x => x.TotalSales)
                 .ToList();
 
-            if (productSales.Count == 0)
-            {
-                lblMaxProduct.Text = "MAX: No data";
-                lblMinProduct.Text = "MIN: No data";
-                return;
-            }
+            if (productSales.Count == 0) return;
 
-            // Find max and min
             var maxProduct = productSales.First();
             var minProduct = productSales.Last();
 
-            // Update labels
             lblMaxProduct.Text = $"MAX: {maxProduct.Product} - ${maxProduct.TotalSales:N2}";
+            lblMaxProduct.ForeColor = Color.Green;
             lblMinProduct.Text = $"MIN: {minProduct.Product} - ${minProduct.TotalSales:N2}";
+            lblMinProduct.ForeColor = Color.Red;
 
-            // Add all products to chart
+            // Add all points
+            int index = 0;
             foreach (var item in productSales)
             {
-                int pointIndex = chartMaxMinProducts.Series["Sales"].Points.AddXY(item.Product, item.TotalSales);
+                int pointIndex = salesSeries.Points.AddXY(index, (double)item.TotalSales);
 
-                // Highlight MAX in green
                 if (item.Product == maxProduct.Product)
                 {
-                    chartMaxMinProducts.Series["Sales"].Points[pointIndex].Color = Color.Green;
-                    chartMaxMinProducts.Series["Sales"].Points[pointIndex].Label = $"MAX\n${item.TotalSales:N0}";
-                    chartMaxMinProducts.Series["Sales"].Points[pointIndex].LabelForeColor = Color.DarkGreen;
-                    chartMaxMinProducts.Series["Sales"].Points[pointIndex].Font = new Font("Arial", 9, FontStyle.Bold);
+                    salesSeries.Points[pointIndex].Color = Color.Green;
+                    salesSeries.Points[pointIndex].Label = $"MAX\n${item.TotalSales:N0}";
+                    salesSeries.Points[pointIndex].LabelForeColor = Color.DarkGreen;
+                    salesSeries.Points[pointIndex].Font = new Font("Arial", 9, FontStyle.Bold);
                 }
-                // Highlight MIN in red
                 else if (item.Product == minProduct.Product)
                 {
-                    chartMaxMinProducts.Series["Sales"].Points[pointIndex].Color = Color.Red;
-                    chartMaxMinProducts.Series["Sales"].Points[pointIndex].Label = $"MIN\n${item.TotalSales:N0}";
-                    chartMaxMinProducts.Series["Sales"].Points[pointIndex].LabelForeColor = Color.DarkRed;
-                    chartMaxMinProducts.Series["Sales"].Points[pointIndex].Font = new Font("Arial", 9, FontStyle.Bold);
+                    salesSeries.Points[pointIndex].Color = Color.Red;
+                    salesSeries.Points[pointIndex].Label = $"MIN\n${item.TotalSales:N0}";
+                    salesSeries.Points[pointIndex].LabelForeColor = Color.DarkRed;
+                    salesSeries.Points[pointIndex].Font = new Font("Arial", 9, FontStyle.Bold);
                 }
                 else
                 {
-                    chartMaxMinProducts.Series["Sales"].Points[pointIndex].Color = Color.SteelBlue;
+                    salesSeries.Points[pointIndex].Color = Color.SteelBlue;
                 }
+                index++;
             }
+
+            var chartArea = chartMaxMinProducts.ChartAreas[0];
+            chartArea.AxisX.CustomLabels.Clear();
+
+            for (int i = 0; i < productSales.Count; i++)
+            {
+                CustomLabel label = new CustomLabel();
+                label.FromPosition = i - 0.5;
+                label.ToPosition = i + 0.5;
+                label.Text = productSales[i].Product;  // Set product name
+                chartArea.AxisX.CustomLabels.Add(label);
+            }
+
+            chartArea.AxisX.Minimum = -0.5;
+            chartArea.AxisX.Maximum = productSales.Count - 0.5;
+            chartArea.AxisX.Interval = 1;
+            chartArea.AxisX.LabelStyle.Angle = -45;
+            chartArea.AxisX.LabelStyle.Font = new Font("Arial", 9, FontStyle.Bold);
+            chartArea.RecalculateAxesScale();
+            chartMaxMinProducts.Invalidate();
         }
 
         private void UpdateMaxMinProductsDataGrid()
@@ -316,11 +342,13 @@ namespace BakeryBI
 
             dgvProductSales.DataSource = dt;
 
+           
+            dgvProductSales.ColumnHeadersVisible = true;
+
             // Format currency column
             if (dgvProductSales.Columns.Contains("Total Sales"))
                 dgvProductSales.Columns["Total Sales"].DefaultCellStyle.Format = "C2";
         }
-
         #endregion
 
         //Sales analysis
@@ -469,197 +497,77 @@ namespace BakeryBI
             chartEvolutionOfProfits.Titles.Add("Evolution of Monthly Profit by Store");
             chartEvolutionOfProfits.ChartAreas["ProfitArea"].RecalculateAxesScale();
         }
-
-        private void InitializeCustomControlsAndEventsForSalesAnalysis()
+        private void InitializeSalesOverTimeChart()
         {
-            cmbForecastMonths.Items.AddRange(Enumerable.Range(1, 12).Cast<object>().ToArray());
-            cmbForecastMonths.SelectedIndex = 2;
+            chartSalesOverTime.Series.Clear();
+            chartSalesOverTime.ChartAreas.Clear();
 
-            PopulateClientTypeFilters();
-            InitializeDefaultStoreFiler();
+            // Create Chart Area
+            ChartArea chartArea = new ChartArea("SalesArea");
+            chartArea.AxisX.Title = "Time Period (Month-Year)";
+            chartArea.AxisY.Title = "Sales Amount ($)";
 
-            PopulateStoreFilters();
+            // Configure X-axis for DateTime
+            chartArea.AxisX.IntervalType = DateTimeIntervalType.Months;
+            chartArea.AxisX.LabelStyle.Format = "MMM yyyy";
+            chartArea.AxisX.LabelStyle.Angle = -45;
+            chartArea.AxisX.MajorGrid.LineColor = Color.LightGray;
+            chartArea.AxisY.MajorGrid.LineColor = Color.LightGray;
+            chartArea.BackColor = Color.WhiteSmoke;
+            chartSalesOverTime.ChartAreas.Add(chartArea);
 
-            tabControl.SelectedIndexChanged += tabControl_SelectedIndexChanged;
+            // Create Series
+            Series series = new Series("Sales");
+            series.ChartType = SeriesChartType.Line;
+            series.Color = Color.Green;
+            series.BorderWidth = 3;
+            series.MarkerStyle = MarkerStyle.Circle;
+            series.MarkerSize = 8;
+            series.MarkerColor = Color.DarkGreen;
+            series.XValueType = ChartValueType.DateTime;
+            chartSalesOverTime.Series.Add(series);
 
-            cmbForecastMonths.SelectedIndexChanged += cmbForecastMonths_SelectedIndexChanged;
+            // Add Legend
+            Legend legend = new Legend();
+            legend.Docking = Docking.Top;
+            chartSalesOverTime.Legends.Add(legend);
         }
-        private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
+        private void InitializeMaxMinProductsChart()
         {
-            if (tabControl.SelectedTab == tabFutureSalesEstimation)
-            {
-                cmbForecastMonths_SelectedIndexChanged(null, null);
-            }
-            else if (tabControl.SelectedTab == tabEvolutionOfProfits)
-            {
-                RenderProfitEvolutionChart(allSalesData, selectedClientTypes);
-            }
-        }
-        private void cmbForecastMonths_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cmbForecastMonths.SelectedItem != null && allSalesData.Any())
-            {
-                int forecastMonths = (int)cmbForecastMonths.SelectedItem;
-                RenderSalesEstimationChart(allSalesData, forecastMonths);
-            }
-        }
-        private void ClientTypeCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            CheckBox cb = sender as CheckBox;
-            string clientType = cb.Tag.ToString();
+            chartMaxMinProducts.Series.Clear();
+            chartMaxMinProducts.ChartAreas.Clear();
+            chartMaxMinProducts.Legends.Clear();
 
-            if (cb.Checked)
-            {
-                if (!selectedClientTypes.Contains(clientType)) selectedClientTypes.Add(clientType);
-            }
-            else
-            {
-                selectedClientTypes.Remove(clientType);
-            }
+            ChartArea chartArea = new ChartArea("ProductArea");
+            chartArea.AxisX.Title = "Product";
+            chartArea.AxisY.Title = "Sales Amount ($)";
 
-            RenderProfitEvolutionChart(allSalesData, selectedClientTypes);
-        }
 
-        private void StoreCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            CheckBox cb = sender as CheckBox;
-            string storeName = cb.Tag.ToString();
+            chartArea.AxisX.Interval = 1;
+            chartArea.AxisX.IntervalType = DateTimeIntervalType.NotSet;
+            chartArea.AxisX.IsMarginVisible = true;
 
-            if (cb.Checked)
-            {
-                if (!selectedStoreNames.Contains(storeName)) selectedStoreNames.Add(storeName);
-            }
-            else selectedStoreNames.Remove(storeName);
+            chartArea.AxisX.LabelStyle.Angle = -45;
+            chartArea.AxisX.MajorGrid.LineColor = Color.LightGray;
+            chartArea.AxisY.MajorGrid.LineColor = Color.LightGray;
+            chartArea.AxisY.IsStartedFromZero = true;
+            chartArea.BackColor = Color.LightYellow;
 
-            RenderProfitEvolutionChart(allSalesData, selectedClientTypes);
-        }
-        private void PopulateClientTypeFilters()
-        {
-            pnlClientTypeFilters.Controls.Clear();
+            chartMaxMinProducts.ChartAreas.Add(chartArea);
 
-            var clientTypes = allSalesData.Select(x => x.CustomerType).Distinct().OrderBy(x => x).ToList();
+            Series series = new Series("Sales");
+            series.ChartType = SeriesChartType.Column;
+            series.Color = Color.SteelBlue;
+            series.BorderWidth = 1;
+            series["PointWidth"] = "0.9";  // Width of bars
 
-            int xOffset = 10;
+            chartMaxMinProducts.Series.Add(series);
 
-            foreach (var clientType in clientTypes)
-            {
-                var cb = new CheckBox
-                {
-                    Text = clientType,
-                    Tag = clientType,
-                    Checked = true,
-                    Location = new Point(xOffset, 5),
-                    AutoSize = true
-                };
-
-                cb.CheckedChanged += ClientTypeCheckBox_CheckedChanged;
-
-                pnlClientTypeFilters.Controls.Add(cb);
-                xOffset += cb.Width + 10;
-            }
-            selectedClientTypes = clientTypes;
+            Legend legend = new Legend("ProductLegend");
+            legend.Docking = Docking.Top;
+            chartMaxMinProducts.Legends.Add(legend);
         }
 
-        private void PopulateStoreFilters()
-        {
-            pnlStoreFilters.Controls.Clear();
-
-            var storeNames = allSalesData.Select(x => x.StoreName).Distinct().OrderBy(x => x).ToList();
-
-            const int ColumnCount = 5;
-            const int Margin = 10;
-            const int ControlHeight = 25;
-            const int ColumnWidth = 150;
-
-            int xOffset = Margin;
-            int yOffset = Margin;
-
-            for (int i = 0; i < storeNames.Count; i++)
-            {
-                string storeName = storeNames[i];
-
-                var cb = new CheckBox
-                {
-                    Text = storeName,
-                    Tag = storeName,
-                    Checked = true,
-                    Location = new Point(xOffset, yOffset),
-                    Width = ColumnWidth - Margin,
-                    AutoSize = false
-                };
-
-                cb.CheckedChanged += StoreCheckBox_CheckedChanged;
-
-                pnlStoreFilters.Controls.Add(cb);
-
-                if ((i + 1) % ColumnCount == 0)
-                {
-                    xOffset = Margin;
-                    yOffset += ControlHeight + Margin;
-                }
-                else xOffset += ColumnWidth;
-            }
-            selectedStoreNames = storeNames;
-        }
-        private void InitializeDefaultStoreFiler()
-        {
-            if (allSalesData == null || !allSalesData.Any()) return;
-            selectedStoreNames = allSalesData.Select(x => x.StoreName).Distinct().OrderBy(x => x).ToList();
-        }
-
-        private void SyncClientTypeCheckBoxStates()
-        {
-            // Iterate through all CheckBox controls in the filter panel
-            foreach (CheckBox cb in pnlClientTypeFilters.Controls.OfType<CheckBox>())
-            {
-                string clientType = cb.Tag.ToString();
-
-                // If the global list contains the client type, the box should be checked.
-                cb.Checked = selectedClientTypes.Contains(clientType);
-            }
-        }
-        private void SyncStoreCheckBoxStates()
-        {
-            if (filteredData == null || !filteredData.Any()) return;
-
-            // 1. Determine which stores still exist in the data after primary filtering
-            var storesInCurrentData = filteredData.Select(r => r.StoreName).Distinct().ToList();
-
-            // 2. Iterate through all CheckBox controls in the filter panel (assuming pnlStoreFilters still exists)
-            foreach (CheckBox cb in pnlStoreFilters.Controls.OfType<CheckBox>())
-            {
-                string storeName = cb.Tag.ToString();
-
-                // Disable the checkbox if the store doesn't exist in the current filtered data, 
-                // but keep the checked state based on the global filter list.
-                cb.Enabled = storesInCurrentData.Contains(storeName);
-
-                // Crucial: The CHECKED state must still reflect the user's manual selection (selectedStoreNames)
-                cb.Checked = selectedStoreNames.Contains(storeName);
-
-                // Optional: Add visual cue for disabled control
-                if (!cb.Enabled)
-                {
-                    cb.ForeColor = Color.DarkGray;
-                }
-                else
-                {
-                    cb.ForeColor = Color.Black;
-                }
-            }
-        }
-        private void UpdateFutureSalesEstimationTab()
-        {
-            if (cmbForecastMonths.SelectedItem != null && filteredData.Any())
-            {
-                int forecastMonths = (int)cmbForecastMonths.SelectedItem;
-                RenderSalesEstimationChart(filteredData, forecastMonths);
-            }
-        }
-
-        private void UpdateEvolutionOfProfitsTab()
-        {
-            RenderProfitEvolutionChart(filteredData, selectedClientTypes);
-        }
+     
     }
 }

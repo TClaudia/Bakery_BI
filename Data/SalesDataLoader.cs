@@ -55,7 +55,7 @@ namespace BakeryBI.Data
                     }
                     catch
                     {
-                        // Skip malformed lines
+                        
                         continue;
                     }
                 }
