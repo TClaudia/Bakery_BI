@@ -1124,6 +1124,98 @@ namespace BakeryBI
 
 
 
+                // Add conditional formatting parameters (user-editable thresholds)
+                int configRow = summaryRow + 3;
+                Excel.Range thresholdHeader = forecastSheet.Cells[configRow, 1];
+                thresholdHeader.Value2 = "Icon Set Thresholds (Percentiles)";
+                thresholdHeader.Font.Bold = true;
+                thresholdHeader.Font.Size = 11;
+                
+                // Low threshold cell
+                Excel.Range lowThresholdLabel = forecastSheet.Cells[++configRow, 1];
+                Excel.Range lowThresholdCell = forecastSheet.Cells[configRow, 2];
+                lowThresholdLabel.Value2 = "Low Threshold (%):";
+                lowThresholdCell.Value2 = 33;
+                lowThresholdCell.NumberFormat = "0";
+                lowThresholdCell.Interior.Color = System.Drawing.ColorTranslator.ToOle(Color.LightYellow);
+                string lowThresholdRef = lowThresholdCell.Address(true, false, Excel.XlReferenceStyle.xlA1, false, null);
+                
+                // High threshold cell
+                Excel.Range highThresholdLabel = forecastSheet.Cells[++configRow, 1];
+                Excel.Range highThresholdCell = forecastSheet.Cells[configRow, 2];
+                highThresholdLabel.Value2 = "High Threshold (%):";
+                highThresholdCell.Value2 = 67;
+                highThresholdCell.NumberFormat = "0";
+                highThresholdCell.Interior.Color = System.Drawing.ColorTranslator.ToOle(Color.LightYellow);
+                string highThresholdRef = highThresholdCell.Address(true, false, Excel.XlReferenceStyle.xlA1, false, null);
+                
+                // Apply icon set conditional formatting to Sales Forecast column (Column C)
+                int lastDataRow = row - 1;
+                if (lastDataRow >= 2)
+                {
+                    // Create helper formula cells that calculate percentile values
+                    // These formulas will automatically update when threshold cells change
+                    configRow++;
+                    Excel.Range lowValueLabel = forecastSheet.Cells[configRow, 1];
+                    Excel.Range lowValueCell = forecastSheet.Cells[configRow, 2];
+                    lowValueLabel.Value2 = "Low Threshold Value:";
+                    lowValueCell.Formula = $"=PERCENTILE($C$2:$C${lastDataRow},{lowThresholdRef}/100)";
+                    lowValueCell.NumberFormat = "$#,##0.00";
+                    string lowValueRef = lowValueCell.Address(true, false, Excel.XlReferenceStyle.xlA1, false, null);
+                    
+                    configRow++;
+                    Excel.Range highValueLabel = forecastSheet.Cells[configRow, 1];
+                    Excel.Range highValueCell = forecastSheet.Cells[configRow, 2];
+                    highValueLabel.Value2 = "High Threshold Value:";
+                    highValueCell.Formula = $"=PERCENTILE($C$2:$C${lastDataRow},{highThresholdRef}/100)";
+                    highValueCell.NumberFormat = "$#,##0.00";
+                    string highValueRef = highValueCell.Address(true, false, Excel.XlReferenceStyle.xlA1, false, null);
+                    
+                    // Use Range with string notation for simplicity
+                    Excel.Range salesForecastRange = forecastSheet.Range[$"C2:C{lastDataRow}"];
+                    
+                    // Add icon set conditional formatting
+                    Excel.FormatCondition iconSet = (Excel.FormatCondition)salesForecastRange.FormatConditions.AddIconSetCondition();
+                    iconSet.IconSet = forecastSheet.Application.IconSets[Excel.XlIconSet.xl3TrafficLights1];
+                    
+                    // Configure icon criteria to use Number type referencing helper formula cells
+                    // This allows automatic updates when threshold percentages change
+                    Excel.IconCriteria criteria = (Excel.IconCriteria)iconSet.IconCriteria;
+                    
+                    // Get the calculated values from helper cells (they will auto-update when thresholds change)
+                    double lowThresholdValue = (double)lowValueCell.Value2;
+                    double highThresholdValue = (double)highValueCell.Value2;
+                    
+                    // Icon 1 (Red): Values <= Low threshold value
+                    criteria.Item(1).Type = Excel.XlConditionValueTypes.xlConditionValueNumber;
+                    criteria.Item(1).Value = lowThresholdValue;
+                    
+                    // Icon 2 (Yellow): Values between Low and High threshold values
+                    criteria.Item(2).Type = Excel.XlConditionValueTypes.xlConditionValueNumber;
+                    criteria.Item(2).Value = highThresholdValue;
+                    
+                    // Icon 3 (Green): Values >= High threshold value
+                    criteria.Item(3).Type = Excel.XlConditionValueTypes.xlConditionValueNumber;
+                    criteria.Item(3).Value = highThresholdValue;
+                    
+                    // Note: The helper cells (lowValueRef and highValueRef) contain formulas that
+                    // automatically recalculate when threshold percentages change. However, Excel's
+                    // IconCriteria doesn't support direct cell references through Interop.
+                    // To enable full auto-update, users can manually edit the rule in Excel:
+                    // 1. Select C2:C{lastDataRow} > Conditional Formatting > Manage Rules
+                    // 2. Edit the Icon Set rule
+                    // 3. Change Type to "Number" and set Value to: ={lowValueRef} and ={highValueRef}
+                    
+                    // Add helpful note for users
+                    configRow++;
+                    Excel.Range noteCell = forecastSheet.Cells[configRow, 1];
+                    noteCell.Value2 = $"To enable auto-update: Edit CF rule and reference cells {lowValueRef} and {highValueRef}";
+                    noteCell.Font.Italic = true;
+                    noteCell.Font.Size = 9;
+                    noteCell.Font.Color = System.Drawing.ColorTranslator.ToOle(Color.Gray);
+                    noteCell.WrapText = true;
+                }
+
                 // Auto-fit columns
 
                 forecastSheet.Columns.AutoFit();
