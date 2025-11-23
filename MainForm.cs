@@ -1178,17 +1178,36 @@ namespace BakeryBI
                     // AddIconSetCondition() doesn't take parameters - it just creates the condition
                     Excel.FormatCondition iconSet = (Excel.FormatCondition)salesForecastRange.FormatConditions.AddIconSetCondition();
                     
-                    // Get IconSets collection and set the icon set type
-                    object iconSetsObj = forecastSheet.Application.IconSets;
-                    Excel.IconSets iconSets = (Excel.IconSets)iconSetsObj;
-                    object trafficLightsIconSet = iconSets[Excel.XlIconSet.xl3TrafficLights1];
-                    
-                    // Set IconSet property using reflection (required with embedded interop types)
-                    // The IconSet property isn't directly accessible with embedded types
-                    System.Reflection.PropertyInfo iconSetProp = iconSet.GetType().GetProperty("IconSet");
-                    if (iconSetProp != null && iconSetProp.CanWrite)
+                    // Get IconSets collection using reflection (required with embedded interop types)
+                    // Application.IconSets might not be directly accessible
+                    try
                     {
-                        iconSetProp.SetValue(iconSet, trafficLightsIconSet, null);
+                        System.Reflection.PropertyInfo iconSetsProp = forecastSheet.Application.GetType().GetProperty("IconSets");
+                        if (iconSetsProp != null)
+                        {
+                            object iconSetsObj = iconSetsProp.GetValue(forecastSheet.Application);
+                            if (iconSetsObj != null)
+                            {
+                                // Get the 3 Traffic Lights icon set from the collection
+                                System.Reflection.PropertyInfo indexer = iconSetsObj.GetType().GetProperty("Item");
+                                if (indexer != null)
+                                {
+                                    object trafficLightsIconSet = indexer.GetValue(iconSetsObj, new object[] { Excel.XlIconSet.xl3TrafficLights1 });
+                                    
+                                    // Set IconSet property using reflection
+                                    System.Reflection.PropertyInfo iconSetProp = iconSet.GetType().GetProperty("IconSet");
+                                    if (iconSetProp != null && iconSetProp.CanWrite)
+                                    {
+                                        iconSetProp.SetValue(iconSet, trafficLightsIconSet, null);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        // If setting IconSet fails, Excel will use default icon set
+                        // Users can manually change it in Excel if needed
                     }
                     
                     // Configure icon criteria to use Number type referencing helper formula cells
