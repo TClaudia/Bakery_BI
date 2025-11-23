@@ -1,0 +1,723 @@
+customer_id,store_name,transaction_date,aisle,product_name,quantity,unit_price,total_amount,discount_amount,final_amount,loyalty_points,unit_cost,total_cost,profit,profit_margin,year,month,month_name,quarter,day_of_week,week_number,customer_type,store_city,store_country
+4657,ValuePlus Market,11/23/2023,Bread & Pastries,Onions,4,7.38,29.52,4.04,25.48,301,4.797,19.188,6.292,24.69,2023,11,November,4,Thursday,47,Firm ,Bucuresti,România
+2679,SuperSave Central,1/13/2025,Cookies & Sweets,Cereal,3,5.5,16.5,1.37,15.13,490,3.575,10.725,4.405,29.11,2025,1,January,1,Monday,3,Firm ,Cluj-Napoca,România
+7912,Corner Grocery,8/31/2023,Dairy Products,Onions,3,25.04,75.12,1.77,73.35,316,16.276,48.828,24.522,33.43,2023,8,August,3,Thursday,35,Firm ,Iasi,România
+9928,City Fresh Store,6/27/2024,Cookies & Sweets,Salmon,2,8.67,17.34,0,17.34,126,5.6355,11.271,6.069,35,2024,6,June,2,Thursday,26,Firm ,Timisoara,România
+3615,MegaMart Westside,1/30/2025,Dairy Products,Rice,4,5.58,22.32,4.05,18.27,1,3.627,14.508,3.762,20.59,2025,1,January,1,Thursday,5,Firm ,Constanta,România
+7924,ValuePlus Market,4/27/2024,Dairy Products,Rice,5,18.65,93.25,18.65,74.6,78,12.1225,60.6125,13.9875,18.75,2024,4,April,2,Saturday,17,Firm ,Bucuresti,România
+4527,QuickStop Market,3/22/2025,Bread & Pastries,Milk,2,26.45,52.9,3.93,48.97,484,17.1925,34.385,14.585,29.78,2025,3,March,1,Saturday,12,Firm ,Brasov,România
+2584,QuickStop Market,5/11/2024,Cookies & Sweets,Orange Juice,4,27.08,108.32,21.66,86.66,231,17.602,70.408,16.252,18.75,2024,5,May,2,Saturday,19,Firm ,Brasov,România
+6635,FamilyFood Express,11/17/2024,Dairy Products,Cereal,1,18.05,18.05,1.28,16.77,117,11.7325,11.7325,5.0375,30.04,2024,11,November,4,Sunday,46,Firm ,Craiova,România
+5333,FreshMart Downtown,4/24/2025,Bread & Pastries,Bread,1,25.92,25.92,3.89,22.03,36,16.848,16.848,5.182,23.52,2025,4,April,2,Thursday,17,Firm ,Sibiu,România
+1711,City Fresh Store,2/23/2025,Bread & Pastries,Onions,2,21.97,43.94,8.79,35.15,451,14.2805,28.561,6.589,18.75,2025,2,February,1,Sunday,8,Firm ,Timisoara,România
+8527,City Fresh Store,9/26/2024,Cookies & Sweets,Yogurt,1,3.8,3.8,0.38,3.42,220,2.47,2.47,0.95,27.78,2024,9,September,3,Thursday,39,Firm ,Timisoara,România
+3045,Corner Grocery,7/23/2025,Coffee & Tea,Milk,1,2.75,2.75,1.99,0.76,372,1.7875,1.7875,-1.0275,-135.2,2025,7,July,3,Wednesday,30,Firm ,Iasi,România
+4150,FreshMart Downtown,2/4/2025,Cookies & Sweets,Pasta,4,9.26,37.04,7.41,29.63,356,6.019,24.076,5.554,18.74,2025,2,February,1,Tuesday,6,Firm ,Sibiu,România
+6977,GreenGrocer Plaza,12/11/2023,Dairy Products,Onions,2,15.66,31.32,4.52,26.8,67,10.179,20.358,6.442,24.04,2023,12,December,4,Monday,50,Firm ,Oradea,România
+5374,GreenGrocer Plaza,2/2/2025,Dairy Products,Onions,2,8.89,17.78,0,17.78,309,5.7785,11.557,6.223,35,2025,2,February,1,Sunday,5,Firm ,Oradea,România
+2169,MegaMart Westside,11/22/2024,Bread & Pastries,Pasta,5,15.16,75.8,3.54,72.26,463,9.854,49.27,22.99,31.82,2024,11,November,4,Friday,47,Firm ,Constanta,România
+1916,FamilyFood Express,1/31/2024,Coffee & Tea,Orange Juice,3,24.79,74.37,14.87,59.5,446,16.1135,48.3405,11.1595,18.76,2024,1,January,1,Wednesday,5,Firm ,Craiova,România
+4456,MegaMart Westside,7/16/2025,Cookies & Sweets,Carrots,1,12.16,12.16,1.82,10.34,295,7.904,7.904,2.436,23.56,2025,7,July,3,Wednesday,29,Firm ,Constanta,România
+6155,FreshMart Downtown,1/19/2024,Cookies & Sweets,Bananas,5,27.83,139.15,20.87,118.28,275,18.0895,90.4475,27.8325,23.53,2024,1,January,1,Friday,3,Firm ,Sibiu,România
+9179,Corner Grocery,6/9/2024,Dairy Products,Cereal,5,10.09,50.45,0,50.45,434,6.5585,32.7925,17.6575,35,2024,6,June,2,Sunday,23,Firm ,Iasi,România
+9830,City Fresh Store,2/27/2024,Coffee & Tea,Yogurt,5,14.71,73.55,0,73.55,461,9.5615,47.8075,25.7425,35,2024,2,February,1,Tuesday,9,Firm ,Timisoara,România
+4593,GreenGrocer Plaza,11/22/2023,Coffee & Tea,Cheese,5,6.63,33.15,3.31,29.84,356,4.3095,21.5475,8.2925,27.79,2023,11,November,4,Wednesday,47,Firm ,Oradea,România
+9348,Corner Grocery,8/24/2024,Bread & Pastries,Eggs,1,26.88,26.88,2.69,24.19,440,17.472,17.472,6.718,27.77,2024,8,August,3,Saturday,34,Firm ,Iasi,România
+1771,SuperSave Central,6/5/2025,Coffee & Tea,Carrots,5,18.26,91.3,4.26,87.04,486,11.869,59.345,27.695,31.82,2025,6,June,2,Thursday,23,Firm ,Cluj-Napoca,România
+2796,ValuePlus Market,12/3/2023,Cookies & Sweets,Onions,4,27.01,108.04,10.8,97.24,380,17.5565,70.226,27.014,27.78,2023,12,December,4,Sunday,48,Firm ,Bucuresti,România
+3621,QuickStop Market,4/13/2025,Bread & Pastries,Pasta,5,15.04,75.2,7.52,67.68,122,9.776,48.88,18.8,27.78,2025,4,April,2,Sunday,15,Firm ,Brasov,România
+2040,SuperSave Central,5/31/2024,Bread & Pastries,Tomatoes,2,21.48,42.96,4.3,38.66,32,13.962,27.924,10.736,27.77,2024,5,May,2,Friday,22,Firm ,Cluj-Napoca,România
+1188,Corner Grocery,1/16/2025,Coffee & Tea,Bananas,4,10.74,42.96,0,42.96,347,6.981,27.924,15.036,35,2025,1,January,1,Thursday,3,Firm ,Iasi,România
+2876,SuperSave Central,1/17/2025,Coffee & Tea,Eggs,5,16.48,82.4,3.26,79.14,464,10.712,53.56,25.58,32.32,2025,1,January,1,Friday,3,Firm ,Cluj-Napoca,România
+9797,FreshMart Downtown,3/12/2025,Dairy Products,Cheese,2,26.13,52.26,7.84,44.42,93,16.9845,33.969,10.451,23.53,2025,3,March,1,Wednesday,11,Firm ,Sibiu,România
+5315,QuickStop Market,8/29/2024,Dairy Products,Bananas,3,17.69,53.07,5.31,47.76,464,11.4985,34.4955,13.2645,27.77,2024,8,August,3,Thursday,35,Firm ,Brasov,România
+3927,FamilyFood Express,9/4/2024,Dairy Products,Ground Beef,1,21.21,21.21,4.13,17.08,154,13.7865,13.7865,3.2935,19.28,2024,9,September,3,Wednesday,36,Firm ,Craiova,România
+5889,City Fresh Store,5/21/2025,Dairy Products,Cheese,3,19.42,58.26,0,58.26,424,12.623,37.869,20.391,35,2025,5,May,2,Wednesday,21,Firm ,Timisoara,România
+9317,SuperSave Central,11/22/2024,Cookies & Sweets,Apples,5,28.99,144.95,14.49,130.46,138,18.8435,94.2175,36.2425,27.78,2024,11,November,4,Friday,47,Firm ,Cluj-Napoca,România
+7126,City Fresh Store,3/21/2025,Bread & Pastries,Salmon,5,18.69,93.45,2.98,90.47,194,12.1485,60.7425,29.7275,32.86,2025,3,March,1,Friday,12,Firm ,Timisoara,România
+1009,Corner Grocery,11/14/2024,Coffee & Tea,Onions,2,21.02,42.04,4.2,37.84,330,13.663,27.326,10.514,27.79,2024,11,November,4,Thursday,46,Firm ,Iasi,România
+6310,FreshMart Downtown,8/20/2024,Dairy Products,Rice,2,12.72,25.44,0,25.44,124,8.268,16.536,8.904,35,2024,8,August,3,Tuesday,34,Firm ,Sibiu,România
+1319,MegaMart Westside,11/1/2023,Coffee & Tea,Onions,5,10.96,54.8,8.22,46.58,381,7.124,35.62,10.96,23.53,2023,11,November,4,Wednesday,44,Firm ,Constanta,România
+2133,City Fresh Store,3/19/2025,Coffee & Tea,Cereal,2,28.99,57.98,4.29,53.69,129,18.8435,37.687,16.003,29.81,2025,3,March,1,Wednesday,12,Firm ,Timisoara,România
+9727,Corner Grocery,3/23/2025,Coffee & Tea,Bread,5,19.24,96.2,19.24,76.96,27,12.506,62.53,14.43,18.75,2025,3,March,1,Sunday,12,Firm ,Iasi,România
+3060,QuickStop Market,11/14/2023,Dairy Products,Ground Beef,1,17.17,17.17,2.52,14.65,213,11.1605,11.1605,3.4895,23.82,2023,11,November,4,Tuesday,46,Firm ,Brasov,România
+9645,FreshMart Downtown,6/14/2025,Cookies & Sweets,Salmon,5,14.62,73.1,10.96,62.14,16,9.503,47.515,14.625,23.54,2025,6,June,2,Saturday,24,Firm ,Sibiu,România
+7932,QuickStop Market,1/18/2024,Coffee & Tea,Bread,2,27.78,55.56,5.56,50,403,18.057,36.114,13.886,27.77,2024,1,January,1,Thursday,3,Firm ,Brasov,România
+2163,City Fresh Store,2/6/2025,Coffee & Tea,Chicken Breast,1,29.21,29.21,0,29.21,311,18.9865,18.9865,10.2235,35,2025,2,February,1,Thursday,6,Firm ,Timisoara,România
+1514,City Fresh Store,6/4/2025,Coffee & Tea,Ground Beef,4,16.98,67.92,3.03,64.89,196,11.037,44.148,20.742,31.96,2025,6,June,2,Wednesday,23,Firm ,Timisoara,România
+6413,SuperSave Central,10/1/2023,Dairy Products,Pasta,4,10.85,43.4,2.13,41.27,403,7.0525,28.21,13.06,31.65,2023,10,October,4,Sunday,39,Firm ,Cluj-Napoca,România
+9834,City Fresh Store,11/17/2023,Cookies & Sweets,Tomatoes,2,15.35,30.7,4.86,25.84,18,9.9775,19.955,5.885,22.77,2023,11,November,4,Friday,46,Firm ,Timisoara,România
+8744,MegaMart Westside,2/11/2024,Dairy Products,Salmon,1,16.24,16.24,0,16.24,233,10.556,10.556,5.684,35,2024,2,February,1,Sunday,6,Firm ,Constanta,România
+8749,SuperSave Central,4/25/2025,Cookies & Sweets,Eggs,1,14.61,14.61,2.19,12.42,496,9.4965,9.4965,2.9235,23.54,2025,4,April,2,Friday,17,Firm ,Cluj-Napoca,România
+8062,GreenGrocer Plaza,5/8/2024,Cookies & Sweets,Chicken Breast,1,13.86,13.86,1.18,12.68,355,9.009,9.009,3.671,28.95,2024,5,May,2,Wednesday,19,Firm ,Oradea,România
+1887,SuperSave Central,1/11/2025,Bread & Pastries,Salmon,3,14.32,42.96,4.3,38.66,341,9.308,27.924,10.736,27.77,2025,1,January,1,Saturday,2,Firm ,Cluj-Napoca,România
+4139,MegaMart Westside,1/1/2024,Bread & Pastries,Yogurt,5,8.26,41.3,0,41.3,386,5.369,26.845,14.455,35,2024,1,January,1,Monday,1,Firm ,Constanta,România
+3296,SuperSave Central,6/29/2024,Dairy Products,Rice,3,22.67,68.01,13.6,54.41,89,14.7355,44.2065,10.2035,18.75,2024,6,June,2,Saturday,26,Firm ,Cluj-Napoca,România
+4872,City Fresh Store,12/14/2023,Dairy Products,Chicken Breast,2,26.72,53.44,5.34,48.1,69,17.368,34.736,13.364,27.78,2023,12,December,4,Thursday,50,Firm ,Timisoara,România
+8886,GreenGrocer Plaza,1/20/2024,Coffee & Tea,Cheese,3,1.94,5.82,0.58,5.24,189,1.261,3.783,1.457,27.81,2024,1,January,1,Saturday,3,Firm ,Oradea,România
+7570,City Fresh Store,7/7/2025,Bread & Pastries,Orange Juice,1,29.44,29.44,2.59,26.85,188,19.136,19.136,7.714,28.73,2025,7,July,3,Monday,28,Firm ,Timisoara,România
+1960,FamilyFood Express,12/12/2023,Dairy Products,Salmon,1,20.21,20.21,4.15,16.06,328,13.1365,13.1365,2.9235,18.2,2023,12,December,4,Tuesday,50,Firm ,Craiova,România
+9883,City Fresh Store,9/23/2023,Dairy Products,Bread,3,18.63,55.89,8.38,47.51,33,12.1095,36.3285,11.1815,23.54,2023,9,September,3,Saturday,38,Firm ,Timisoara,România
+8811,MegaMart Westside,8/31/2024,Coffee & Tea,Tomatoes,4,22.15,88.6,13.29,75.31,160,14.3975,57.59,17.72,23.53,2024,8,August,3,Saturday,35,Firm ,Constanta,România
+2312,GreenGrocer Plaza,5/29/2025,Cookies & Sweets,Orange Juice,4,26.16,104.64,15.7,88.94,369,17.004,68.016,20.924,23.53,2025,5,May,2,Thursday,22,Firm ,Oradea,România
+5033,FreshMart Downtown,10/29/2024,Dairy Products,Carrots,2,11.9,23.8,4.76,19.04,232,7.735,15.47,3.57,18.75,2024,10,October,4,Tuesday,44,Firm ,Sibiu,România
+9565,City Fresh Store,4/8/2024,Cookies & Sweets,Pasta,2,22.88,45.76,4.58,41.18,58,14.872,29.744,11.436,27.77,2024,4,April,2,Monday,15,Firm ,Timisoara,România
+5915,FreshMart Downtown,7/27/2024,Cookies & Sweets,Bananas,4,27.7,110.8,2.72,108.08,441,18.005,72.02,36.06,33.36,2024,7,July,3,Saturday,30,Firm ,Sibiu,România
+8508,GreenGrocer Plaza,12/1/2024,Cookies & Sweets,Rice,3,7.42,22.26,3.04,19.22,398,4.823,14.469,4.751,24.72,2024,12,December,4,Sunday,48,Firm ,Oradea,România
+9808,SuperSave Central,1/19/2024,Bread & Pastries,Chicken Breast,2,8.41,16.82,0,16.82,88,5.4665,10.933,5.887,35,2024,1,January,1,Friday,3,Firm ,Cluj-Napoca,România
+5002,Corner Grocery,5/20/2024,Coffee & Tea,Onions,1,14.03,14.03,2.1,11.93,414,9.1195,9.1195,2.8105,23.56,2024,5,May,2,Monday,21,Firm ,Iasi,România
+2697,ValuePlus Market,8/5/2025,Cookies & Sweets,Cereal,2,20.42,40.84,0,40.84,424,13.273,26.546,14.294,35,2025,8,August,3,Tuesday,32,Firm ,Bucuresti,România
+2891,City Fresh Store,6/28/2025,Bread & Pastries,Ground Beef,2,5.48,10.96,4.08,6.88,151,3.562,7.124,-0.244,-3.55,2025,6,June,2,Saturday,26,Firm ,Timisoara,România
+5616,QuickStop Market,11/18/2024,Coffee & Tea,Ground Beef,5,7.93,39.65,7.93,31.72,494,5.1545,25.7725,5.9475,18.75,2024,11,November,4,Monday,47,Firm ,Brasov,România
+6617,SuperSave Central,1/12/2024,Bread & Pastries,Eggs,3,2.5,7.5,4.74,2.76,246,1.625,4.875,-2.115,-76.63,2024,1,January,1,Friday,2,Firm ,Cluj-Napoca,România
+5325,ValuePlus Market,9/2/2024,Dairy Products,Rice,1,23.12,23.12,1.59,21.53,139,15.028,15.028,6.502,30.2,2024,9,September,3,Monday,36,Firm ,Bucuresti,România
+9004,Corner Grocery,2/18/2024,Dairy Products,Ground Beef,4,26.64,106.56,10.66,95.9,476,17.316,69.264,26.636,27.77,2024,2,February,1,Sunday,7,Firm ,Iasi,România
+1832,FreshMart Downtown,10/17/2023,Cookies & Sweets,Carrots,3,7.83,23.49,4.7,18.79,41,5.0895,15.2685,3.5215,18.74,2023,10,October,4,Tuesday,42,Firm ,Sibiu,România
+3088,City Fresh Store,9/8/2023,Cookies & Sweets,Cereal,2,15.38,30.76,2.07,28.69,254,9.997,19.994,8.696,30.31,2023,9,September,3,Friday,36,Firm ,Timisoara,România
+6050,GreenGrocer Plaza,5/16/2024,Cookies & Sweets,Bread,4,18.46,73.84,2.18,71.66,421,11.999,47.996,23.664,33.02,2024,5,May,2,Thursday,20,Firm ,Oradea,România
+1653,GreenGrocer Plaza,7/5/2025,Dairy Products,Cereal,3,9.88,29.64,5.93,23.71,308,6.422,19.266,4.444,18.74,2025,7,July,3,Saturday,27,Firm ,Oradea,România
+7658,GreenGrocer Plaza,12/1/2024,Bread & Pastries,Orange Juice,3,12.09,36.27,1.61,34.66,290,7.8585,23.5755,11.0845,31.98,2024,12,December,4,Sunday,48,Firm ,Oradea,România
+3662,ValuePlus Market,4/19/2025,Cookies & Sweets,Onions,1,8.58,8.58,1.72,6.86,133,5.577,5.577,1.283,18.7,2025,4,April,2,Saturday,16,Firm ,Bucuresti,România
+3900,QuickStop Market,6/21/2025,Coffee & Tea,Yogurt,1,4.93,4.93,0.99,3.94,37,3.2045,3.2045,0.7355,18.67,2025,6,June,2,Saturday,25,Firm ,Brasov,România
+7755,City Fresh Store,8/26/2023,Dairy Products,Cereal,3,21.57,64.71,9.71,55,281,14.0205,42.0615,12.9385,23.52,2023,8,August,3,Saturday,34,Firm ,Timisoara,România
+6442,FamilyFood Express,4/5/2025,Coffee & Tea,Bananas,3,17.06,51.18,1.52,49.66,188,11.089,33.267,16.393,33.01,2025,4,April,2,Saturday,14,Firm ,Craiova,România
+7745,GreenGrocer Plaza,4/21/2025,Dairy Products,Rice,4,29.98,119.92,2.64,117.28,368,19.487,77.948,39.332,33.54,2025,4,April,2,Monday,17,Firm ,Oradea,România
+1634,MegaMart Westside,6/3/2025,Bread & Pastries,Orange Juice,5,26.94,134.7,20.2,114.5,433,17.511,87.555,26.945,23.53,2025,6,June,2,Tuesday,23,Firm ,Constanta,România
+4728,City Fresh Store,1/27/2024,Dairy Products,Milk,2,13.74,27.48,5.5,21.98,247,8.931,17.862,4.118,18.74,2024,1,January,1,Saturday,4,Firm ,Timisoara,România
+5573,QuickStop Market,5/5/2024,Coffee & Tea,Bananas,1,28.4,28.4,5.68,22.72,258,18.46,18.46,4.26,18.75,2024,5,May,2,Sunday,18,Firm ,Brasov,România
+5349,GreenGrocer Plaza,9/5/2023,Cookies & Sweets,Orange Juice,3,17.17,51.51,10.3,41.21,187,11.1605,33.4815,7.7285,18.75,2023,9,September,3,Tuesday,36,Firm ,Oradea,România
+2776,ValuePlus Market,11/12/2024,Cookies & Sweets,Carrots,1,2.3,2.3,0.23,2.07,70,1.495,1.495,0.575,27.78,2024,11,November,4,Tuesday,46,Firm ,Bucuresti,România
+8119,ValuePlus Market,5/1/2024,Coffee & Tea,Eggs,5,26.89,134.45,2.27,132.18,71,17.4785,87.3925,44.7875,33.88,2024,5,May,2,Wednesday,18,Firm ,Bucuresti,România
+9379,QuickStop Market,11/4/2023,Coffee & Tea,Bananas,3,10.6,31.8,2.23,29.57,56,6.89,20.67,8.9,30.1,2023,11,November,4,Saturday,44,Firm ,Brasov,România
+8144,Corner Grocery,8/8/2023,Bread & Pastries,Cheese,5,23.46,117.3,0,117.3,471,15.249,76.245,41.055,35,2023,8,August,3,Tuesday,32,Firm ,Iasi,România
+9821,SuperSave Central,1/21/2025,Coffee & Tea,Onions,3,16.83,50.49,2.94,47.55,346,10.9395,32.8185,14.7315,30.98,2025,1,January,1,Tuesday,4,Firm ,Cluj-Napoca,România
+8066,FamilyFood Express,9/30/2023,Coffee & Tea,Cereal,4,11.11,44.44,6.67,37.77,478,7.2215,28.886,8.884,23.52,2023,9,September,3,Saturday,39,Firm ,Craiova,România
+3041,City Fresh Store,2/16/2025,Bread & Pastries,Yogurt,5,8.85,44.25,8.85,35.4,287,5.7525,28.7625,6.6375,18.75,2025,2,February,1,Sunday,7,Firm ,Timisoara,România
+3085,Corner Grocery,1/3/2024,Coffee & Tea,Apples,3,26.42,79.26,3.41,75.85,4,17.173,51.519,24.331,32.08,2024,1,January,1,Wednesday,1,Firm ,Iasi,România
+7211,FamilyFood Express,1/14/2025,Dairy Products,Cereal,2,22.19,44.38,0,44.38,331,14.4235,28.847,15.533,35,2025,1,January,1,Tuesday,3,Firm ,Craiova,România
+5930,Corner Grocery,6/17/2024,Cookies & Sweets,Carrots,3,3.51,10.53,2.11,8.42,342,2.2815,6.8445,1.5755,18.71,2024,6,June,2,Monday,25,Firm ,Iasi,România
+9977,SuperSave Central,5/15/2025,Coffee & Tea,Cereal,2,1.19,2.38,0.24,2.14,196,0.7735,1.547,0.593,27.71,2025,5,May,2,Thursday,20,Firm ,Cluj-Napoca,România
+5700,MegaMart Westside,1/17/2024,Bread & Pastries,Milk,1,14.49,14.49,0,14.49,81,9.4185,9.4185,5.0715,35,2024,1,January,1,Wednesday,3,Firm ,Constanta,România
+8238,FamilyFood Express,7/15/2024,Bread & Pastries,Bread,5,13.95,69.75,4.67,65.08,360,9.0675,45.3375,19.7425,30.34,2024,7,July,3,Monday,29,Firm ,Craiova,România
+4848,Corner Grocery,1/10/2025,Coffee & Tea,Tomatoes,4,3.32,13.28,0,13.28,493,2.158,8.632,4.648,35,2025,1,January,1,Friday,2,Firm ,Iasi,România
+6085,MegaMart Westside,1/28/2024,Dairy Products,Apples,5,12.39,61.95,4.02,57.93,65,8.0535,40.2675,17.6625,30.49,2024,1,January,1,Sunday,4,Firm ,Constanta,România
+4262,QuickStop Market,11/29/2023,Coffee & Tea,Onions,4,16.42,65.68,13.14,52.54,421,10.673,42.692,9.848,18.74,2023,11,November,4,Wednesday,48,Firm ,Brasov,România
+2193,FreshMart Downtown,7/25/2024,Bread & Pastries,Milk,4,13.72,54.88,1.56,53.32,276,8.918,35.672,17.648,33.1,2024,7,July,3,Thursday,30,Firm ,Sibiu,România
+7790,QuickStop Market,6/25/2025,Bread & Pastries,Cereal,5,18.33,91.65,18.33,73.32,344,11.9145,59.5725,13.7475,18.75,2025,6,June,2,Wednesday,26,Firm ,Brasov,România
+3417,ValuePlus Market,12/28/2024,Coffee & Tea,Ground Beef,2,9.71,19.42,1.94,17.48,362,6.3115,12.623,4.857,27.79,2024,12,December,4,Saturday,52,Firm ,Bucuresti,România
+2746,QuickStop Market,4/2/2025,Bread & Pastries,Cereal,1,27.73,27.73,3.14,24.59,433,18.0245,18.0245,6.5655,26.7,2025,4,April,2,Wednesday,14,Firm ,Brasov,România
+3881,ValuePlus Market,4/22/2025,Bread & Pastries,Potatoes,2,26.2,52.4,1.85,50.55,170,17.03,34.06,16.49,32.62,2025,4,April,2,Tuesday,17,Firm ,Bucuresti,România
+9486,FamilyFood Express,8/1/2024,Dairy Products,Potatoes,2,21.16,42.32,4.23,38.09,360,13.754,27.508,10.582,27.78,2024,8,August,3,Thursday,31,Firm ,Craiova,România
+8612,SuperSave Central,1/6/2025,Bread & Pastries,Cereal,2,12.01,24.02,2.4,21.62,426,7.8065,15.613,6.007,27.78,2025,1,January,1,Monday,2,Firm ,Cluj-Napoca,România
+9270,FamilyFood Express,7/3/2024,Dairy Products,Eggs,1,7.33,7.33,3.47,3.86,233,4.7645,4.7645,-0.9045,-23.43,2024,7,July,3,Wednesday,27,Firm ,Craiova,România
+8777,GreenGrocer Plaza,7/21/2024,Dairy Products,Carrots,2,7.98,15.96,2.39,13.57,317,5.187,10.374,3.196,23.55,2024,7,July,3,Sunday,29,Firm ,Oradea,România
+5246,QuickStop Market,3/12/2025,Cookies & Sweets,Bread,3,28.81,86.43,0,86.43,235,18.7265,56.1795,30.2505,35,2025,3,March,1,Wednesday,11,Firm ,Brasov,România
+4919,FreshMart Downtown,3/7/2024,Dairy Products,Pasta,5,17.33,86.65,13,73.65,16,11.2645,56.3225,17.3275,23.53,2024,3,March,1,Thursday,10,Firm ,Sibiu,România
+8206,FreshMart Downtown,10/6/2023,Bread & Pastries,Eggs,4,27.93,111.72,1.96,109.76,153,18.1545,72.618,37.142,33.84,2023,10,October,4,Friday,40,Firm ,Sibiu,România
+3267,QuickStop Market,12/2/2023,Bread & Pastries,Bread,1,8.76,8.76,0,8.76,194,5.694,5.694,3.066,35,2023,12,December,4,Saturday,48,Firm ,Brasov,România
+4505,Corner Grocery,9/25/2023,Dairy Products,Bananas,1,11.25,11.25,1.12,10.13,47,7.3125,7.3125,2.8175,27.81,2023,9,September,3,Monday,39,Firm ,Iasi,România
+8633,QuickStop Market,6/24/2024,Cookies & Sweets,Rice,4,23.69,94.76,18.95,75.81,184,15.3985,61.594,14.216,18.75,2024,6,June,2,Monday,26,Firm ,Brasov,România
+7865,GreenGrocer Plaza,9/28/2024,Coffee & Tea,Potatoes,5,12.61,63.05,1.15,61.9,259,8.1965,40.9825,20.9175,33.79,2024,9,September,3,Saturday,39,Firm ,Oradea,România
+8140,MegaMart Westside,8/18/2024,Cookies & Sweets,Salmon,5,21.01,105.05,2.93,102.12,77,13.6565,68.2825,33.8375,33.14,2024,8,August,3,Sunday,33,Firm ,Constanta,România
+1475,QuickStop Market,6/4/2024,Cookies & Sweets,Bread,1,25.1,25.1,3.77,21.33,373,16.315,16.315,5.015,23.51,2024,6,June,2,Tuesday,23,Firm ,Brasov,România
+8657,ValuePlus Market,7/21/2025,Cookies & Sweets,Salmon,2,24.12,48.24,9.65,38.59,322,15.678,31.356,7.234,18.75,2025,7,July,3,Monday,30,Firm ,Bucuresti,România
+3091,Corner Grocery,12/2/2024,Cookies & Sweets,Bananas,5,26.6,133,13.3,119.7,230,17.29,86.45,33.25,27.78,2024,12,December,4,Monday,49,Firm ,Iasi,România
+9751,FreshMart Downtown,8/27/2023,Bread & Pastries,Yogurt,3,22.81,68.43,1.41,67.02,414,14.8265,44.4795,22.5405,33.63,2023,8,August,3,Sunday,34,Firm ,Sibiu,România
+8022,MegaMart Westside,11/20/2023,Coffee & Tea,Apples,3,27.63,82.89,0,82.89,302,17.9595,53.8785,29.0115,35,2023,11,November,4,Monday,47,Firm ,Constanta,România
+7211,SuperSave Central,4/17/2024,Coffee & Tea,Onions,2,17.08,34.16,6.83,27.33,250,11.102,22.204,5.126,18.76,2024,4,April,2,Wednesday,16,Firm ,Cluj-Napoca,România
+6355,SuperSave Central,4/25/2024,Bread & Pastries,Tomatoes,5,15.65,78.25,0,78.25,253,10.1725,50.8625,27.3875,35,2024,4,April,2,Thursday,17,Firm ,Cluj-Napoca,România
+7211,City Fresh Store,3/10/2024,Cookies & Sweets,Salmon,4,5.84,23.36,4.67,18.69,289,3.796,15.184,3.506,18.76,2024,3,March,1,Sunday,10,Firm ,Timisoara,România
+1317,FreshMart Downtown,3/10/2025,Coffee & Tea,Onions,2,29.69,59.38,8.91,50.47,52,19.2985,38.597,11.873,23.52,2025,3,March,1,Monday,11,Firm ,Sibiu,România
+9837,FreshMart Downtown,9/16/2023,Coffee & Tea,Pasta,3,25.99,77.97,4.1,73.87,44,16.8935,50.6805,23.1895,31.39,2023,9,September,3,Saturday,37,Firm ,Sibiu,România
+6733,FamilyFood Express,1/28/2024,Bread & Pastries,Orange Juice,5,19.34,96.7,19.34,77.36,84,12.571,62.855,14.505,18.75,2024,1,January,1,Sunday,4,Firm ,Craiova,România
+4266,MegaMart Westside,5/19/2025,Bread & Pastries,Tomatoes,4,5.11,20.44,0,20.44,323,3.3215,13.286,7.154,35,2025,5,May,2,Monday,21,Firm ,Constanta,România
+1333,Corner Grocery,12/1/2024,Cookies & Sweets,Salmon,1,19.37,19.37,1.94,17.43,450,12.5905,12.5905,4.8395,27.77,2024,12,December,4,Sunday,48,Firm ,Iasi,România
+3068,GreenGrocer Plaza,8/8/2024,Coffee & Tea,Orange Juice,1,24.06,24.06,2.41,21.65,203,15.639,15.639,6.011,27.76,2024,8,August,3,Thursday,32,Firm ,Oradea,România
+2874,FamilyFood Express,10/18/2024,Coffee & Tea,Pasta,3,25.01,75.03,4.41,70.62,172,16.2565,48.7695,21.8505,30.94,2024,10,October,4,Friday,42,Firm ,Craiova,România
+5198,SuperSave Central,3/24/2025,Coffee & Tea,Salmon,1,29.75,29.75,0,29.75,219,19.3375,19.3375,10.4125,35,2025,3,March,1,Monday,13,Firm ,Cluj-Napoca,România
+2876,QuickStop Market,4/2/2025,Dairy Products,Orange Juice,2,2.49,4.98,0,4.98,320,1.6185,3.237,1.743,35,2025,4,April,2,Wednesday,14,Firm ,Brasov,România
+3683,FamilyFood Express,4/4/2024,Cookies & Sweets,Bread,1,1.02,1.02,0.2,0.82,244,0.663,0.663,0.157,19.15,2024,4,April,2,Thursday,14,Firm ,Craiova,România
+1420,SuperSave Central,7/28/2025,Coffee & Tea,Bread,2,12.1,24.2,2.25,21.95,374,7.865,15.73,6.22,28.34,2025,7,July,3,Monday,31,Firm ,Cluj-Napoca,România
+4249,City Fresh Store,10/5/2023,Bread & Pastries,Bread,1,5.05,5.05,0.76,4.29,63,3.2825,3.2825,1.0075,23.48,2023,10,October,4,Thursday,40,Firm ,Timisoara,România
+9289,Unknown Store,12/21/2024,Cookies & Sweets,Cheese,4,3.38,13.52,2.03,11.49,274,2.197,8.788,2.702,23.52,2024,12,December,4,Saturday,51,Firm ,Necunoscut,România
+8921,MegaMart Westside,8/2/2024,Bread & Pastries,Cheese,3,8.86,26.58,3.01,23.57,39,5.759,17.277,6.293,26.7,2024,8,August,3,Friday,31,Firm ,Constanta,România
+2419,ValuePlus Market,3/10/2024,Bread & Pastries,Eggs,1,28.03,28.03,2.39,25.64,12,18.2195,18.2195,7.4205,28.94,2024,3,March,1,Sunday,10,Firm ,Bucuresti,România
+8613,FamilyFood Express,10/22/2024,Cookies & Sweets,Potatoes,1,29.19,29.19,1.18,28.01,72,18.9735,18.9735,9.0365,32.26,2024,10,October,4,Tuesday,43,Firm ,Craiova,România
+6325,SuperSave Central,12/26/2023,Bread & Pastries,Rice,3,25.67,77.01,0,77.01,474,16.6855,50.0565,26.9535,35,2023,12,December,4,Tuesday,52,Firm ,Cluj-Napoca,România
+5232,FamilyFood Express,4/27/2024,Coffee & Tea,Rice,4,8.68,34.72,6.94,27.78,61,5.642,22.568,5.212,18.76,2024,4,April,2,Saturday,17,Firm ,Craiova,România
+5526,MegaMart Westside,10/11/2024,Cookies & Sweets,Carrots,1,20.63,20.63,4.81,15.82,133,13.4095,13.4095,2.4105,15.24,2024,10,October,4,Friday,41,Firm ,Constanta,România
+7658,Unknown Store,8/20/2024,Dairy Products,Milk,4,2.46,9.84,0,9.84,473,1.599,6.396,3.444,35,2024,8,August,3,Tuesday,34,Firm ,Necunoscut,România
+4937,Corner Grocery,1/24/2025,Coffee & Tea,Bananas,4,20.8,83.2,16.64,66.56,88,13.52,54.08,12.48,18.75,2025,1,January,1,Friday,4,Firm ,Iasi,România
+9041,QuickStop Market,7/20/2024,Coffee & Tea,Cheese,5,14.88,74.4,7.44,66.96,44,9.672,48.36,18.6,27.78,2024,7,July,3,Saturday,29,Firm ,Brasov,România
+1282,SuperSave Central,10/18/2023,Cookies & Sweets,Yogurt,5,8.22,41.1,4.11,36.99,410,5.343,26.715,10.275,27.78,2023,10,October,4,Wednesday,42,Firm ,Cluj-Napoca,România
+5820,MegaMart Westside,1/26/2024,Coffee & Tea,Onions,4,10.97,43.88,4.39,39.49,289,7.1305,28.522,10.968,27.77,2024,1,January,1,Friday,4,Firm ,Constanta,România
+6023,SuperSave Central,2/18/2024,Dairy Products,Carrots,3,28.85,86.55,1.4,85.15,191,18.7525,56.2575,28.8925,33.93,2024,2,February,1,Sunday,7,Firm ,Cluj-Napoca,România
+4033,GreenGrocer Plaza,1/2/2024,Bread & Pastries,Orange Juice,3,5.86,17.58,0,17.58,453,3.809,11.427,6.153,35,2024,1,January,1,Tuesday,1,Firm ,Oradea,România
+4545,MegaMart Westside,3/2/2025,Coffee & Tea,Bananas,3,7.07,21.21,3.18,18.03,354,4.5955,13.7865,4.2435,23.54,2025,3,March,1,Sunday,9,Firm ,Constanta,România
+8933,QuickStop Market,3/8/2024,Dairy Products,Bananas,1,12.18,12.18,2.44,9.74,375,7.917,7.917,1.823,18.72,2024,3,March,1,Friday,10,Firm ,Brasov,România
+9595,Corner Grocery,11/12/2024,Coffee & Tea,Tomatoes,3,16.82,50.46,3.6,46.86,51,10.933,32.799,14.061,30.01,2024,11,November,4,Tuesday,46,Firm ,Iasi,România
+4180,GreenGrocer Plaza,3/24/2024,Dairy Products,Cereal,2,26.74,53.48,4.77,48.71,82,17.381,34.762,13.948,28.63,2024,3,March,1,Sunday,12,Firm ,Oradea,România
+9751,ValuePlus Market,11/13/2023,Coffee & Tea,Eggs,1,11.45,11.45,1.72,9.73,218,7.4425,7.4425,2.2875,23.51,2023,11,November,4,Monday,46,Firm ,Bucuresti,România
+5494,City Fresh Store,9/11/2023,Bread & Pastries,Chicken Breast,1,6.99,6.99,2.89,4.1,326,4.5435,4.5435,-0.4435,-10.82,2023,9,September,3,Monday,37,Firm ,Timisoara,România
+3068,City Fresh Store,12/14/2024,Coffee & Tea,Pasta,2,25.27,50.54,10.11,40.43,288,16.4255,32.851,7.579,18.75,2024,12,December,4,Saturday,50,Firm ,Timisoara,România
+9042,GreenGrocer Plaza,10/25/2023,Dairy Products,Orange Juice,5,13,65,1.24,63.76,387,8.45,42.25,21.51,33.74,2023,10,October,4,Wednesday,43,Firm ,Oradea,România
+6582,FamilyFood Express,12/28/2023,Bread & Pastries,Eggs,1,13.27,13.27,2.65,10.62,349,8.6255,8.6255,1.9945,18.78,2023,12,December,4,Thursday,52,Firm ,Craiova,România
+2070,ValuePlus Market,6/13/2024,Cookies & Sweets,Chicken Breast,4,5.33,21.32,3.25,18.07,290,3.4645,13.858,4.212,23.31,2024,6,June,2,Thursday,24,Firm ,Bucuresti,România
+5066,GreenGrocer Plaza,11/7/2023,Bread & Pastries,Eggs,3,29.24,87.72,13.16,74.56,226,19.006,57.018,17.542,23.53,2023,11,November,4,Tuesday,45,Firm ,Oradea,România
+9561,ValuePlus Market,5/28/2024,Cookies & Sweets,Eggs,5,26.49,132.45,26.49,105.96,14,17.2185,86.0925,19.8675,18.75,2024,5,May,2,Tuesday,22,Firm ,Bucuresti,România
+8025,FreshMart Downtown,3/31/2024,Bread & Pastries,Orange Juice,4,18.22,72.88,3.21,69.67,90,11.843,47.372,22.298,32.01,2024,3,March,1,Sunday,13,Firm ,Sibiu,România
+2625,FamilyFood Express,3/21/2025,Bread & Pastries,Ground Beef,2,8.79,17.58,0,17.58,209,5.7135,11.427,6.153,35,2025,3,March,1,Friday,12,Firm ,Craiova,România
+4404,FreshMart Downtown,12/4/2024,Coffee & Tea,Eggs,2,18.42,36.84,5.53,31.31,4,11.973,23.946,7.364,23.52,2024,12,December,4,Wednesday,49,Firm ,Sibiu,România
+2330,QuickStop Market,12/6/2023,Bread & Pastries,Salmon,3,20.63,61.89,1.41,60.48,422,13.4095,40.2285,20.2515,33.48,2023,12,December,4,Wednesday,49,Firm ,Brasov,România
+2229,GreenGrocer Plaza,12/6/2023,Coffee & Tea,Bread,3,29.65,88.95,13.34,75.61,327,19.2725,57.8175,17.7925,23.53,2023,12,December,4,Wednesday,49,Firm ,Oradea,România
+8699,QuickStop Market,3/20/2024,Cookies & Sweets,Tomatoes,4,22.36,89.44,13.42,76.02,298,14.534,58.136,17.884,23.53,2024,3,March,1,Wednesday,12,Firm ,Brasov,România
+8438,QuickStop Market,10/1/2023,Cookies & Sweets,Cereal,3,8.55,25.65,2.88,22.77,150,5.5575,16.6725,6.0975,26.78,2023,10,October,4,Sunday,39,Firm ,Brasov,România
+4824,GreenGrocer Plaza,7/24/2025,Coffee & Tea,Yogurt,5,4.46,22.3,2.19,20.11,348,2.899,14.495,5.615,27.92,2025,7,July,3,Thursday,30,Firm ,Oradea,România
+4683,City Fresh Store,12/22/2024,Dairy Products,Eggs,5,13.57,67.85,6.79,61.06,219,8.8205,44.1025,16.9575,27.77,2024,12,December,4,Sunday,51,Firm ,Timisoara,România
+3441,City Fresh Store,7/12/2025,Cookies & Sweets,Bananas,1,16.47,16.47,4.57,11.9,374,10.7055,10.7055,1.1945,10.04,2025,7,July,3,Saturday,28,Firm ,Timisoara,România
+5352,ValuePlus Market,5/10/2025,Bread & Pastries,Bananas,1,19.16,19.16,0,19.16,127,12.454,12.454,6.706,35,2025,5,May,2,Saturday,19,Firm ,Bucuresti,România
+5728,SuperSave Central,7/13/2024,Bread & Pastries,Bananas,5,15.62,78.1,0,78.1,63,10.153,50.765,27.335,35,2024,7,July,3,Saturday,28,Firm ,Cluj-Napoca,România
+3037,FreshMart Downtown,8/5/2024,Cookies & Sweets,Pasta,5,19.06,95.3,0,95.3,304,12.389,61.945,33.355,35,2024,8,August,3,Monday,32,Firm ,Sibiu,România
+1659,City Fresh Store,3/21/2025,Cookies & Sweets,Apples,1,4.83,4.83,0.97,3.86,371,3.1395,3.1395,0.7205,18.67,2025,3,March,1,Friday,12,Firm ,Timisoara,România
+3870,GreenGrocer Plaza,8/6/2024,Cookies & Sweets,Potatoes,5,20.66,103.3,15.49,87.81,92,13.429,67.145,20.665,23.53,2024,8,August,3,Tuesday,32,Firm ,Oradea,România
+8245,FreshMart Downtown,7/18/2025,Dairy Products,Pasta,3,1.35,4.05,0,4.05,444,0.8775,2.6325,1.4175,35,2025,7,July,3,Friday,29,Firm ,Sibiu,România
+7690,FamilyFood Express,4/21/2024,Dairy Products,Salmon,4,24.23,96.92,9.69,87.23,229,15.7495,62.998,24.232,27.78,2024,4,April,2,Sunday,16,Firm ,Craiova,România
+1601,FamilyFood Express,7/25/2024,Bread & Pastries,Chicken Breast,4,7.24,28.96,0,28.96,422,4.706,18.824,10.136,35,2024,7,July,3,Thursday,30,Firm ,Craiova,România
+2442,MegaMart Westside,4/7/2024,Dairy Products,Cheese,1,27.86,27.86,2.79,25.07,428,18.109,18.109,6.961,27.77,2024,4,April,2,Sunday,14,Firm ,Constanta,România
+7770,MegaMart Westside,9/18/2023,Dairy Products,Orange Juice,5,14.92,74.6,0,74.6,292,9.698,48.49,26.11,35,2023,9,September,3,Monday,38,Firm ,Constanta,România
+8242,City Fresh Store,3/19/2025,Dairy Products,Onions,2,22.52,45.04,9.01,36.03,287,14.638,29.276,6.754,18.75,2025,3,March,1,Wednesday,12,Firm ,Timisoara,România
+5375,QuickStop Market,10/6/2024,Bread & Pastries,Salmon,2,27.42,54.84,3.19,51.65,360,17.823,35.646,16.004,30.99,2024,10,October,4,Sunday,40,Firm ,Brasov,România
+3146,FamilyFood Express,7/27/2025,Bread & Pastries,Rice,4,6.14,24.56,4.91,19.65,349,3.991,15.964,3.686,18.76,2025,7,July,3,Sunday,30,Firm ,Craiova,România
+7684,FreshMart Downtown,10/18/2023,Dairy Products,Orange Juice,4,7.96,31.84,3.73,28.11,328,5.174,20.696,7.414,26.37,2023,10,October,4,Wednesday,42,Firm ,Sibiu,România
+4681,MegaMart Westside,5/21/2025,Cookies & Sweets,Chicken Breast,4,8.43,33.72,4.65,29.07,370,5.4795,21.918,7.152,24.6,2025,5,May,2,Wednesday,21,Firm ,Constanta,România
+2924,ValuePlus Market,12/22/2024,Dairy Products,Chicken Breast,2,29.17,58.34,0,58.34,395,18.9605,37.921,20.419,35,2024,12,December,4,Sunday,51,Firm ,Bucuresti,România
+3522,GreenGrocer Plaza,8/28/2024,Bread & Pastries,Yogurt,4,25.22,100.88,0,100.88,105,16.393,65.572,35.308,35,2024,8,August,3,Wednesday,35,Individual,Oradea,România
+8905,Corner Grocery,8/7/2024,Coffee & Tea,Tomatoes,4,10.17,40.68,1.02,39.66,199,6.6105,26.442,13.218,33.33,2024,8,August,3,Wednesday,32,Individual,Iasi,România
+4122,FreshMart Downtown,7/23/2025,Coffee & Tea,Apples,5,7.37,36.85,2.18,34.67,382,4.7905,23.9525,10.7175,30.91,2025,7,July,3,Wednesday,30,Individual,Sibiu,România
+5891,City Fresh Store,5/18/2025,Coffee & Tea,Cereal,5,20.11,100.55,3.27,97.28,355,13.0715,65.3575,31.9225,32.82,2025,5,May,2,Sunday,20,Individual,Timisoara,România
+9022,MegaMart Westside,6/9/2025,Cookies & Sweets,Apples,1,10.07,10.07,0,10.07,402,6.5455,6.5455,3.5245,35,2025,6,June,2,Monday,24,Individual,Constanta,România
+7274,SuperSave Central,2/4/2024,Coffee & Tea,Orange Juice,1,7.34,7.34,2.06,5.28,249,4.771,4.771,0.509,9.64,2024,2,February,1,Sunday,5,Individual,Cluj-Napoca,România
+3492,MegaMart Westside,8/25/2024,Coffee & Tea,Potatoes,5,1.18,5.9,0.59,5.31,451,0.767,3.835,1.475,27.78,2024,8,August,3,Sunday,34,Individual,Constanta,România
+1606,SuperSave Central,11/13/2023,Bread & Pastries,Bread,5,19.65,98.25,19.65,78.6,108,12.7725,63.8625,14.7375,18.75,2023,11,November,4,Monday,46,Individual,Cluj-Napoca,România
+6439,City Fresh Store,6/12/2025,Coffee & Tea,Yogurt,5,5.67,28.35,1.97,26.38,426,3.6855,18.4275,7.9525,30.15,2025,6,June,2,Thursday,24,Individual,Timisoara,România
+9617,QuickStop Market,7/14/2025,Dairy Products,Yogurt,4,18.58,74.32,14.86,59.46,241,12.077,48.308,11.152,18.76,2025,7,July,3,Monday,29,Individual,Brasov,România
+8486,FamilyFood Express,8/18/2023,Cookies & Sweets,Eggs,5,24.78,123.9,24.78,99.12,93,16.107,80.535,18.585,18.75,2023,8,August,3,Friday,33,Individual,Craiova,România
+3361,MegaMart Westside,6/20/2024,Coffee & Tea,Bread,2,11.96,23.92,1.81,22.11,67,7.774,15.548,6.562,29.68,2024,6,June,2,Thursday,25,Individual,Constanta,România
+7512,City Fresh Store,12/23/2024,Cookies & Sweets,Orange Juice,5,24.32,121.6,12.16,109.44,464,15.808,79.04,30.4,27.78,2024,12,December,4,Monday,52,Individual,Timisoara,România
+6314,GreenGrocer Plaza,4/16/2025,Dairy Products,Onions,3,22.05,66.15,9.92,56.23,286,14.3325,42.9975,13.2325,23.53,2025,4,April,2,Wednesday,16,Individual,Oradea,România
+1919,Unknown Store,3/21/2024,Bread & Pastries,Yogurt,4,27.95,111.8,16.77,95.03,294,18.1675,72.67,22.36,23.53,2024,3,March,1,Thursday,12,Individual,Necunoscut,România
+6873,SuperSave Central,5/24/2024,Cookies & Sweets,Carrots,1,17.19,17.19,2.58,14.61,257,11.1735,11.1735,3.4365,23.52,2024,5,May,2,Friday,21,Individual,Cluj-Napoca,România
+5000,City Fresh Store,9/22/2024,Cookies & Sweets,Potatoes,2,22.96,45.92,0,45.92,492,14.924,29.848,16.072,35,2024,9,September,3,Sunday,38,Individual,Timisoara,România
+3868,QuickStop Market,10/7/2023,Bread & Pastries,Rice,1,12.56,12.56,3.22,9.34,383,8.164,8.164,1.176,12.59,2023,10,October,4,Saturday,40,Individual,Brasov,România
+7267,SuperSave Central,11/30/2024,Coffee & Tea,Cereal,3,7.33,21.99,4.4,17.59,293,4.7645,14.2935,3.2965,18.74,2024,11,November,4,Saturday,48,Individual,Cluj-Napoca,România
+4945,FamilyFood Express,8/27/2024,Coffee & Tea,Yogurt,2,22.32,44.64,8.93,35.71,446,14.508,29.016,6.694,18.75,2024,8,August,3,Tuesday,35,Individual,Craiova,România
+3344,FamilyFood Express,2/3/2024,Bread & Pastries,Ground Beef,5,11.31,56.55,4.68,51.87,398,7.3515,36.7575,15.1125,29.14,2024,2,February,1,Saturday,5,Individual,Craiova,România
+5161,MegaMart Westside,7/28/2024,Coffee & Tea,Pasta,4,6.29,25.16,2.52,22.64,391,4.0885,16.354,6.286,27.77,2024,7,July,3,Sunday,30,Individual,Constanta,România
+1153,MegaMart Westside,7/5/2025,Cookies & Sweets,Apples,4,29.31,117.24,17.59,99.65,357,19.0515,76.206,23.444,23.53,2025,7,July,3,Saturday,27,Individual,Constanta,România
+9955,SuperSave Central,12/7/2023,Coffee & Tea,Cheese,2,13.14,26.28,3.94,22.34,385,8.541,17.082,5.258,23.54,2023,12,December,4,Thursday,49,Individual,Cluj-Napoca,România
+5097,QuickStop Market,7/26/2024,Coffee & Tea,Chicken Breast,4,22.58,90.32,13.55,76.77,133,14.677,58.708,18.062,23.53,2024,7,July,3,Friday,30,Individual,Brasov,România
+8916,ValuePlus Market,10/28/2023,Coffee & Tea,Salmon,1,12.04,12.04,0,12.04,146,7.826,7.826,4.214,35,2023,10,October,4,Saturday,43,Individual,Bucuresti,România
+6881,MegaMart Westside,10/26/2024,Bread & Pastries,Cereal,3,19.93,59.79,3.58,56.21,363,12.9545,38.8635,17.3465,30.86,2024,10,October,4,Saturday,43,Individual,Constanta,România
+5847,QuickStop Market,1/31/2025,Coffee & Tea,Orange Juice,5,16.1,80.5,16.1,64.4,230,10.465,52.325,12.075,18.75,2025,1,January,1,Friday,5,Individual,Brasov,România
+7484,SuperSave Central,3/7/2024,Cookies & Sweets,Chicken Breast,1,2.84,2.84,1.22,1.62,449,1.846,1.846,-0.226,-13.95,2024,3,March,1,Thursday,10,Individual,Cluj-Napoca,România
+6772,MegaMart Westside,1/24/2024,Cookies & Sweets,Pasta,2,9.79,19.58,2.94,16.64,0,6.3635,12.727,3.913,23.52,2024,1,January,1,Wednesday,4,Individual,Constanta,România
+4115,QuickStop Market,12/1/2024,Coffee & Tea,Onions,1,20.94,20.94,3.14,17.8,251,13.611,13.611,4.189,23.53,2024,12,December,4,Sunday,48,Individual,Brasov,România
+5106,FreshMart Downtown,1/14/2025,Cookies & Sweets,Rice,5,7.7,38.5,7.7,30.8,3,5.005,25.025,5.775,18.75,2025,1,January,1,Tuesday,3,Individual,Sibiu,România
+3153,SuperSave Central,10/16/2023,Coffee & Tea,Bananas,2,3.61,7.22,1.44,5.78,7,2.3465,4.693,1.087,18.81,2023,10,October,4,Monday,42,Individual,Cluj-Napoca,România
+5835,MegaMart Westside,4/16/2024,Cookies & Sweets,Rice,4,29.93,119.72,17.96,101.76,237,19.4545,77.818,23.942,23.53,2024,4,April,2,Tuesday,16,Individual,Constanta,România
+9837,City Fresh Store,6/17/2025,Bread & Pastries,Milk,2,14.35,28.7,3.66,25.04,394,9.3275,18.655,6.385,25.5,2025,6,June,2,Tuesday,25,Individual,Timisoara,România
+6994,FamilyFood Express,9/22/2024,Coffee & Tea,Tomatoes,3,28.14,84.42,0,84.42,81,18.291,54.873,29.547,35,2024,9,September,3,Sunday,38,Individual,Craiova,România
+6549,ValuePlus Market,4/22/2025,Dairy Products,Eggs,4,7.74,30.96,3.1,27.86,285,5.031,20.124,7.736,27.77,2025,4,April,2,Tuesday,17,Individual,Bucuresti,România
+7464,ValuePlus Market,8/17/2023,Cookies & Sweets,Yogurt,5,20.8,104,2.13,101.87,392,13.52,67.6,34.27,33.64,2023,8,August,3,Thursday,33,Individual,Bucuresti,România
+7086,FreshMart Downtown,10/30/2023,Dairy Products,Rice,1,28.38,28.38,3.9,24.48,491,18.447,18.447,6.033,24.64,2023,10,October,4,Monday,44,Individual,Sibiu,România
+4830,ValuePlus Market,8/7/2024,Cookies & Sweets,Yogurt,2,16.25,32.5,4,28.5,127,10.5625,21.125,7.375,25.88,2024,8,August,3,Wednesday,32,Individual,Bucuresti,România
+1410,Corner Grocery,11/30/2024,Dairy Products,Orange Juice,4,21.36,85.44,17.09,68.35,218,13.884,55.536,12.814,18.75,2024,11,November,4,Saturday,48,Individual,Iasi,România
+8606,City Fresh Store,7/13/2025,Coffee & Tea,Tomatoes,1,22.05,22.05,1.54,20.51,145,14.3325,14.3325,6.1775,30.12,2025,7,July,3,Sunday,28,Individual,Timisoara,România
+9807,Corner Grocery,11/20/2023,Cookies & Sweets,Chicken Breast,2,22.67,45.34,0,45.34,434,14.7355,29.471,15.869,35,2023,11,November,4,Monday,47,Individual,Iasi,România
+7078,ValuePlus Market,1/8/2025,Bread & Pastries,Eggs,1,20.53,20.53,3.3,17.23,201,13.3445,13.3445,3.8855,22.55,2025,1,January,1,Wednesday,2,Individual,Bucuresti,România
+9850,GreenGrocer Plaza,6/27/2024,Bread & Pastries,Cheese,3,23.79,71.37,10.71,60.66,75,15.4635,46.3905,14.2695,23.52,2024,6,June,2,Thursday,26,Individual,Oradea,România
+3531,GreenGrocer Plaza,6/24/2025,Coffee & Tea,Milk,5,12.57,62.85,2.74,60.11,43,8.1705,40.8525,19.2575,32.04,2025,6,June,2,Tuesday,26,Individual,Oradea,România
+2622,ValuePlus Market,5/15/2025,Bread & Pastries,Ground Beef,1,8.71,8.71,0,8.71,220,5.6615,5.6615,3.0485,35,2025,5,May,2,Thursday,20,Individual,Bucuresti,România
+9017,GreenGrocer Plaza,11/27/2024,Dairy Products,Cheese,4,11.58,46.32,6.95,39.37,97,7.527,30.108,9.262,23.53,2024,11,November,4,Wednesday,48,Individual,Oradea,România
+5583,FreshMart Downtown,9/1/2023,Bread & Pastries,Yogurt,3,5.51,16.53,3.96,12.57,372,3.5815,10.7445,1.8255,14.52,2023,9,September,3,Friday,35,Individual,Sibiu,România
+8264,City Fresh Store,7/17/2024,Coffee & Tea,Bananas,3,7.05,21.15,4.23,16.92,275,4.5825,13.7475,3.1725,18.75,2024,7,July,3,Wednesday,29,Individual,Timisoara,România
+6942,FreshMart Downtown,10/23/2023,Cookies & Sweets,Carrots,1,8.4,8.4,1.68,6.72,30,5.46,5.46,1.26,18.75,2023,10,October,4,Monday,43,Individual,Sibiu,România
+6876,MegaMart Westside,9/23/2023,Dairy Products,Bananas,3,26.14,78.42,15.68,62.74,332,16.991,50.973,11.767,18.76,2023,9,September,3,Saturday,38,Individual,Constanta,România
+6464,SuperSave Central,2/12/2024,Dairy Products,Tomatoes,5,28.85,144.25,14.43,129.82,313,18.7525,93.7625,36.0575,27.77,2024,2,February,1,Monday,7,Individual,Cluj-Napoca,România
+3858,FreshMart Downtown,10/31/2023,Cookies & Sweets,Bananas,3,28.55,85.65,17.13,68.52,113,18.5575,55.6725,12.8475,18.75,2023,10,October,4,Tuesday,44,Individual,Sibiu,România
+1243,Corner Grocery,5/11/2024,Cookies & Sweets,Milk,5,22.31,111.55,11.16,100.39,194,14.5015,72.5075,27.8825,27.77,2024,5,May,2,Saturday,19,Individual,Iasi,România
+3854,QuickStop Market,2/29/2024,Coffee & Tea,Tomatoes,3,23.43,70.29,14.06,56.23,146,15.2295,45.6885,10.5415,18.75,2024,2,February,1,Thursday,9,Individual,Brasov,România
+2862,FamilyFood Express,3/8/2025,Coffee & Tea,Bread,3,10.39,31.17,0,31.17,332,6.7535,20.2605,10.9095,35,2025,3,March,1,Saturday,10,Individual,Craiova,România
+2041,GreenGrocer Plaza,8/10/2024,Dairy Products,Chicken Breast,4,19.38,77.52,0,77.52,43,12.597,50.388,27.132,35,2024,8,August,3,Saturday,32,Individual,Oradea,România
+2786,QuickStop Market,7/23/2024,Coffee & Tea,Rice,2,4.4,8.8,3.49,5.31,67,2.86,5.72,-0.41,-7.72,2024,7,July,3,Tuesday,30,Individual,Brasov,România
+1710,FamilyFood Express,2/21/2025,Bread & Pastries,Potatoes,4,12.88,51.52,10.3,41.22,40,8.372,33.488,7.732,18.76,2025,2,February,1,Friday,8,Individual,Craiova,România
+2323,QuickStop Market,4/13/2024,Cookies & Sweets,Cereal,3,16.23,48.69,9.74,38.95,319,10.5495,31.6485,7.3015,18.75,2024,4,April,2,Saturday,15,Individual,Brasov,România
+3067,QuickStop Market,3/7/2024,Bread & Pastries,Bananas,1,1.69,1.69,0,1.69,320,1.0985,1.0985,0.5915,35,2024,3,March,1,Thursday,10,Individual,Brasov,România
+8430,GreenGrocer Plaza,6/11/2024,Coffee & Tea,Carrots,1,24.16,24.16,4.83,19.33,463,15.704,15.704,3.626,18.76,2024,6,June,2,Tuesday,24,Individual,Oradea,România
+7815,MegaMart Westside,2/23/2025,Coffee & Tea,Carrots,3,23.48,70.44,3.71,66.73,73,15.262,45.786,20.944,31.39,2025,2,February,1,Sunday,8,Individual,Constanta,România
+2557,SuperSave Central,4/5/2024,Bread & Pastries,Milk,4,12.23,48.92,2.24,46.68,442,7.9495,31.798,14.882,31.88,2024,4,April,2,Friday,14,Individual,Cluj-Napoca,România
+7105,ValuePlus Market,4/28/2025,Dairy Products,Salmon,5,4.81,24.05,2.82,21.23,416,3.1265,15.6325,5.5975,26.37,2025,4,April,2,Monday,18,Individual,Bucuresti,România
+3131,City Fresh Store,10/12/2024,Coffee & Tea,Ground Beef,2,5.16,10.32,1.55,8.77,458,3.354,6.708,2.062,23.51,2024,10,October,4,Saturday,41,Individual,Timisoara,România
+3002,ValuePlus Market,6/21/2024,Dairy Products,Tomatoes,1,10.44,10.44,1.57,8.87,332,6.786,6.786,2.084,23.49,2024,6,June,2,Friday,25,Individual,Bucuresti,România
+6793,ValuePlus Market,6/15/2025,Coffee & Tea,Tomatoes,5,12.98,64.9,1.64,63.26,317,8.437,42.185,21.075,33.31,2025,6,June,2,Sunday,24,Individual,Bucuresti,România
+7929,City Fresh Store,6/11/2025,Cookies & Sweets,Bread,3,7.03,21.09,2.11,18.98,355,4.5695,13.7085,5.2715,27.77,2025,6,June,2,Wednesday,24,Individual,Timisoara,România
+9313,FreshMart Downtown,1/19/2024,Dairy Products,Yogurt,2,26.72,53.44,10.69,42.75,462,17.368,34.736,8.014,18.75,2024,1,January,1,Friday,3,Individual,Sibiu,România
+3535,SuperSave Central,12/29/2024,Coffee & Tea,Onions,3,12.3,36.9,7.38,29.52,295,7.995,23.985,5.535,18.75,2024,12,December,4,Sunday,52,Individual,Cluj-Napoca,România
+2773,MegaMart Westside,5/4/2024,Dairy Products,Bananas,5,29.6,148,22.2,125.8,206,19.24,96.2,29.6,23.53,2024,5,May,2,Saturday,18,Individual,Constanta,România
+5564,FreshMart Downtown,10/25/2024,Bread & Pastries,Cheese,5,12.42,62.1,6.21,55.89,162,8.073,40.365,15.525,27.78,2024,10,October,4,Friday,43,Individual,Sibiu,România
+4705,Corner Grocery,4/24/2025,Cookies & Sweets,Onions,2,20.2,40.4,8.08,32.32,243,13.13,26.26,6.06,18.75,2025,4,April,2,Thursday,17,Individual,Iasi,România
+8030,ValuePlus Market,5/24/2025,Cookies & Sweets,Orange Juice,4,5.46,21.84,4.37,17.47,446,3.549,14.196,3.274,18.74,2025,5,May,2,Saturday,21,Individual,Bucuresti,România
+1430,FreshMart Downtown,11/22/2024,Dairy Products,Bananas,2,21.91,43.82,8.76,35.06,249,14.2415,28.483,6.577,18.76,2024,11,November,4,Friday,47,Individual,Sibiu,România
+3955,ValuePlus Market,3/6/2024,Cookies & Sweets,Onions,4,12.15,48.6,4.86,43.74,115,7.8975,31.59,12.15,27.78,2024,3,March,1,Wednesday,10,Individual,Bucuresti,România
+6105,SuperSave Central,2/17/2025,Coffee & Tea,Cheese,4,7.89,31.56,6.31,25.25,225,5.1285,20.514,4.736,18.76,2025,2,February,1,Monday,8,Individual,Cluj-Napoca,România
+2391,QuickStop Market,6/23/2025,Coffee & Tea,Onions,2,12,24,2.4,21.6,361,7.8,15.6,6,27.78,2025,6,June,2,Monday,26,Individual,Brasov,România
+5475,SuperSave Central,1/21/2024,Dairy Products,Apples,3,9.53,28.59,0,28.59,338,6.1945,18.5835,10.0065,35,2024,1,January,1,Sunday,3,Individual,Cluj-Napoca,România
+6655,FreshMart Downtown,7/5/2024,Cookies & Sweets,Tomatoes,3,29.87,89.61,17.92,71.69,132,19.4155,58.2465,13.4435,18.75,2024,7,July,3,Friday,27,Individual,Sibiu,România
+2816,City Fresh Store,3/14/2024,Dairy Products,Potatoes,2,18.69,37.38,1.58,35.8,91,12.1485,24.297,11.503,32.13,2024,3,March,1,Thursday,11,Individual,Timisoara,România
+8972,Corner Grocery,9/19/2024,Bread & Pastries,Chicken Breast,4,21.74,86.96,1.28,85.68,52,14.131,56.524,29.156,34.03,2024,9,September,3,Thursday,38,Individual,Iasi,România
+6053,QuickStop Market,9/11/2023,Coffee & Tea,Bananas,4,5.31,21.24,3.66,17.58,327,3.4515,13.806,3.774,21.47,2023,9,September,3,Monday,37,Individual,Brasov,România
+1897,Corner Grocery,8/12/2023,Cookies & Sweets,Bread,5,7.54,37.7,3.27,34.43,196,4.901,24.505,9.925,28.83,2023,8,August,3,Saturday,32,Individual,Iasi,România
+5186,MegaMart Westside,3/18/2024,Coffee & Tea,Bread,4,22.31,89.24,17.85,71.39,71,14.5015,58.006,13.384,18.75,2024,3,March,1,Monday,12,Individual,Constanta,România
+1126,ValuePlus Market,8/27/2024,Coffee & Tea,Bananas,1,10.83,10.83,1.08,9.75,172,7.0395,7.0395,2.7105,27.8,2024,8,August,3,Tuesday,35,Individual,Bucuresti,România
+8055,GreenGrocer Plaza,12/21/2023,Bread & Pastries,Carrots,4,28.25,113,0,113,445,18.3625,73.45,39.55,35,2023,12,December,4,Thursday,51,Individual,Oradea,România
+3116,FamilyFood Express,5/28/2024,Dairy Products,Milk,2,15.17,30.34,1.18,29.16,9,9.8605,19.721,9.439,32.37,2024,5,May,2,Tuesday,22,Individual,Craiova,România
+6129,SuperSave Central,10/27/2024,Bread & Pastries,Eggs,3,16.16,48.48,9.7,38.78,210,10.504,31.512,7.268,18.74,2024,10,October,4,Sunday,43,Individual,Cluj-Napoca,România
+2887,FreshMart Downtown,6/16/2024,Bread & Pastries,Chicken Breast,2,20.86,41.72,4.17,37.55,495,13.559,27.118,10.432,27.78,2024,6,June,2,Sunday,24,Individual,Sibiu,România
+6928,Corner Grocery,10/14/2023,Bread & Pastries,Cereal,2,23.58,47.16,1.95,45.21,166,15.327,30.654,14.556,32.2,2023,10,October,4,Saturday,41,Individual,Iasi,România
+8155,Corner Grocery,5/23/2025,Bread & Pastries,Tomatoes,2,3.12,6.24,4.56,1.68,299,2.028,4.056,-2.376,-141.43,2025,5,May,2,Friday,21,Individual,Iasi,România
+2734,SuperSave Central,2/11/2024,Bread & Pastries,Salmon,2,12.22,24.44,0,24.44,69,7.943,15.886,8.554,35,2024,2,February,1,Sunday,6,Individual,Cluj-Napoca,România
+2288,MegaMart Westside,6/9/2024,Bread & Pastries,Rice,5,5.54,27.7,4.88,22.82,406,3.601,18.005,4.815,21.1,2024,6,June,2,Sunday,23,Individual,Constanta,România
+6083,FamilyFood Express,3/8/2025,Dairy Products,Cheese,5,15.18,75.9,7.59,68.31,110,9.867,49.335,18.975,27.78,2025,3,March,1,Saturday,10,Individual,Craiova,România
+6456,FreshMart Downtown,4/3/2025,Cookies & Sweets,Milk,1,29.74,29.74,2.97,26.77,375,19.331,19.331,7.439,27.79,2025,4,April,2,Thursday,14,Individual,Sibiu,România
+3754,ValuePlus Market,10/5/2023,Cookies & Sweets,Potatoes,1,14.11,14.11,4.01,10.1,123,9.1715,9.1715,0.9285,9.19,2023,10,October,4,Thursday,40,Individual,Bucuresti,România
+9363,Corner Grocery,12/10/2024,Bread & Pastries,Eggs,3,9.57,28.71,2.92,25.79,331,6.2205,18.6615,7.1285,27.64,2024,12,December,4,Tuesday,50,Individual,Iasi,România
+9355,SuperSave Central,1/4/2024,Cookies & Sweets,Apples,3,19.17,57.51,0,57.51,360,12.4605,37.3815,20.1285,35,2024,1,January,1,Thursday,1,Individual,Cluj-Napoca,România
+6724,GreenGrocer Plaza,5/5/2024,Cookies & Sweets,Cereal,5,1.94,9.7,0,9.7,218,1.261,6.305,3.395,35,2024,5,May,2,Sunday,18,Individual,Oradea,România
+3842,MegaMart Westside,11/16/2024,Bread & Pastries,Onions,1,19.81,19.81,0,19.81,377,12.8765,12.8765,6.9335,35,2024,11,November,4,Saturday,46,Individual,Constanta,România
+2234,MegaMart Westside,12/22/2023,Coffee & Tea,Potatoes,5,16.26,81.3,0,81.3,62,10.569,52.845,28.455,35,2023,12,December,4,Friday,51,Individual,Constanta,România
+8354,City Fresh Store,1/17/2025,Dairy Products,Bread,4,27.03,108.12,1.66,106.46,147,17.5695,70.278,36.182,33.99,2025,1,January,1,Friday,3,Individual,Timisoara,România
+9312,FamilyFood Express,10/3/2023,Dairy Products,Milk,3,17.65,52.95,7.94,45.01,225,11.4725,34.4175,10.5925,23.53,2023,10,October,4,Tuesday,40,Individual,Craiova,România
+6085,SuperSave Central,7/30/2024,Bread & Pastries,Onions,1,20.29,20.29,4.06,16.23,500,13.1885,13.1885,3.0415,18.74,2024,7,July,3,Tuesday,31,Individual,Cluj-Napoca,România
+8404,MegaMart Westside,9/5/2023,Coffee & Tea,Onions,2,16.47,32.94,3.29,29.65,62,10.7055,21.411,8.239,27.79,2023,9,September,3,Tuesday,36,Individual,Constanta,România
+5703,QuickStop Market,10/5/2023,Coffee & Tea,Rice,5,20.33,101.65,15.25,86.4,409,13.2145,66.0725,20.3275,23.53,2023,10,October,4,Thursday,40,Individual,Brasov,România
+2479,GreenGrocer Plaza,11/26/2024,Coffee & Tea,Milk,2,20.65,41.3,2.61,38.69,59,13.4225,26.845,11.845,30.62,2024,11,November,4,Tuesday,48,Individual,Oradea,România
+9307,FamilyFood Express,5/31/2024,Coffee & Tea,Orange Juice,1,10.45,10.45,3.11,7.34,311,6.7925,6.7925,0.5475,7.46,2024,5,May,2,Friday,22,Individual,Craiova,România
+8581,Unknown Store,10/30/2024,Bread & Pastries,Bananas,1,16.6,16.6,2.58,14.02,228,10.79,10.79,3.23,23.04,2024,10,October,4,Wednesday,44,Individual,Necunoscut,România
+6626,QuickStop Market,2/11/2025,Cookies & Sweets,Apples,5,14.39,71.95,14.39,57.56,290,9.3535,46.7675,10.7925,18.75,2025,2,February,1,Tuesday,7,Individual,Brasov,România
+2381,SuperSave Central,9/1/2024,Cookies & Sweets,Rice,5,15.22,76.1,2.22,73.88,421,9.893,49.465,24.415,33.05,2024,9,September,3,Sunday,35,Individual,Cluj-Napoca,România
+3827,ValuePlus Market,9/6/2023,Coffee & Tea,Ground Beef,1,23.94,23.94,3.59,20.35,78,15.561,15.561,4.789,23.53,2023,9,September,3,Wednesday,36,Individual,Bucuresti,România
+5059,City Fresh Store,2/6/2025,Dairy Products,Rice,4,6.19,24.76,1.48,23.28,464,4.0235,16.094,7.186,30.87,2025,2,February,1,Thursday,6,Individual,Timisoara,România
+8172,QuickStop Market,7/13/2024,Coffee & Tea,Bread,5,22.61,113.05,2.74,110.31,297,14.6965,73.4825,36.8275,33.39,2024,7,July,3,Saturday,28,Individual,Brasov,România
+6543,MegaMart Westside,1/15/2025,Dairy Products,Onions,5,11.19,55.95,11.19,44.76,73,7.2735,36.3675,8.3925,18.75,2025,1,January,1,Wednesday,3,Individual,Constanta,România
+6482,ValuePlus Market,9/27/2023,Bread & Pastries,Yogurt,5,18.78,93.9,9.39,84.51,425,12.207,61.035,23.475,27.78,2023,9,September,3,Wednesday,39,Individual,Bucuresti,România
+6401,City Fresh Store,10/19/2023,Dairy Products,Chicken Breast,2,27.77,55.54,8.33,47.21,245,18.0505,36.101,11.109,23.53,2023,10,October,4,Thursday,42,Individual,Timisoara,România
+2335,GreenGrocer Plaza,11/1/2024,Dairy Products,Bananas,4,22.95,91.8,1.13,90.67,21,14.9175,59.67,31,34.19,2024,11,November,4,Friday,44,Individual,Oradea,România
+6731,FreshMart Downtown,4/3/2024,Dairy Products,Chicken Breast,5,6.95,34.75,6.95,27.8,461,4.5175,22.5875,5.2125,18.75,2024,4,April,2,Wednesday,14,Individual,Sibiu,România
+6381,ValuePlus Market,4/29/2025,Coffee & Tea,Orange Juice,5,6.36,31.8,6.36,25.44,344,4.134,20.67,4.77,18.75,2025,4,April,2,Tuesday,18,Individual,Bucuresti,România
+3093,MegaMart Westside,1/8/2025,Cookies & Sweets,Cheese,2,15.9,31.8,4.77,27.03,208,10.335,20.67,6.36,23.53,2025,1,January,1,Wednesday,2,Individual,Constanta,România
+9624,GreenGrocer Plaza,10/18/2023,Coffee & Tea,Chicken Breast,5,4.93,24.65,0,24.65,390,3.2045,16.0225,8.6275,35,2023,10,October,4,Wednesday,42,Individual,Oradea,România
+6940,FamilyFood Express,4/2/2024,Dairy Products,Potatoes,3,6.19,18.57,0,18.57,345,4.0235,12.0705,6.4995,35,2024,4,April,2,Tuesday,14,Individual,Craiova,România
+3953,GreenGrocer Plaza,1/20/2024,Cookies & Sweets,Salmon,5,20.09,100.45,20.09,80.36,43,13.0585,65.2925,15.0675,18.75,2024,1,January,1,Saturday,3,Individual,Oradea,România
+6598,Corner Grocery,3/24/2025,Cookies & Sweets,Chicken Breast,2,2.87,5.74,0.86,4.88,499,1.8655,3.731,1.149,23.55,2025,3,March,1,Monday,13,Individual,Iasi,România
+9626,City Fresh Store,9/5/2023,Coffee & Tea,Carrots,3,16.72,50.16,4.96,45.2,414,10.868,32.604,12.596,27.87,2023,9,September,3,Tuesday,36,Individual,Timisoara,România
+6517,GreenGrocer Plaza,6/17/2025,Cookies & Sweets,Salmon,3,25.72,77.16,1.13,76.03,226,16.718,50.154,25.876,34.03,2025,6,June,2,Tuesday,25,Individual,Oradea,România
+7172,Corner Grocery,12/4/2023,Coffee & Tea,Chicken Breast,5,20.57,102.85,10.29,92.56,337,13.3705,66.8525,25.7075,27.77,2023,12,December,4,Monday,49,Individual,Iasi,România
+8355,MegaMart Westside,2/4/2024,Cookies & Sweets,Tomatoes,3,17.59,52.77,3.76,49.01,413,11.4335,34.3005,14.7095,30.01,2024,2,February,1,Sunday,5,Individual,Constanta,România
+4271,QuickStop Market,4/20/2025,Cookies & Sweets,Cheese,3,25.94,77.82,0,77.82,466,16.861,50.583,27.237,35,2025,4,April,2,Sunday,16,Individual,Brasov,România
+3267,FamilyFood Express,6/15/2025,Cookies & Sweets,Pasta,3,19.73,59.19,5.92,53.27,131,12.8245,38.4735,14.7965,27.78,2025,6,June,2,Sunday,24,Individual,Craiova,România
+5096,FamilyFood Express,9/16/2023,Dairy Products,Eggs,2,1.79,3.58,0.36,3.22,408,1.1635,2.327,0.893,27.73,2023,9,September,3,Saturday,37,Individual,Craiova,România
+2680,FreshMart Downtown,2/9/2025,Coffee & Tea,Bananas,1,25.92,25.92,2.19,23.73,42,16.848,16.848,6.882,29,2025,2,February,1,Sunday,6,Individual,Sibiu,România
+9452,GreenGrocer Plaza,5/29/2025,Cookies & Sweets,Orange Juice,1,12.5,12.5,2.5,10,429,8.125,8.125,1.875,18.75,2025,5,May,2,Thursday,22,Individual,Oradea,România
+2374,GreenGrocer Plaza,3/21/2025,Bread & Pastries,Chicken Breast,3,10.54,31.62,0,31.62,299,6.851,20.553,11.067,35,2025,3,March,1,Friday,12,Individual,Oradea,România
+3626,FamilyFood Express,3/5/2024,Cookies & Sweets,Yogurt,2,4.09,8.18,0.82,7.36,109,2.6585,5.317,2.043,27.76,2024,3,March,1,Tuesday,10,Individual,Craiova,România
+9410,ValuePlus Market,11/29/2023,Cookies & Sweets,Potatoes,2,28.93,57.86,8.68,49.18,450,18.8045,37.609,11.571,23.53,2023,11,November,4,Wednesday,48,Individual,Bucuresti,România
+6727,QuickStop Market,7/29/2025,Dairy Products,Ground Beef,3,7.09,21.27,2.13,19.14,455,4.6085,13.8255,5.3145,27.77,2025,7,July,3,Tuesday,31,Individual,Brasov,România
+2337,GreenGrocer Plaza,5/24/2024,Dairy Products,Apples,2,15.96,31.92,3.74,28.18,496,10.374,20.748,7.432,26.37,2024,5,May,2,Friday,21,Individual,Oradea,România
+4678,MegaMart Westside,8/28/2023,Coffee & Tea,Potatoes,2,8.55,17.1,2.56,14.54,351,5.5575,11.115,3.425,23.56,2023,8,August,3,Monday,35,Individual,Constanta,România
+6221,FamilyFood Express,7/29/2025,Dairy Products,Cheese,3,6.26,18.78,1.9,16.88,448,4.069,12.207,4.673,27.68,2025,7,July,3,Tuesday,31,Individual,Craiova,România
+1627,City Fresh Store,3/16/2024,Dairy Products,Ground Beef,2,6.52,13.04,1.96,11.08,441,4.238,8.476,2.604,23.5,2024,3,March,1,Saturday,11,Individual,Timisoara,România
+8740,City Fresh Store,1/28/2025,Cookies & Sweets,Eggs,4,25.82,103.28,15.49,87.79,307,16.783,67.132,20.658,23.53,2025,1,January,1,Tuesday,5,Individual,Timisoara,România
+3273,FamilyFood Express,3/18/2025,Cookies & Sweets,Apples,4,23.97,95.88,14.38,81.5,14,15.5805,62.322,19.178,23.53,2025,3,March,1,Tuesday,12,Individual,Craiova,România
+2298,QuickStop Market,8/21/2023,Dairy Products,Chicken Breast,5,2.69,13.45,1.34,12.11,170,1.7485,8.7425,3.3675,27.81,2023,8,August,3,Monday,34,Individual,Brasov,România
+2821,ValuePlus Market,3/31/2025,Cookies & Sweets,Eggs,3,4.38,13.14,1.31,11.83,22,2.847,8.541,3.289,27.8,2025,3,March,1,Monday,14,Individual,Bucuresti,România
+1782,FreshMart Downtown,2/8/2024,Bread & Pastries,Apples,1,14.63,14.63,1.46,13.17,83,9.5095,9.5095,3.6605,27.79,2024,2,February,1,Thursday,6,Individual,Sibiu,România
+7878,GreenGrocer Plaza,12/15/2024,Coffee & Tea,Milk,4,11.33,45.32,4.53,40.79,363,7.3645,29.458,11.332,27.78,2024,12,December,4,Sunday,50,Individual,Oradea,România
+8489,City Fresh Store,9/24/2023,Dairy Products,Eggs,1,11.13,11.13,2.23,8.9,104,7.2345,7.2345,1.6655,18.71,2023,9,September,3,Sunday,38,Individual,Timisoara,România
+4963,City Fresh Store,2/15/2025,Coffee & Tea,Pasta,5,20.07,100.35,0,100.35,168,13.0455,65.2275,35.1225,35,2025,2,February,1,Saturday,7,Individual,Timisoara,România
+8032,FreshMart Downtown,8/8/2023,Dairy Products,Onions,5,12.05,60.25,12.05,48.2,204,7.8325,39.1625,9.0375,18.75,2023,8,August,3,Tuesday,32,Individual,Sibiu,România
+6780,FamilyFood Express,2/9/2024,Cookies & Sweets,Bread,1,25.71,25.71,2.57,23.14,83,16.7115,16.7115,6.4285,27.78,2024,2,February,1,Friday,6,Individual,Craiova,România
+6908,City Fresh Store,9/28/2023,Cookies & Sweets,Potatoes,3,17.32,51.96,5.2,46.76,216,11.258,33.774,12.986,27.77,2023,9,September,3,Thursday,39,Individual,Timisoara,România
+9316,City Fresh Store,10/10/2024,Cookies & Sweets,Bread,4,9.7,38.8,7.76,31.04,65,6.305,25.22,5.82,18.75,2024,10,October,4,Thursday,41,Individual,Timisoara,România
+1333,ValuePlus Market,6/5/2024,Cookies & Sweets,Rice,5,2.37,11.85,1.43,10.42,39,1.5405,7.7025,2.7175,26.08,2024,6,June,2,Wednesday,23,Individual,Bucuresti,România
+8702,Corner Grocery,9/9/2023,Cookies & Sweets,Chicken Breast,4,20.15,80.6,12.09,68.51,291,13.0975,52.39,16.12,23.53,2023,9,September,3,Saturday,36,Individual,Iasi,România
+5155,SuperSave Central,3/9/2025,Cookies & Sweets,Milk,1,13.06,13.06,1.96,11.1,360,8.489,8.489,2.611,23.52,2025,3,March,1,Sunday,10,Individual,Cluj-Napoca,România
+2106,SuperSave Central,4/30/2024,Dairy Products,Pasta,1,13.57,13.57,1.36,12.21,9,8.8205,8.8205,3.3895,27.76,2024,4,April,2,Tuesday,18,Individual,Cluj-Napoca,România
+1726,FamilyFood Express,5/6/2024,Cookies & Sweets,Onions,2,3.49,6.98,1.4,5.58,394,2.2685,4.537,1.043,18.69,2024,5,May,2,Monday,19,Individual,Craiova,România
+9945,City Fresh Store,4/25/2024,Cookies & Sweets,Bananas,1,5.81,5.81,0.58,5.23,78,3.7765,3.7765,1.4535,27.79,2024,4,April,2,Thursday,17,Individual,Timisoara,România
+3209,MegaMart Westside,9/25/2023,Coffee & Tea,Cheese,1,5.67,5.67,0.57,5.1,371,3.6855,3.6855,1.4145,27.74,2023,9,September,3,Monday,39,Individual,Constanta,România
+8498,MegaMart Westside,9/4/2023,Coffee & Tea,Ground Beef,5,7.36,36.8,4.41,32.39,465,4.784,23.92,8.47,26.15,2023,9,September,3,Monday,36,Individual,Constanta,România
+4268,SuperSave Central,6/25/2025,Bread & Pastries,Apples,5,15.26,76.3,7.63,68.67,406,9.919,49.595,19.075,27.78,2025,6,June,2,Wednesday,26,Individual,Cluj-Napoca,România
+1686,QuickStop Market,4/8/2024,Bread & Pastries,Yogurt,5,2.35,11.75,1.76,9.99,9,1.5275,7.6375,2.3525,23.55,2024,4,April,2,Monday,15,Individual,Brasov,România
+5150,FreshMart Downtown,9/4/2023,Coffee & Tea,Salmon,1,29.26,29.26,1.17,28.09,400,19.019,19.019,9.071,32.29,2023,9,September,3,Monday,36,Individual,Sibiu,România
+1783,GreenGrocer Plaza,6/9/2025,Bread & Pastries,Salmon,4,23.3,93.2,9.32,83.88,3,15.145,60.58,23.3,27.78,2025,6,June,2,Monday,24,Individual,Oradea,România
+7029,Corner Grocery,7/11/2024,Coffee & Tea,Carrots,3,28.36,85.08,3.87,81.21,226,18.434,55.302,25.908,31.9,2024,7,July,3,Thursday,28,Individual,Iasi,România
+7553,ValuePlus Market,3/6/2025,Dairy Products,Bread,3,10.12,30.36,3.04,27.32,395,6.578,19.734,7.586,27.77,2025,3,March,1,Thursday,10,Individual,Bucuresti,România
+8204,FreshMart Downtown,7/1/2025,Cookies & Sweets,Milk,2,27.16,54.32,5.43,48.89,29,17.654,35.308,13.582,27.78,2025,7,July,3,Tuesday,27,Individual,Sibiu,România
+8055,GreenGrocer Plaza,11/16/2024,Coffee & Tea,Rice,5,22.36,111.8,22.36,89.44,232,14.534,72.67,16.77,18.75,2024,11,November,4,Saturday,46,Individual,Oradea,România
+2680,City Fresh Store,10/8/2023,Dairy Products,Eggs,4,25.01,100.04,2.7,97.34,41,16.2565,65.026,32.314,33.2,2023,10,October,4,Sunday,40,Individual,Timisoara,România
+6372,SuperSave Central,1/1/2025,Coffee & Tea,Yogurt,4,3.25,13,3.24,9.76,346,2.1125,8.45,1.31,13.42,2025,1,January,1,Wednesday,1,Individual,Cluj-Napoca,România
+8126,SuperSave Central,3/7/2024,Coffee & Tea,Bananas,1,16.87,16.87,1.69,15.18,34,10.9655,10.9655,4.2145,27.76,2024,3,March,1,Thursday,10,Individual,Cluj-Napoca,România
+9406,MegaMart Westside,4/20/2025,Dairy Products,Cheese,4,7.74,30.96,1.18,29.78,202,5.031,20.124,9.656,32.42,2025,4,April,2,Sunday,16,Individual,Constanta,România
+3339,ValuePlus Market,5/27/2025,Dairy Products,Yogurt,5,16.7,83.5,3.09,80.41,387,10.855,54.275,26.135,32.5,2025,5,May,2,Tuesday,22,Individual,Bucuresti,România
+3068,FamilyFood Express,9/28/2023,Bread & Pastries,Salmon,1,24.39,24.39,2.44,21.95,310,15.8535,15.8535,6.0965,27.77,2023,9,September,3,Thursday,39,Individual,Craiova,România
+4866,FreshMart Downtown,4/2/2025,Coffee & Tea,Bananas,3,13.66,40.98,2.27,38.71,212,8.879,26.637,12.073,31.19,2025,4,April,2,Wednesday,14,Individual,Sibiu,România
+7001,QuickStop Market,5/14/2024,Dairy Products,Chicken Breast,1,16.7,16.7,3.34,13.36,146,10.855,10.855,2.505,18.75,2024,5,May,2,Tuesday,20,Individual,Brasov,România
+7272,QuickStop Market,10/20/2024,Dairy Products,Eggs,3,28.6,85.8,3.46,82.34,347,18.59,55.77,26.57,32.27,2024,10,October,4,Sunday,42,Individual,Brasov,România
+8371,FamilyFood Express,5/21/2024,Coffee & Tea,Carrots,5,12.16,60.8,2.27,58.53,58,7.904,39.52,19.01,32.48,2024,5,May,2,Tuesday,21,Individual,Craiova,România
+7095,ValuePlus Market,7/16/2024,Cookies & Sweets,Bread,4,1.83,7.32,2.08,5.24,324,1.1895,4.758,0.482,9.2,2024,7,July,3,Tuesday,29,Individual,Bucuresti,România
+2259,GreenGrocer Plaza,10/25/2024,Bread & Pastries,Onions,2,9.82,19.64,4.39,15.25,208,6.383,12.766,2.484,16.29,2024,10,October,4,Friday,43,Individual,Oradea,România
+3255,ValuePlus Market,9/21/2024,Bread & Pastries,Eggs,3,16.66,49.98,4.81,45.17,86,10.829,32.487,12.683,28.08,2024,9,September,3,Saturday,38,Individual,Bucuresti,România
+7012,ValuePlus Market,6/11/2024,Coffee & Tea,Milk,1,24.56,24.56,0,24.56,492,15.964,15.964,8.596,35,2024,6,June,2,Tuesday,24,Individual,Bucuresti,România
+2858,GreenGrocer Plaza,8/27/2023,Cookies & Sweets,Chicken Breast,2,22.02,44.04,8.81,35.23,143,14.313,28.626,6.604,18.75,2023,8,August,3,Sunday,34,Individual,Oradea,România
+5264,SuperSave Central,2/3/2025,Cookies & Sweets,Onions,4,23.1,92.4,0,92.4,275,15.015,60.06,32.34,35,2025,2,February,1,Monday,6,Individual,Cluj-Napoca,România
+3009,FamilyFood Express,11/20/2023,Bread & Pastries,Potatoes,3,2.06,6.18,1.78,4.4,252,1.339,4.017,0.383,8.7,2023,11,November,4,Monday,47,Individual,Craiova,România
+2213,Corner Grocery,7/23/2024,Dairy Products,Pasta,5,15.5,77.5,0,77.5,87,10.075,50.375,27.125,35,2024,7,July,3,Tuesday,30,Individual,Iasi,România
+3828,SuperSave Central,7/5/2025,Dairy Products,Eggs,1,4.69,4.69,3.92,0.77,477,3.0485,3.0485,-2.2785,-295.91,2025,7,July,3,Saturday,27,Individual,Cluj-Napoca,România
+8292,QuickStop Market,10/14/2023,Bread & Pastries,Bananas,5,18.81,94.05,4.75,89.3,348,12.2265,61.1325,28.1675,31.54,2023,10,October,4,Saturday,41,Individual,Brasov,România
+2063,FreshMart Downtown,10/7/2024,Cookies & Sweets,Yogurt,3,3.36,10.08,0,10.08,292,2.184,6.552,3.528,35,2024,10,October,4,Monday,41,Individual,Sibiu,România
+9882,FamilyFood Express,3/19/2024,Cookies & Sweets,Bread,2,6.7,13.4,3.5,9.9,168,4.355,8.71,1.19,12.02,2024,3,March,1,Tuesday,12,Individual,Craiova,România
+3580,FamilyFood Express,2/9/2025,Dairy Products,Potatoes,2,28.8,57.6,8.64,48.96,426,18.72,37.44,11.52,23.53,2025,2,February,1,Sunday,6,Individual,Craiova,România
+3852,ValuePlus Market,4/14/2025,Bread & Pastries,Bread,5,18.96,94.8,0,94.8,391,12.324,61.62,33.18,35,2025,4,April,2,Monday,16,Individual,Bucuresti,România
+4673,MegaMart Westside,11/9/2023,Dairy Products,Eggs,1,27.64,27.64,4.15,23.49,226,17.966,17.966,5.524,23.52,2023,11,November,4,Thursday,45,Individual,Constanta,România
+4292,Corner Grocery,4/13/2025,Dairy Products,Chicken Breast,1,17.21,17.21,1.72,15.49,150,11.1865,11.1865,4.3035,27.78,2025,4,April,2,Sunday,15,Individual,Iasi,România
+9094,Corner Grocery,8/27/2023,Coffee & Tea,Cheese,5,18.95,94.75,9.47,85.28,173,12.3175,61.5875,23.6925,27.78,2023,8,August,3,Sunday,34,Individual,Iasi,România
+7730,City Fresh Store,3/26/2025,Coffee & Tea,Cereal,5,17.41,87.05,8.71,78.34,171,11.3165,56.5825,21.7575,27.77,2025,3,March,1,Wednesday,13,Individual,Timisoara,România
+6194,MegaMart Westside,12/17/2024,Cookies & Sweets,Yogurt,4,6.33,25.32,1.29,24.03,3,4.1145,16.458,7.572,31.51,2024,12,December,4,Tuesday,51,Individual,Constanta,România
+8632,FamilyFood Express,1/16/2025,Bread & Pastries,Rice,2,7.34,14.68,2.2,12.48,134,4.771,9.542,2.938,23.54,2025,1,January,1,Thursday,3,Individual,Craiova,România
+9476,ValuePlus Market,4/30/2024,Bread & Pastries,Apples,2,1.61,3.22,1.08,2.14,431,1.0465,2.093,0.047,2.2,2024,4,April,2,Tuesday,18,Individual,Bucuresti,România
+3102,SuperSave Central,6/18/2025,Cookies & Sweets,Chicken Breast,3,28.14,84.42,16.88,67.54,156,18.291,54.873,12.667,18.75,2025,6,June,2,Wednesday,25,Individual,Cluj-Napoca,România
+3114,GreenGrocer Plaza,7/8/2024,Dairy Products,Eggs,2,24.04,48.08,0,48.08,98,15.626,31.252,16.828,35,2024,7,July,3,Monday,28,Individual,Oradea,România
+3034,City Fresh Store,9/12/2024,Bread & Pastries,Bread,4,23.93,95.72,19.14,76.58,314,15.5545,62.218,14.362,18.75,2024,9,September,3,Thursday,37,Individual,Timisoara,România
+3507,ValuePlus Market,3/30/2024,Cookies & Sweets,Carrots,3,15.45,46.35,6.95,39.4,237,10.0425,30.1275,9.2725,23.53,2024,3,March,1,Saturday,13,Individual,Bucuresti,România
+6286,FreshMart Downtown,8/2/2025,Bread & Pastries,Ground Beef,2,14.1,28.2,5.64,22.56,120,9.165,18.33,4.23,18.75,2025,8,August,3,Saturday,31,Individual,Sibiu,România
+4694,QuickStop Market,5/1/2024,Cookies & Sweets,Tomatoes,5,5.55,27.75,4.16,23.59,431,3.6075,18.0375,5.5525,23.54,2024,5,May,2,Wednesday,18,Individual,Brasov,România
+9501,ValuePlus Market,7/2/2025,Dairy Products,Eggs,1,9.55,9.55,1.91,7.64,265,6.2075,6.2075,1.4325,18.75,2025,7,July,3,Wednesday,27,Individual,Bucuresti,România
+5653,FreshMart Downtown,5/25/2025,Coffee & Tea,Carrots,5,10.74,53.7,5.37,48.33,230,6.981,34.905,13.425,27.78,2025,5,May,2,Sunday,21,Individual,Sibiu,România
+5496,FamilyFood Express,11/12/2023,Dairy Products,Chicken Breast,1,11.44,11.44,1.72,9.72,279,7.436,7.436,2.284,23.5,2023,11,November,4,Sunday,45,Individual,Craiova,România
+3762,Unknown Store,11/8/2024,Bread & Pastries,Yogurt,4,7.77,31.08,0,31.08,300,5.0505,20.202,10.878,35,2024,11,November,4,Friday,45,Individual,Necunoscut,România
+6531,City Fresh Store,5/22/2025,Coffee & Tea,Onions,1,11.86,11.86,1.78,10.08,295,7.709,7.709,2.371,23.52,2025,5,May,2,Thursday,21,Individual,Timisoara,România
+1674,FreshMart Downtown,5/8/2025,Coffee & Tea,Orange Juice,3,7.53,22.59,0,22.59,217,4.8945,14.6835,7.9065,35,2025,5,May,2,Thursday,19,Individual,Sibiu,România
+5336,City Fresh Store,12/24/2024,Dairy Products,Cereal,5,28.89,144.45,1.69,142.76,327,18.7785,93.8925,48.8675,34.23,2024,12,December,4,Tuesday,52,Individual,Timisoara,România
+9938,SuperSave Central,3/18/2024,Dairy Products,Eggs,5,13.12,65.6,6.56,59.04,380,8.528,42.64,16.4,27.78,2024,3,March,1,Monday,12,Individual,Cluj-Napoca,România
+8430,City Fresh Store,10/2/2023,Coffee & Tea,Salmon,5,2.12,10.6,0,10.6,46,1.378,6.89,3.71,35,2023,10,October,4,Monday,40,Individual,Timisoara,România
+8933,GreenGrocer Plaza,8/1/2024,Cookies & Sweets,Milk,2,26.67,53.34,0,53.34,80,17.3355,34.671,18.669,35,2024,8,August,3,Thursday,31,Individual,Oradea,România
+3353,GreenGrocer Plaza,4/5/2024,Dairy Products,Carrots,3,12.88,38.64,7.73,30.91,84,8.372,25.116,5.794,18.74,2024,4,April,2,Friday,14,Individual,Oradea,România
+6658,Unknown Store,6/11/2024,Cookies & Sweets,Yogurt,4,2.09,8.36,0,8.36,128,1.3585,5.434,2.926,35,2024,6,June,2,Tuesday,24,Individual,Necunoscut,România
+2739,QuickStop Market,4/10/2024,Dairy Products,Onions,4,5.88,23.52,0,23.52,343,3.822,15.288,8.232,35,2024,4,April,2,Wednesday,15,Individual,Brasov,România
+3007,ValuePlus Market,3/1/2024,Bread & Pastries,Salmon,1,25.25,25.25,2.53,22.72,415,16.4125,16.4125,6.3075,27.76,2024,3,March,1,Friday,9,Individual,Bucuresti,România
+8366,QuickStop Market,2/15/2024,Coffee & Tea,Milk,5,1.13,5.65,1.13,4.52,395,0.7345,3.6725,0.8475,18.75,2024,2,February,1,Thursday,7,Individual,Brasov,România
+6364,City Fresh Store,8/1/2025,Bread & Pastries,Bread,3,19.84,59.52,4.54,54.98,188,12.896,38.688,16.292,29.63,2025,8,August,3,Friday,31,Individual,Timisoara,România
+4524,FamilyFood Express,11/2/2024,Bread & Pastries,Onions,1,27.28,27.28,0,27.28,340,17.732,17.732,9.548,35,2024,11,November,4,Saturday,44,Individual,Craiova,România
+1828,GreenGrocer Plaza,3/12/2024,Bread & Pastries,Milk,2,28.2,56.4,11.28,45.12,64,18.33,36.66,8.46,18.75,2024,3,March,1,Tuesday,11,Individual,Oradea,România
+9108,ValuePlus Market,11/13/2024,Bread & Pastries,Ground Beef,5,3.26,16.3,2.44,13.86,371,2.119,10.595,3.265,23.56,2024,11,November,4,Wednesday,46,Individual,Bucuresti,România
+8710,SuperSave Central,3/15/2024,Bread & Pastries,Ground Beef,4,6.11,24.44,3.67,20.77,127,3.9715,15.886,4.884,23.51,2024,3,March,1,Friday,11,Individual,Cluj-Napoca,România
+2761,Corner Grocery,7/6/2024,Cookies & Sweets,Apples,4,13.79,55.16,11.03,44.13,258,8.9635,35.854,8.276,18.75,2024,7,July,3,Saturday,27,Individual,Iasi,România
+7606,SuperSave Central,5/17/2024,Bread & Pastries,Bananas,1,25.98,25.98,2.6,23.38,373,16.887,16.887,6.493,27.77,2024,5,May,2,Friday,20,Individual,Cluj-Napoca,România
+1741,Corner Grocery,6/13/2024,Cookies & Sweets,Tomatoes,3,12.13,36.39,3.64,32.75,157,7.8845,23.6535,9.0965,27.78,2024,6,June,2,Thursday,24,Individual,Iasi,România
+1838,FreshMart Downtown,10/22/2024,Dairy Products,Tomatoes,5,5.7,28.5,4.27,24.23,390,3.705,18.525,5.705,23.55,2024,10,October,4,Tuesday,43,Individual,Sibiu,România
+5728,FamilyFood Express,10/3/2023,Bread & Pastries,Potatoes,1,27.71,27.71,0,27.71,185,18.0115,18.0115,9.6985,35,2023,10,October,4,Tuesday,40,Individual,Craiova,România
+2946,Corner Grocery,11/14/2023,Dairy Products,Chicken Breast,5,23.51,117.55,17.63,99.92,176,15.2815,76.4075,23.5125,23.53,2023,11,November,4,Tuesday,46,Individual,Iasi,România
+2584,FamilyFood Express,6/7/2024,Cookies & Sweets,Rice,1,29.61,29.61,1.39,28.22,417,19.2465,19.2465,8.9735,31.8,2024,6,June,2,Friday,23,Individual,Craiova,România
+3363,Corner Grocery,1/8/2024,Coffee & Tea,Chicken Breast,2,3.3,6.6,2.11,4.49,43,2.145,4.29,0.2,4.45,2024,1,January,1,Monday,2,Individual,Iasi,România
+6456,Corner Grocery,4/22/2025,Cookies & Sweets,Milk,3,26.31,78.93,2.83,76.1,412,17.1015,51.3045,24.7955,32.58,2025,4,April,2,Tuesday,17,Individual,Iasi,România
+6218,Corner Grocery,12/11/2023,Coffee & Tea,Chicken Breast,4,9.51,38.04,4.5,33.54,99,6.1815,24.726,8.814,26.28,2023,12,December,4,Monday,50,Individual,Iasi,România
+5902,City Fresh Store,11/10/2024,Dairy Products,Potatoes,5,7.98,39.9,0,39.9,108,5.187,25.935,13.965,35,2024,11,November,4,Sunday,45,Individual,Timisoara,România
+6511,GreenGrocer Plaza,9/4/2024,Dairy Products,Cheese,1,5.64,5.64,0.56,5.08,475,3.666,3.666,1.414,27.83,2024,9,September,3,Wednesday,36,Individual,Oradea,România
+9351,QuickStop Market,9/23/2024,Bread & Pastries,Pasta,4,28.58,114.32,0,114.32,343,18.577,74.308,40.012,35,2024,9,September,3,Monday,39,Individual,Brasov,România
+1272,ValuePlus Market,5/19/2024,Cookies & Sweets,Ground Beef,2,8.5,17,1.36,15.64,148,5.525,11.05,4.59,29.35,2024,5,May,2,Sunday,20,Individual,Bucuresti,România
+6427,FamilyFood Express,1/11/2025,Dairy Products,Orange Juice,2,25.74,51.48,3.95,47.53,488,16.731,33.462,14.068,29.6,2025,1,January,1,Saturday,2,Individual,Craiova,România
+4968,QuickStop Market,8/31/2023,Coffee & Tea,Apples,5,4.98,24.9,3.73,21.17,356,3.237,16.185,4.985,23.55,2023,8,August,3,Thursday,35,Individual,Brasov,România
+2800,SuperSave Central,1/2/2024,Bread & Pastries,Yogurt,2,22.31,44.62,0,44.62,4,14.5015,29.003,15.617,35,2024,1,January,1,Tuesday,1,Individual,Cluj-Napoca,România
+8726,ValuePlus Market,6/14/2025,Bread & Pastries,Bananas,5,17.61,88.05,13.21,74.84,293,11.4465,57.2325,17.6075,23.53,2025,6,June,2,Saturday,24,Individual,Bucuresti,România
+3262,SuperSave Central,9/12/2024,Dairy Products,Cereal,1,21.69,21.69,2.17,19.52,441,14.0985,14.0985,5.4215,27.77,2024,9,September,3,Thursday,37,Individual,Cluj-Napoca,România
+4397,FreshMart Downtown,10/15/2024,Cookies & Sweets,Onions,5,23.71,118.55,3.08,115.47,271,15.4115,77.0575,38.4125,33.27,2024,10,October,4,Tuesday,42,Individual,Sibiu,România
+5331,FreshMart Downtown,11/22/2024,Bread & Pastries,Milk,2,5.1,10.2,2.04,8.16,438,3.315,6.63,1.53,18.75,2024,11,November,4,Friday,47,Individual,Sibiu,România
+8932,ValuePlus Market,1/3/2024,Bread & Pastries,Orange Juice,3,4.72,14.16,3.2,10.96,318,3.068,9.204,1.756,16.02,2024,1,January,1,Wednesday,1,Individual,Bucuresti,România
+5038,QuickStop Market,3/10/2024,Cookies & Sweets,Apples,4,14.22,56.88,0,56.88,483,9.243,36.972,19.908,35,2024,3,March,1,Sunday,10,Individual,Brasov,România
+5735,Corner Grocery,2/4/2025,Cookies & Sweets,Bananas,5,8.17,40.85,1.44,39.41,138,5.3105,26.5525,12.8575,32.62,2025,2,February,1,Tuesday,6,Individual,Iasi,România
+4396,ValuePlus Market,1/24/2025,Cookies & Sweets,Bread,3,19.56,58.68,8.8,49.88,185,12.714,38.142,11.738,23.53,2025,1,January,1,Friday,4,Individual,Bucuresti,România
+9011,SuperSave Central,4/9/2024,Bread & Pastries,Pasta,1,3.83,3.83,0.38,3.45,496,2.4895,2.4895,0.9605,27.84,2024,4,April,2,Tuesday,15,Individual,Cluj-Napoca,România
+8861,GreenGrocer Plaza,5/3/2024,Dairy Products,Apples,5,22.11,110.55,3.12,107.43,156,14.3715,71.8575,35.5725,33.11,2024,5,May,2,Friday,18,Individual,Oradea,România
+1689,MegaMart Westside,3/17/2024,Dairy Products,Bread,1,22.16,22.16,4.43,17.73,483,14.404,14.404,3.326,18.76,2024,3,March,1,Sunday,11,Individual,Constanta,România
+2294,FreshMart Downtown,5/2/2024,Dairy Products,Rice,5,27.95,139.75,13.98,125.77,413,18.1675,90.8375,34.9325,27.77,2024,5,May,2,Thursday,18,Individual,Sibiu,România
+2789,Corner Grocery,11/27/2024,Bread & Pastries,Rice,5,24.94,124.7,4.39,120.31,18,16.211,81.055,39.255,32.63,2024,11,November,4,Wednesday,48,Individual,Iasi,România
+1831,SuperSave Central,1/8/2025,Cookies & Sweets,Orange Juice,1,3.93,3.93,3.12,0.81,251,2.5545,2.5545,-1.7445,-215.37,2025,1,January,1,Wednesday,2,Individual,Cluj-Napoca,România
+9700,SuperSave Central,1/29/2024,Cookies & Sweets,Chicken Breast,4,1.19,4.76,0.95,3.81,393,0.7735,3.094,0.716,18.79,2024,1,January,1,Monday,5,Individual,Cluj-Napoca,România
+4814,City Fresh Store,9/16/2023,Cookies & Sweets,Orange Juice,3,11.56,34.68,4.25,30.43,456,7.514,22.542,7.888,25.92,2023,9,September,3,Saturday,37,Individual,Timisoara,România
+2641,GreenGrocer Plaza,6/23/2024,Coffee & Tea,Salmon,2,5.05,10.1,2.44,7.66,382,3.2825,6.565,1.095,14.3,2024,6,June,2,Sunday,25,Individual,Oradea,România
+6411,FamilyFood Express,2/14/2025,Dairy Products,Yogurt,3,2.16,6.48,0,6.48,202,1.404,4.212,2.268,35,2025,2,February,1,Friday,7,Individual,Craiova,România
+3252,ValuePlus Market,8/11/2023,Coffee & Tea,Eggs,3,22.77,68.31,3.9,64.41,399,14.8005,44.4015,20.0085,31.06,2023,8,August,3,Friday,32,Individual,Bucuresti,România
+4267,Unknown Store,3/16/2025,Coffee & Tea,Rice,3,15.08,45.24,9.05,36.19,389,9.802,29.406,6.784,18.75,2025,3,March,1,Sunday,11,Individual,Necunoscut,România
+1611,FamilyFood Express,7/16/2025,Bread & Pastries,Cereal,4,14.89,59.56,0,59.56,261,9.6785,38.714,20.846,35,2025,7,July,3,Wednesday,29,Individual,Craiova,România
+3880,Corner Grocery,8/1/2025,Bread & Pastries,Cereal,1,6.26,6.26,0,6.26,0,4.069,4.069,2.191,35,2025,8,August,3,Friday,31,Individual,Iasi,România
+1595,MegaMart Westside,5/17/2025,Bread & Pastries,Rice,4,9.11,36.44,3.64,32.8,310,5.9215,23.686,9.114,27.79,2025,5,May,2,Saturday,20,Individual,Constanta,România
+5888,City Fresh Store,10/21/2024,Dairy Products,Bread,5,18.94,94.7,18.94,75.76,154,12.311,61.555,14.205,18.75,2024,10,October,4,Monday,43,Individual,Timisoara,România
+6489,MegaMart Westside,3/15/2024,Coffee & Tea,Chicken Breast,4,2.95,11.8,2.36,9.44,214,1.9175,7.67,1.77,18.75,2024,3,March,1,Friday,11,Individual,Constanta,România
+9901,Corner Grocery,9/17/2024,Coffee & Tea,Onions,5,29.16,145.8,2.54,143.26,84,18.954,94.77,48.49,33.85,2024,9,September,3,Tuesday,38,Individual,Iasi,România
+9092,Corner Grocery,6/27/2025,Cookies & Sweets,Pasta,2,6.33,12.66,3.79,8.87,81,4.1145,8.229,0.641,7.23,2025,6,June,2,Friday,26,Individual,Iasi,România
+3198,ValuePlus Market,5/29/2025,Coffee & Tea,Carrots,5,8.5,42.5,6.38,36.12,436,5.525,27.625,8.495,23.52,2025,5,May,2,Thursday,22,Individual,Bucuresti,România
+2845,FamilyFood Express,4/19/2024,Bread & Pastries,Onions,1,1.03,1.03,0.15,0.88,177,0.6695,0.6695,0.2105,23.92,2024,4,April,2,Friday,16,Individual,Craiova,România
+5833,SuperSave Central,10/21/2024,Coffee & Tea,Bread,4,6.25,25,5,20,94,4.0625,16.25,3.75,18.75,2024,10,October,4,Monday,43,Individual,Cluj-Napoca,România
+7643,FamilyFood Express,5/10/2025,Dairy Products,Eggs,1,13.36,13.36,3.9,9.46,232,8.684,8.684,0.776,8.2,2025,5,May,2,Saturday,19,Individual,Craiova,România
+5272,GreenGrocer Plaza,5/30/2024,Coffee & Tea,Apples,1,7.5,7.5,1.12,6.38,489,4.875,4.875,1.505,23.59,2024,5,May,2,Thursday,22,Individual,Oradea,România
+5374,SuperSave Central,4/19/2024,Cookies & Sweets,Carrots,3,18.38,55.14,11.03,44.11,347,11.947,35.841,8.269,18.75,2024,4,April,2,Friday,16,Individual,Cluj-Napoca,România
+7642,FamilyFood Express,1/20/2025,Cookies & Sweets,Bread,5,21.72,108.6,0,108.6,269,14.118,70.59,38.01,35,2025,1,January,1,Monday,4,Individual,Craiova,România
+9233,GreenGrocer Plaza,7/23/2025,Bread & Pastries,Orange Juice,1,6.89,6.89,1.03,5.86,435,4.4785,4.4785,1.3815,23.58,2025,7,July,3,Wednesday,30,Individual,Oradea,România
+6095,ValuePlus Market,1/24/2025,Coffee & Tea,Eggs,1,2.72,2.72,0.54,2.18,178,1.768,1.768,0.412,18.9,2025,1,January,1,Friday,4,Individual,Bucuresti,România
+2923,QuickStop Market,12/15/2024,Coffee & Tea,Eggs,5,29.17,145.85,29.17,116.68,467,18.9605,94.8025,21.8775,18.75,2024,12,December,4,Sunday,50,Individual,Brasov,România
+5833,FamilyFood Express,5/18/2024,Bread & Pastries,Milk,2,4.39,8.78,0.88,7.9,356,2.8535,5.707,2.193,27.76,2024,5,May,2,Saturday,20,Individual,Craiova,România
+4618,FreshMart Downtown,1/24/2024,Cookies & Sweets,Orange Juice,1,21.33,21.33,2.13,19.2,339,13.8645,13.8645,5.3355,27.79,2024,1,January,1,Wednesday,4,Individual,Sibiu,România
+4578,FamilyFood Express,3/20/2025,Cookies & Sweets,Milk,2,12.37,24.74,0,24.74,421,8.0405,16.081,8.659,35,2025,3,March,1,Thursday,12,Individual,Craiova,România
+5054,City Fresh Store,1/16/2025,Coffee & Tea,Cereal,4,24.98,99.92,14.99,84.93,84,16.237,64.948,19.982,23.53,2025,1,January,1,Thursday,3,Individual,Timisoara,România
+2341,Corner Grocery,9/18/2024,Bread & Pastries,Pasta,1,4.02,4.02,1.96,2.06,185,2.613,2.613,-0.553,-26.84,2024,9,September,3,Wednesday,38,Individual,Iasi,România
+6927,ValuePlus Market,10/6/2023,Bread & Pastries,Milk,2,8.8,17.6,4.95,12.65,500,5.72,11.44,1.21,9.57,2023,10,October,4,Friday,40,Individual,Bucuresti,România
+9972,QuickStop Market,7/8/2025,Cookies & Sweets,Carrots,2,10.11,20.22,4.04,16.18,200,6.5715,13.143,3.037,18.77,2025,7,July,3,Tuesday,28,Individual,Brasov,România
+9792,Corner Grocery,12/1/2023,Coffee & Tea,Milk,3,5.67,17.01,4.54,12.47,349,3.6855,11.0565,1.4135,11.34,2023,12,December,4,Friday,48,Individual,Iasi,România
+3695,GreenGrocer Plaza,4/17/2024,Bread & Pastries,Yogurt,2,23.29,46.58,4.66,41.92,82,15.1385,30.277,11.643,27.77,2024,4,April,2,Wednesday,16,Individual,Oradea,România
+2904,Corner Grocery,1/16/2025,Bread & Pastries,Yogurt,5,18.59,92.95,3.51,89.44,490,12.0835,60.4175,29.0225,32.45,2025,1,January,1,Thursday,3,Individual,Iasi,România
+4365,City Fresh Store,2/13/2025,Dairy Products,Bananas,2,23.21,46.42,4.64,41.78,158,15.0865,30.173,11.607,27.78,2025,2,February,1,Thursday,7,Individual,Timisoara,România
+9008,GreenGrocer Plaza,10/16/2023,Coffee & Tea,Cereal,2,28.08,56.16,8.42,47.74,82,18.252,36.504,11.236,23.54,2023,10,October,4,Monday,42,Individual,Oradea,România
+3161,QuickStop Market,9/8/2024,Cookies & Sweets,Cheese,5,27.59,137.95,20.69,117.26,66,17.9335,89.6675,27.5925,23.53,2024,9,September,3,Sunday,36,Individual,Brasov,România
+6049,Corner Grocery,2/18/2025,Coffee & Tea,Bread,3,14.5,43.5,1.34,42.16,328,9.425,28.275,13.885,32.93,2025,2,February,1,Tuesday,8,Individual,Iasi,România
+1356,GreenGrocer Plaza,6/9/2024,Cookies & Sweets,Cheese,2,12.63,25.26,3.79,21.47,33,8.2095,16.419,5.051,23.53,2024,6,June,2,Sunday,23,Individual,Oradea,România
+5169,City Fresh Store,5/2/2025,Bread & Pastries,Potatoes,1,9.06,9.06,0.91,8.15,19,5.889,5.889,2.261,27.74,2025,5,May,2,Friday,18,Individual,Timisoara,România
+4570,MegaMart Westside,10/29/2024,Cookies & Sweets,Potatoes,2,2.56,5.12,0,5.12,444,1.664,3.328,1.792,35,2024,10,October,4,Tuesday,44,Individual,Constanta,România
+2044,FreshMart Downtown,9/30/2024,Dairy Products,Cheese,3,28.93,86.79,17.36,69.43,152,18.8045,56.4135,13.0165,18.75,2024,9,September,3,Monday,40,Individual,Sibiu,România
+1987,MegaMart Westside,8/1/2025,Cookies & Sweets,Potatoes,4,16.52,66.08,0,66.08,401,10.738,42.952,23.128,35,2025,8,August,3,Friday,31,Individual,Constanta,România
+5703,MegaMart Westside,6/19/2024,Dairy Products,Cheese,3,16.09,48.27,9.65,38.62,1,10.4585,31.3755,7.2445,18.76,2024,6,June,2,Wednesday,25,Individual,Constanta,România
+7184,MegaMart Westside,5/24/2024,Dairy Products,Apples,4,13.41,53.64,2.74,50.9,90,8.7165,34.866,16.034,31.5,2024,5,May,2,Friday,21,Individual,Constanta,România
+9835,GreenGrocer Plaza,11/18/2023,Dairy Products,Bananas,5,28.03,140.15,0,140.15,53,18.2195,91.0975,49.0525,35,2023,11,November,4,Saturday,46,Individual,Oradea,România
+6697,ValuePlus Market,11/7/2023,Dairy Products,Salmon,5,17.85,89.25,8.93,80.32,16,11.6025,58.0125,22.3075,27.77,2023,11,November,4,Tuesday,45,Individual,Bucuresti,România
+3924,FamilyFood Express,9/27/2024,Bread & Pastries,Salmon,5,12.04,60.2,2.4,57.8,100,7.826,39.13,18.67,32.3,2024,9,September,3,Friday,39,Individual,Craiova,România
+7439,City Fresh Store,9/20/2024,Cookies & Sweets,Tomatoes,1,28.24,28.24,2.13,26.11,400,18.356,18.356,7.754,29.7,2024,9,September,3,Friday,38,Individual,Timisoara,România
+1056,ValuePlus Market,3/16/2025,Cookies & Sweets,Yogurt,5,19.68,98.4,2.72,95.68,424,12.792,63.96,31.72,33.15,2025,3,March,1,Sunday,11,Individual,Bucuresti,România
+9715,ValuePlus Market,5/27/2024,Dairy Products,Tomatoes,1,22.52,22.52,0,22.52,66,14.638,14.638,7.882,35,2024,5,May,2,Monday,22,Individual,Bucuresti,România
+3541,GreenGrocer Plaza,3/8/2024,Dairy Products,Salmon,5,4.55,22.75,3.41,19.34,72,2.9575,14.7875,4.5525,23.54,2024,3,March,1,Friday,10,Individual,Oradea,România
+4088,SuperSave Central,8/4/2025,Dairy Products,Bread,4,25.48,101.92,10.19,91.73,467,16.562,66.248,25.482,27.78,2025,8,August,3,Monday,32,Individual,Cluj-Napoca,România
+2848,GreenGrocer Plaza,9/1/2023,Coffee & Tea,Bananas,4,3.12,12.48,2.5,9.98,491,2.028,8.112,1.868,18.72,2023,9,September,3,Friday,35,Individual,Oradea,România
+7868,Corner Grocery,11/26/2024,Cookies & Sweets,Cereal,4,24.44,97.76,4.61,93.15,92,15.886,63.544,29.606,31.78,2024,11,November,4,Tuesday,48,Individual,Iasi,România
+1256,FreshMart Downtown,2/9/2024,Dairy Products,Cereal,3,15.02,45.06,9.01,36.05,314,9.763,29.289,6.761,18.75,2024,2,February,1,Friday,6,Individual,Sibiu,România
+2653,SuperSave Central,11/10/2024,Bread & Pastries,Orange Juice,1,27.05,27.05,5.41,21.64,15,17.5825,17.5825,4.0575,18.75,2024,11,November,4,Sunday,45,Individual,Cluj-Napoca,România
+1550,FamilyFood Express,7/18/2024,Dairy Products,Eggs,3,8.93,26.79,4.02,22.77,102,5.8045,17.4135,5.3565,23.52,2024,7,July,3,Thursday,29,Individual,Craiova,România
+9843,City Fresh Store,1/22/2024,Cookies & Sweets,Pasta,3,19.05,57.15,5.71,51.44,310,12.3825,37.1475,14.2925,27.78,2024,1,January,1,Monday,4,Individual,Timisoara,România
+4836,FreshMart Downtown,5/1/2025,Dairy Products,Apples,3,13.44,40.32,8.06,32.26,95,8.736,26.208,6.052,18.76,2025,5,May,2,Thursday,18,Individual,Sibiu,România
+6224,GreenGrocer Plaza,10/28/2024,Bread & Pastries,Orange Juice,3,5.2,15.6,2.27,13.33,160,3.38,10.14,3.19,23.93,2024,10,October,4,Monday,44,Individual,Oradea,România
+9540,FreshMart Downtown,1/25/2024,Coffee & Tea,Potatoes,1,29.71,29.71,2.81,26.9,215,19.3115,19.3115,7.5885,28.21,2024,1,January,1,Thursday,4,Individual,Sibiu,România
+5508,FreshMart Downtown,9/23/2023,Coffee & Tea,Rice,2,25.4,50.8,4.67,46.13,206,16.51,33.02,13.11,28.42,2023,9,September,3,Saturday,38,Individual,Sibiu,România
+9120,FreshMart Downtown,9/12/2023,Cookies & Sweets,Rice,4,15.3,61.2,9.18,52.02,328,9.945,39.78,12.24,23.53,2023,9,September,3,Tuesday,37,Individual,Sibiu,România
+7244,Corner Grocery,4/8/2025,Bread & Pastries,Apples,1,6.53,6.53,4.96,1.57,461,4.2445,4.2445,-2.6745,-170.35,2025,4,April,2,Tuesday,15,Individual,Iasi,România
+4692,GreenGrocer Plaza,3/27/2024,Dairy Products,Potatoes,1,7.15,7.15,0.72,6.43,343,4.6475,4.6475,1.7825,27.72,2024,3,March,1,Wednesday,13,Individual,Oradea,România
+3365,Corner Grocery,4/23/2025,Bread & Pastries,Potatoes,1,10.86,10.86,1.63,9.23,416,7.059,7.059,2.171,23.52,2025,4,April,2,Wednesday,17,Individual,Iasi,România
+1944,Corner Grocery,10/16/2024,Coffee & Tea,Carrots,2,23.61,47.22,7.08,40.14,96,15.3465,30.693,9.447,23.54,2024,10,October,4,Wednesday,42,Individual,Iasi,România
+7363,QuickStop Market,2/11/2024,Dairy Products,Onions,1,11.27,11.27,1.13,10.14,108,7.3255,7.3255,2.8145,27.76,2024,2,February,1,Sunday,6,Individual,Brasov,România
+5177,ValuePlus Market,1/11/2024,Cookies & Sweets,Carrots,3,2.53,7.59,1.2,6.39,139,1.6445,4.9335,1.4565,22.79,2024,1,January,1,Thursday,2,Individual,Bucuresti,România
+6411,Unknown Store,12/21/2024,Cookies & Sweets,Yogurt,3,6.48,19.44,3.43,16.01,90,4.212,12.636,3.374,21.07,2024,12,December,4,Saturday,51,Individual,Necunoscut,România
+2295,ValuePlus Market,7/23/2025,Cookies & Sweets,Chicken Breast,1,19.73,19.73,3.95,15.78,490,12.8245,12.8245,2.9555,18.73,2025,7,July,3,Wednesday,30,Individual,Bucuresti,România
+4120,FreshMart Downtown,9/16/2023,Dairy Products,Apples,5,27.32,136.6,0,136.6,318,17.758,88.79,47.81,35,2023,9,September,3,Saturday,37,Individual,Sibiu,România
+5398,QuickStop Market,5/25/2024,Bread & Pastries,Apples,3,20.75,62.25,9.34,52.91,85,13.4875,40.4625,12.4475,23.53,2024,5,May,2,Saturday,21,Individual,Brasov,România
+4555,FamilyFood Express,8/13/2024,Coffee & Tea,Chicken Breast,1,24.74,24.74,4.95,19.79,290,16.081,16.081,3.709,18.74,2024,8,August,3,Tuesday,33,Individual,Craiova,România
+6455,MegaMart Westside,3/29/2024,Coffee & Tea,Potatoes,3,29.69,89.07,13.36,75.71,131,19.2985,57.8955,17.8145,23.53,2024,3,March,1,Friday,13,Individual,Constanta,România
+1251,MegaMart Westside,1/18/2024,Coffee & Tea,Bananas,3,9.72,29.16,2.08,27.08,170,6.318,18.954,8.126,30.01,2024,1,January,1,Thursday,3,Individual,Constanta,România
+8846,FamilyFood Express,7/17/2025,Dairy Products,Yogurt,4,19.51,78.04,0,78.04,494,12.6815,50.726,27.314,35,2025,7,July,3,Thursday,29,Individual,Craiova,România
+4974,ValuePlus Market,1/28/2025,Coffee & Tea,Carrots,2,8.68,17.36,2.6,14.76,347,5.642,11.284,3.476,23.55,2025,1,January,1,Tuesday,5,Individual,Bucuresti,România
+6269,SuperSave Central,3/31/2025,Coffee & Tea,Eggs,5,29.02,145.1,21.76,123.34,319,18.863,94.315,29.025,23.53,2025,3,March,1,Monday,14,Individual,Cluj-Napoca,România
+5285,FamilyFood Express,5/12/2024,Cookies & Sweets,Bread,3,7.34,22.02,4.4,17.62,242,4.771,14.313,3.307,18.77,2024,5,May,2,Sunday,19,Individual,Craiova,România
+9401,Corner Grocery,6/22/2025,Cookies & Sweets,Tomatoes,1,26.89,26.89,2.24,24.65,471,17.4785,17.4785,7.1715,29.09,2025,6,June,2,Sunday,25,Individual,Iasi,România
+2615,SuperSave Central,4/21/2025,Cookies & Sweets,Onions,2,9.72,19.44,4.71,14.73,43,6.318,12.636,2.094,14.22,2025,4,April,2,Monday,17,Individual,Cluj-Napoca,România
+4328,Corner Grocery,5/20/2024,Coffee & Tea,Bananas,5,1.76,8.8,4.02,4.78,392,1.144,5.72,-0.94,-19.67,2024,5,May,2,Monday,21,Individual,Iasi,România
+6126,QuickStop Market,6/23/2024,Bread & Pastries,Carrots,3,4.68,14.04,4.02,10.02,278,3.042,9.126,0.894,8.92,2024,6,June,2,Sunday,25,Individual,Brasov,România
+5026,GreenGrocer Plaza,8/28/2024,Cookies & Sweets,Eggs,1,6.35,6.35,1.27,5.08,419,4.1275,4.1275,0.9525,18.75,2024,8,August,3,Wednesday,35,Individual,Oradea,România
+9005,QuickStop Market,2/19/2025,Cookies & Sweets,Tomatoes,1,14.44,14.44,2.89,11.55,416,9.386,9.386,2.164,18.74,2025,2,February,1,Wednesday,8,Individual,Brasov,România
+3293,ValuePlus Market,2/16/2025,Cookies & Sweets,Carrots,1,6.05,6.05,0,6.05,77,3.9325,3.9325,2.1175,35,2025,2,February,1,Sunday,7,Individual,Bucuresti,România
+9954,MegaMart Westside,8/20/2024,Coffee & Tea,Eggs,3,23.75,71.25,7.12,64.13,337,15.4375,46.3125,17.8175,27.78,2024,8,August,3,Tuesday,34,Individual,Constanta,România
+1962,Corner Grocery,9/16/2024,Dairy Products,Milk,1,25.7,25.7,3.66,22.04,81,16.705,16.705,5.335,24.21,2024,9,September,3,Monday,38,Individual,Iasi,România
+1794,Unknown Store,3/22/2025,Coffee & Tea,Orange Juice,5,19.3,96.5,14.47,82.03,15,12.545,62.725,19.305,23.53,2025,3,March,1,Saturday,12,Individual,Necunoscut,România
+1104,GreenGrocer Plaza,6/22/2024,Coffee & Tea,Tomatoes,2,29.67,59.34,11.87,47.47,293,19.2855,38.571,8.899,18.75,2024,6,June,2,Saturday,25,Individual,Oradea,România
+3252,QuickStop Market,5/22/2025,Coffee & Tea,Salmon,3,7.53,22.59,2.26,20.33,379,4.8945,14.6835,5.6465,27.77,2025,5,May,2,Thursday,21,Individual,Brasov,România
+4791,ValuePlus Market,9/28/2023,Bread & Pastries,Bread,5,1.69,8.45,1.69,6.76,491,1.0985,5.4925,1.2675,18.75,2023,9,September,3,Thursday,39,Individual,Bucuresti,România
+5501,GreenGrocer Plaza,9/26/2024,Cookies & Sweets,Bread,5,14.87,74.35,0,74.35,66,9.6655,48.3275,26.0225,35,2024,9,September,3,Thursday,39,Individual,Oradea,România
+5697,FreshMart Downtown,8/20/2023,Dairy Products,Milk,4,15.71,62.84,6.28,56.56,332,10.2115,40.846,15.714,27.78,2023,8,August,3,Sunday,33,Individual,Sibiu,România
+3937,SuperSave Central,10/29/2023,Cookies & Sweets,Cheese,5,4.99,24.95,4.93,20.02,224,3.2435,16.2175,3.8025,18.99,2023,10,October,4,Sunday,43,Individual,Cluj-Napoca,România
+6807,GreenGrocer Plaza,3/1/2024,Dairy Products,Pasta,5,6.96,34.8,6.96,27.84,361,4.524,22.62,5.22,18.75,2024,3,March,1,Friday,9,Individual,Oradea,România
+4984,ValuePlus Market,1/29/2025,Bread & Pastries,Chicken Breast,3,22.01,66.03,4.91,61.12,403,14.3065,42.9195,18.2005,29.78,2025,1,January,1,Wednesday,5,Individual,Bucuresti,România
+1519,Corner Grocery,10/18/2023,Coffee & Tea,Bananas,4,12.15,48.6,9.72,38.88,22,7.8975,31.59,7.29,18.75,2023,10,October,4,Wednesday,42,Individual,Iasi,România
+8798,Corner Grocery,9/19/2023,Cookies & Sweets,Milk,1,17.04,17.04,2.85,14.19,487,11.076,11.076,3.114,21.95,2023,9,September,3,Tuesday,38,Individual,Iasi,România
+4463,ValuePlus Market,7/7/2025,Bread & Pastries,Milk,3,29.27,87.81,3.87,83.94,8,19.0255,57.0765,26.8635,32,2025,7,July,3,Monday,28,Individual,Bucuresti,România
+3362,QuickStop Market,3/13/2025,Bread & Pastries,Cereal,2,24.16,48.32,9.66,38.66,500,15.704,31.408,7.252,18.76,2025,3,March,1,Thursday,11,Individual,Brasov,România
+3661,Corner Grocery,10/18/2024,Bread & Pastries,Eggs,5,8.09,40.45,0,40.45,465,5.2585,26.2925,14.1575,35,2024,10,October,4,Friday,42,Individual,Iasi,România
+2284,QuickStop Market,8/29/2024,Dairy Products,Cereal,3,18.14,54.42,0,54.42,315,11.791,35.373,19.047,35,2024,8,August,3,Thursday,35,Individual,Brasov,România
+6666,FreshMart Downtown,9/17/2023,Dairy Products,Orange Juice,4,27.4,109.6,0,109.6,322,17.81,71.24,38.36,35,2023,9,September,3,Sunday,37,Individual,Sibiu,România
+2245,QuickStop Market,4/27/2024,Dairy Products,Ground Beef,3,15.3,45.9,6.88,39.02,24,9.945,29.835,9.185,23.54,2024,4,April,2,Saturday,17,Individual,Brasov,România
+7499,MegaMart Westside,3/29/2025,Cookies & Sweets,Cereal,2,28.64,57.28,5.73,51.55,21,18.616,37.232,14.318,27.77,2025,3,March,1,Saturday,13,Individual,Constanta,România
+5478,QuickStop Market,4/6/2025,Coffee & Tea,Salmon,2,26.67,53.34,4.01,49.33,147,17.3355,34.671,14.659,29.72,2025,4,April,2,Sunday,14,Individual,Brasov,România
+4043,GreenGrocer Plaza,1/15/2025,Dairy Products,Salmon,4,15.29,61.16,9.17,51.99,44,9.9385,39.754,12.236,23.54,2025,1,January,1,Wednesday,3,Individual,Oradea,România
+2204,FreshMart Downtown,10/9/2023,Bread & Pastries,Eggs,5,11.9,59.5,0,59.5,482,7.735,38.675,20.825,35,2023,10,October,4,Monday,41,Individual,Sibiu,România
+7225,SuperSave Central,2/9/2025,Bread & Pastries,Bread,5,25.85,129.25,2.74,126.51,383,16.8025,84.0125,42.4975,33.59,2025,2,February,1,Sunday,6,Individual,Cluj-Napoca,România
+2499,GreenGrocer Plaza,8/11/2023,Bread & Pastries,Chicken Breast,3,13.16,39.48,7.9,31.58,228,8.554,25.662,5.918,18.74,2023,8,August,3,Friday,32,Individual,Oradea,România
+6050,Corner Grocery,7/17/2024,Dairy Products,Apples,4,28.72,114.88,17.23,97.65,338,18.668,74.672,22.978,23.53,2024,7,July,3,Wednesday,29,Individual,Iasi,România
+5419,ValuePlus Market,10/25/2023,Bread & Pastries,Cheese,1,17.3,17.3,0,17.3,165,11.245,11.245,6.055,35,2023,10,October,4,Wednesday,43,Individual,Bucuresti,România
+3170,MegaMart Westside,10/13/2023,Cookies & Sweets,Tomatoes,4,13.32,53.28,7.99,45.29,133,8.658,34.632,10.658,23.53,2023,10,October,4,Friday,41,Individual,Constanta,România
+4070,City Fresh Store,7/6/2024,Bread & Pastries,Cereal,1,9.94,9.94,4.5,5.44,209,6.461,6.461,-1.021,-18.77,2024,7,July,3,Saturday,27,Individual,Timisoara,România
+8353,ValuePlus Market,10/12/2024,Bread & Pastries,Chicken Breast,5,18.7,93.5,0,93.5,66,12.155,60.775,32.725,35,2024,10,October,4,Saturday,41,Individual,Bucuresti,România
+9395,FreshMart Downtown,6/18/2024,Cookies & Sweets,Bread,3,27.44,82.32,0,82.32,392,17.836,53.508,28.812,35,2024,6,June,2,Tuesday,25,Individual,Sibiu,România
+7311,GreenGrocer Plaza,8/16/2023,Cookies & Sweets,Tomatoes,2,24.72,49.44,1.31,48.13,448,16.068,32.136,15.994,33.23,2023,8,August,3,Wednesday,33,Individual,Oradea,România
+5781,ValuePlus Market,6/23/2024,Cookies & Sweets,Bananas,1,22.53,22.53,3.94,18.59,277,14.6445,14.6445,3.9455,21.22,2024,6,June,2,Sunday,25,Individual,Bucuresti,România
+7353,Corner Grocery,4/3/2025,Bread & Pastries,Rice,3,13.32,39.96,5.99,33.97,380,8.658,25.974,7.996,23.54,2025,4,April,2,Thursday,14,Individual,Iasi,România
+2387,QuickStop Market,2/20/2025,Coffee & Tea,Yogurt,1,8.65,8.65,0.87,7.78,335,5.6225,5.6225,2.1575,27.73,2025,2,February,1,Thursday,8,Individual,Brasov,România
+4977,QuickStop Market,10/24/2024,Cookies & Sweets,Bread,2,29.03,58.06,5.81,52.25,287,18.8695,37.739,14.511,27.77,2024,10,October,4,Thursday,43,Individual,Brasov,România
+7237,ValuePlus Market,12/16/2023,Dairy Products,Salmon,2,17.75,35.5,7.1,28.4,12,11.5375,23.075,5.325,18.75,2023,12,December,4,Saturday,50,Individual,Bucuresti,România
+5933,GreenGrocer Plaza,3/2/2024,Dairy Products,Onions,2,7.01,14.02,2,12.02,482,4.5565,9.113,2.907,24.18,2024,3,March,1,Saturday,9,Individual,Oradea,România
+9079,SuperSave Central,11/28/2023,Cookies & Sweets,Potatoes,5,21.96,109.8,4.07,105.73,290,14.274,71.37,34.36,32.5,2023,11,November,4,Tuesday,48,Individual,Cluj-Napoca,România
+2036,QuickStop Market,12/14/2023,Cookies & Sweets,Rice,3,25.19,75.57,0,75.57,18,16.3735,49.1205,26.4495,35,2023,12,December,4,Thursday,50,Individual,Brasov,România
+8933,GreenGrocer Plaza,4/5/2025,Cookies & Sweets,Eggs,1,5.69,5.69,1.14,4.55,383,3.6985,3.6985,0.8515,18.71,2025,4,April,2,Saturday,14,Individual,Oradea,România
+2260,FamilyFood Express,5/13/2024,Coffee & Tea,Chicken Breast,1,26.67,26.67,0,26.67,253,17.3355,17.3355,9.3345,35,2024,5,May,2,Monday,20,Individual,Craiova,România
+5123,ValuePlus Market,2/14/2024,Coffee & Tea,Eggs,5,13.12,65.6,2.74,62.86,4,8.528,42.64,20.22,32.17,2024,2,February,1,Wednesday,7,Individual,Bucuresti,România
+2752,City Fresh Store,11/20/2023,Coffee & Tea,Yogurt,3,27.88,83.64,16.73,66.91,368,18.122,54.366,12.544,18.75,2023,11,November,4,Monday,47,Individual,Timisoara,România
+5991,ValuePlus Market,8/12/2023,Coffee & Tea,Bananas,3,13.06,39.18,4.97,34.21,76,8.489,25.467,8.743,25.56,2023,8,August,3,Saturday,32,Individual,Bucuresti,România
+6399,Unknown Store,7/13/2024,Bread & Pastries,Pasta,3,24.79,74.37,3.92,70.45,444,16.1135,48.3405,22.1095,31.38,2024,7,July,3,Saturday,28,Individual,Necunoscut,România
+3230,GreenGrocer Plaza,3/27/2024,Bread & Pastries,Pasta,2,8.62,17.24,3.35,13.89,52,5.603,11.206,2.684,19.32,2024,3,March,1,Wednesday,13,Individual,Oradea,România
+4290,FreshMart Downtown,8/13/2024,Bread & Pastries,Yogurt,1,27.95,27.95,5.59,22.36,314,18.1675,18.1675,4.1925,18.75,2024,8,August,3,Tuesday,33,Individual,Sibiu,România
+6147,SuperSave Central,12/22/2023,Coffee & Tea,Bananas,3,3.25,9.75,1.95,7.8,496,2.1125,6.3375,1.4625,18.75,2023,12,December,4,Friday,51,Individual,Cluj-Napoca,România
+7524,ValuePlus Market,4/10/2024,Coffee & Tea,Cheese,4,10.48,41.92,8.38,33.54,256,6.812,27.248,6.292,18.76,2024,4,April,2,Wednesday,15,Individual,Bucuresti,România
+5775,ValuePlus Market,2/27/2025,Cookies & Sweets,Tomatoes,4,21.47,85.88,2.27,83.61,181,13.9555,55.822,27.788,33.24,2025,2,February,1,Thursday,9,Individual,Bucuresti,România
+4971,SuperSave Central,4/16/2024,Cookies & Sweets,Onions,4,15.2,60.8,0,60.8,403,9.88,39.52,21.28,35,2024,4,April,2,Tuesday,16,Individual,Cluj-Napoca,România
+7437,MegaMart Westside,5/16/2024,Cookies & Sweets,Yogurt,5,17.22,86.1,8.61,77.49,471,11.193,55.965,21.525,27.78,2024,5,May,2,Thursday,20,Individual,Constanta,România
+4273,MegaMart Westside,11/8/2024,Dairy Products,Orange Juice,3,15.57,46.71,3.59,43.12,6,10.1205,30.3615,12.7585,29.59,2024,11,November,4,Friday,45,Individual,Constanta,România
+9939,City Fresh Store,12/24/2023,Cookies & Sweets,Milk,3,8.94,26.82,0,26.82,29,5.811,17.433,9.387,35,2023,12,December,4,Sunday,51,Individual,Timisoara,România
+2133,Corner Grocery,5/4/2025,Cookies & Sweets,Milk,1,6.59,6.59,0,6.59,389,4.2835,4.2835,2.3065,35,2025,5,May,2,Sunday,18,Individual,Iasi,România
+7703,QuickStop Market,1/10/2025,Dairy Products,Apples,4,2.28,9.12,0,9.12,311,1.482,5.928,3.192,35,2025,1,January,1,Friday,2,Individual,Brasov,România
+9180,ValuePlus Market,11/23/2023,Cookies & Sweets,Apples,1,10.01,10.01,2.37,7.64,287,6.5065,6.5065,1.1335,14.84,2023,11,November,4,Thursday,47,Individual,Bucuresti,România
+3525,MegaMart Westside,2/12/2025,Coffee & Tea,Bread,2,9.92,19.84,0,19.84,348,6.448,12.896,6.944,35,2025,2,February,1,Wednesday,7,Individual,Constanta,România
+7176,MegaMart Westside,10/3/2023,Cookies & Sweets,Ground Beef,2,8.9,17.8,2.67,15.13,102,5.785,11.57,3.56,23.53,2023,10,October,4,Tuesday,40,Individual,Constanta,România
+8357,QuickStop Market,11/13/2024,Coffee & Tea,Pasta,1,15.2,15.2,2.28,12.92,296,9.88,9.88,3.04,23.53,2024,11,November,4,Wednesday,46,Individual,Brasov,România
+8851,ValuePlus Market,11/1/2024,Coffee & Tea,Apples,1,28.53,28.53,5.71,22.82,299,18.5445,18.5445,4.2755,18.74,2024,11,November,4,Friday,44,Individual,Bucuresti,România
+7853,FamilyFood Express,10/2/2024,Coffee & Tea,Pasta,1,27.73,27.73,2.77,24.96,264,18.0245,18.0245,6.9355,27.79,2024,10,October,4,Wednesday,40,Individual,Craiova,România
+1602,SuperSave Central,4/12/2025,Coffee & Tea,Cereal,3,17.34,52.02,7.8,44.22,337,11.271,33.813,10.407,23.53,2025,4,April,2,Saturday,15,Individual,Cluj-Napoca,România
+6816,ValuePlus Market,12/14/2023,Dairy Products,Cheese,4,23.44,93.76,1.11,92.65,488,15.236,60.944,31.706,34.22,2023,12,December,4,Thursday,50,Individual,Bucuresti,România
+6432,City Fresh Store,4/16/2025,Cookies & Sweets,Apples,4,1.01,4.04,0.81,3.23,75,0.6565,2.626,0.604,18.7,2025,4,April,2,Wednesday,16,Individual,Timisoara,România
+5239,Corner Grocery,1/26/2024,Bread & Pastries,Potatoes,4,25.1,100.4,2.55,97.85,361,16.315,65.26,32.59,33.31,2024,1,January,1,Friday,4,Individual,Iasi,România
+7129,SuperSave Central,6/5/2024,Coffee & Tea,Yogurt,1,7.12,7.12,1.07,6.05,222,4.628,4.628,1.422,23.5,2024,6,June,2,Wednesday,23,Individual,Cluj-Napoca,România
+5840,Corner Grocery,6/25/2024,Cookies & Sweets,Milk,3,13.31,39.93,4.23,35.7,379,8.6515,25.9545,9.7455,27.3,2024,6,June,2,Tuesday,26,Individual,Iasi,România
+8178,City Fresh Store,2/17/2025,Cookies & Sweets,Pasta,3,29.17,87.51,0,87.51,352,18.9605,56.8815,30.6285,35,2025,2,February,1,Monday,8,Individual,Timisoara,România
+2100,GreenGrocer Plaza,3/27/2024,Cookies & Sweets,Carrots,1,10.79,10.79,1.08,9.71,326,7.0135,7.0135,2.6965,27.77,2024,3,March,1,Wednesday,13,Individual,Oradea,România
+2885,GreenGrocer Plaza,8/24/2023,Bread & Pastries,Pasta,3,18.84,56.52,0,56.52,276,12.246,36.738,19.782,35,2023,8,August,3,Thursday,34,Individual,Oradea,România
+8080,Corner Grocery,6/9/2024,Cookies & Sweets,Bananas,3,17.13,51.39,5.14,46.25,251,11.1345,33.4035,12.8465,27.78,2024,6,June,2,Sunday,23,Individual,Iasi,România
+4232,FamilyFood Express,7/21/2024,Bread & Pastries,Chicken Breast,5,9.38,46.9,0,46.9,442,6.097,30.485,16.415,35,2024,7,July,3,Sunday,29,Individual,Craiova,România
+4519,Corner Grocery,1/13/2024,Coffee & Tea,Salmon,3,24.95,74.85,14.97,59.88,230,16.2175,48.6525,11.2275,18.75,2024,1,January,1,Saturday,2,Individual,Iasi,România
+5873,City Fresh Store,7/20/2025,Bread & Pastries,Pasta,3,9.55,28.65,2.87,25.78,227,6.2075,18.6225,7.1575,27.76,2025,7,July,3,Sunday,29,Individual,Timisoara,România
+2931,City Fresh Store,2/8/2024,Coffee & Tea,Rice,2,22.56,45.12,9.02,36.1,355,14.664,29.328,6.772,18.76,2024,2,February,1,Thursday,6,Individual,Timisoara,România
+6003,QuickStop Market,11/5/2023,Cookies & Sweets,Pasta,2,1.8,3.6,0.72,2.88,108,1.17,2.34,0.54,18.75,2023,11,November,4,Sunday,44,Individual,Brasov,România
+4043,ValuePlus Market,8/19/2024,Bread & Pastries,Yogurt,3,20.25,60.75,9.11,51.64,204,13.1625,39.4875,12.1525,23.53,2024,8,August,3,Monday,34,Individual,Bucuresti,România
+9804,ValuePlus Market,1/26/2025,Dairy Products,Pasta,5,28.88,144.4,2.79,141.61,433,18.772,93.86,47.75,33.72,2025,1,January,1,Sunday,4,Individual,Bucuresti,România
+3838,ValuePlus Market,10/11/2024,Bread & Pastries,Ground Beef,3,24.11,72.33,14.47,57.86,93,15.6715,47.0145,10.8455,18.74,2024,10,October,4,Friday,41,Individual,Bucuresti,România
+5732,FamilyFood Express,11/23/2023,Dairy Products,Eggs,5,9.77,48.85,9.77,39.08,106,6.3505,31.7525,7.3275,18.75,2023,11,November,4,Thursday,47,Individual,Craiova,România
+4065,City Fresh Store,4/7/2024,Coffee & Tea,Chicken Breast,5,26.56,132.8,0,132.8,26,17.264,86.32,46.48,35,2024,4,April,2,Sunday,14,Individual,Timisoara,România
+8389,GreenGrocer Plaza,11/30/2024,Bread & Pastries,Potatoes,1,13.81,13.81,3.17,10.64,243,8.9765,8.9765,1.6635,15.63,2024,11,November,4,Saturday,48,Individual,Oradea,România
+7290,City Fresh Store,10/16/2024,Dairy Products,Apples,4,1.18,4.72,0.47,4.25,457,0.767,3.068,1.182,27.81,2024,10,October,4,Wednesday,42,Individual,Timisoara,România
+9056,ValuePlus Market,6/24/2024,Coffee & Tea,Chicken Breast,3,27.89,83.67,12.55,71.12,107,18.1285,54.3855,16.7345,23.53,2024,6,June,2,Monday,26,Individual,Bucuresti,România
+8272,SuperSave Central,8/20/2024,Bread & Pastries,Tomatoes,2,25.71,51.42,7.71,43.71,312,16.7115,33.423,10.287,23.53,2024,8,August,3,Tuesday,34,Individual,Cluj-Napoca,România
+3740,ValuePlus Market,10/10/2023,Coffee & Tea,Cheese,3,7.62,22.86,3.43,19.43,134,4.953,14.859,4.571,23.53,2023,10,October,4,Tuesday,41,Individual,Bucuresti,România
+9115,Corner Grocery,10/6/2024,Coffee & Tea,Ground Beef,3,29.61,88.83,1.41,87.42,300,19.2465,57.7395,29.6805,33.95,2024,10,October,4,Sunday,40,Individual,Iasi,România
+2871,SuperSave Central,3/2/2024,Dairy Products,Cereal,4,24.9,99.6,2.2,97.4,447,16.185,64.74,32.66,33.53,2024,3,March,1,Saturday,9,Individual,Cluj-Napoca,România
+1681,City Fresh Store,3/19/2025,Bread & Pastries,Apples,3,14.57,43.71,6.56,37.15,235,9.4705,28.4115,8.7385,23.52,2025,3,March,1,Wednesday,12,Individual,Timisoara,România
+1528,ValuePlus Market,7/21/2024,Dairy Products,Salmon,5,19.85,99.25,0,99.25,97,12.9025,64.5125,34.7375,35,2024,7,July,3,Sunday,29,Individual,Bucuresti,România
+2425,MegaMart Westside,7/13/2024,Dairy Products,Apples,5,10.84,54.2,2.61,51.59,270,7.046,35.23,16.36,31.71,2024,7,July,3,Saturday,28,Individual,Constanta,România
+4882,QuickStop Market,1/17/2024,Bread & Pastries,Cereal,5,14.26,71.3,4.7,66.6,340,9.269,46.345,20.255,30.41,2024,1,January,1,Wednesday,3,Individual,Brasov,România
+6744,SuperSave Central,6/5/2025,Bread & Pastries,Eggs,2,9.94,19.88,3.41,16.47,51,6.461,12.922,3.548,21.54,2025,6,June,2,Thursday,23,Individual,Cluj-Napoca,România
+3281,FamilyFood Express,4/7/2025,Bread & Pastries,Rice,2,13.29,26.58,5.32,21.26,138,8.6385,17.277,3.983,18.73,2025,4,April,2,Monday,15,Individual,Craiova,România
+4390,FamilyFood Express,4/23/2025,Cookies & Sweets,Milk,4,13.71,54.84,5.48,49.36,101,8.9115,35.646,13.714,27.78,2025,4,April,2,Wednesday,17,Individual,Craiova,România
+1972,GreenGrocer Plaza,10/22/2024,Dairy Products,Apples,5,27.48,137.4,27.48,109.92,370,17.862,89.31,20.61,18.75,2024,10,October,4,Tuesday,43,Individual,Oradea,România
+6747,FamilyFood Express,9/23/2024,Dairy Products,Potatoes,5,11.38,56.9,11.38,45.52,162,7.397,36.985,8.535,18.75,2024,9,September,3,Monday,39,Individual,Craiova,România
+5605,FamilyFood Express,11/12/2024,Dairy Products,Carrots,3,14.85,44.55,4.46,40.09,260,9.6525,28.9575,11.1325,27.77,2024,11,November,4,Tuesday,46,Individual,Craiova,România
+3396,City Fresh Store,2/9/2025,Cookies & Sweets,Onions,4,4.89,19.56,2.93,16.63,308,3.1785,12.714,3.916,23.55,2025,2,February,1,Sunday,6,Individual,Timisoara,România
+6277,City Fresh Store,5/11/2025,Coffee & Tea,Pasta,2,10.35,20.7,3.67,17.03,276,6.7275,13.455,3.575,20.99,2025,5,May,2,Sunday,19,Individual,Timisoara,România
+5055,GreenGrocer Plaza,3/20/2025,Coffee & Tea,Potatoes,5,6.68,33.4,6.68,26.72,112,4.342,21.71,5.01,18.75,2025,3,March,1,Thursday,12,Individual,Oradea,România
+7786,FreshMart Downtown,5/24/2024,Cookies & Sweets,Milk,2,29.4,58.8,0,58.8,7,19.11,38.22,20.58,35,2024,5,May,2,Friday,21,Individual,Sibiu,România
+8405,FreshMart Downtown,10/4/2023,Bread & Pastries,Apples,4,10.34,41.36,4.14,37.22,292,6.721,26.884,10.336,27.77,2023,10,October,4,Wednesday,40,Individual,Sibiu,România
+2525,MegaMart Westside,6/14/2024,Bread & Pastries,Tomatoes,4,29.78,119.12,2.76,116.36,232,19.357,77.428,38.932,33.46,2024,6,June,2,Friday,24,Individual,Constanta,România
+5558,MegaMart Westside,1/27/2025,Coffee & Tea,Onions,4,20.22,80.88,2.05,78.83,342,13.143,52.572,26.258,33.31,2025,1,January,1,Monday,5,Individual,Constanta,România
+7046,MegaMart Westside,7/25/2024,Cookies & Sweets,Bananas,5,4.65,23.25,1.48,21.77,116,3.0225,15.1125,6.6575,30.58,2024,7,July,3,Thursday,30,Individual,Constanta,România
+1040,ValuePlus Market,6/11/2025,Bread & Pastries,Eggs,2,23.49,46.98,3.4,43.58,101,15.2685,30.537,13.043,29.93,2025,6,June,2,Wednesday,24,Individual,Bucuresti,România
+9967,City Fresh Store,10/28/2024,Bread & Pastries,Salmon,3,24.83,74.49,14.9,59.59,277,16.1395,48.4185,11.1715,18.75,2024,10,October,4,Monday,44,Individual,Timisoara,România
+6631,MegaMart Westside,7/1/2025,Bread & Pastries,Potatoes,4,13.22,52.88,7.93,44.95,326,8.593,34.372,10.578,23.53,2025,7,July,3,Tuesday,27,Individual,Constanta,România
+8529,QuickStop Market,8/19/2023,Dairy Products,Potatoes,5,18.58,92.9,3.08,89.82,289,12.077,60.385,29.435,32.77,2023,8,August,3,Saturday,33,Individual,Brasov,România
+8479,City Fresh Store,8/7/2023,Coffee & Tea,Carrots,1,28.26,28.26,0,28.26,416,18.369,18.369,9.891,35,2023,8,August,3,Monday,32,Individual,Timisoara,România
+8009,FreshMart Downtown,1/11/2024,Bread & Pastries,Apples,1,19.28,19.28,2.89,16.39,168,12.532,12.532,3.858,23.54,2024,1,January,1,Thursday,2,Individual,Sibiu,România
+6905,City Fresh Store,2/17/2024,Dairy Products,Cereal,3,18.87,56.61,8.49,48.12,378,12.2655,36.7965,11.3235,23.53,2024,2,February,1,Saturday,7,Individual,Timisoara,România
+2350,QuickStop Market,5/21/2024,Dairy Products,Bread,4,10.06,40.24,4.02,36.22,254,6.539,26.156,10.064,27.79,2024,5,May,2,Tuesday,21,Individual,Brasov,România
+2276,City Fresh Store,11/18/2023,Cookies & Sweets,Onions,5,29.94,149.7,29.94,119.76,98,19.461,97.305,22.455,18.75,2023,11,November,4,Saturday,46,Individual,Timisoara,România
+7919,City Fresh Store,1/27/2025,Coffee & Tea,Cheese,1,28.63,28.63,2.79,25.84,87,18.6095,18.6095,7.2305,27.98,2025,1,January,1,Monday,5,Individual,Timisoara,România
+7276,SuperSave Central,10/15/2023,Cookies & Sweets,Yogurt,4,9.97,39.88,5.98,33.9,356,6.4805,25.922,7.978,23.53,2023,10,October,4,Sunday,41,Individual,Cluj-Napoca,România
+5902,SuperSave Central,11/21/2023,Bread & Pastries,Ground Beef,5,23.43,117.15,3.6,113.55,91,15.2295,76.1475,37.4025,32.94,2023,11,November,4,Tuesday,47,Individual,Cluj-Napoca,România
+7270,City Fresh Store,3/29/2025,Dairy Products,Cereal,1,3.72,3.72,0.37,3.35,206,2.418,2.418,0.932,27.82,2025,3,March,1,Saturday,13,Individual,Timisoara,România
+3181,Corner Grocery,12/17/2024,Coffee & Tea,Eggs,3,6.3,18.9,3.78,15.12,159,4.095,12.285,2.835,18.75,2024,12,December,4,Tuesday,51,Individual,Iasi,România
+6753,ValuePlus Market,2/18/2025,Bread & Pastries,Orange Juice,1,26.28,26.28,2.5,23.78,467,17.082,17.082,6.698,28.17,2025,2,February,1,Tuesday,8,Individual,Bucuresti,România
+4490,SuperSave Central,12/6/2024,Coffee & Tea,Apples,5,5.31,26.55,3.49,23.06,419,3.4515,17.2575,5.8025,25.16,2024,12,December,4,Friday,49,Individual,Cluj-Napoca,România
+3480,ValuePlus Market,7/21/2025,Dairy Products,Rice,3,4.12,12.36,3.07,9.29,349,2.678,8.034,1.256,13.52,2025,7,July,3,Monday,30,Individual,Bucuresti,România
+7745,GreenGrocer Plaza,11/27/2024,Coffee & Tea,Yogurt,5,5.49,27.45,2.75,24.7,313,3.5685,17.8425,6.8575,27.76,2024,11,November,4,Wednesday,48,Individual,Oradea,România
+8248,ValuePlus Market,6/4/2025,Cookies & Sweets,Salmon,1,20.38,20.38,4.08,16.3,33,13.247,13.247,3.053,18.73,2025,6,June,2,Wednesday,23,Individual,Bucuresti,România
+2646,FreshMart Downtown,11/23/2023,Coffee & Tea,Chicken Breast,5,3.63,18.15,3.25,14.9,335,2.3595,11.7975,3.1025,20.82,2023,11,November,4,Thursday,47,Individual,Sibiu,România
+7291,City Fresh Store,5/6/2024,Bread & Pastries,Rice,4,12.71,50.84,5.08,45.76,193,8.2615,33.046,12.714,27.78,2024,5,May,2,Monday,19,Individual,Timisoara,România
+8035,FreshMart Downtown,4/7/2024,Coffee & Tea,Chicken Breast,3,17.27,51.81,7.77,44.04,312,11.2255,33.6765,10.3635,23.53,2024,4,April,2,Sunday,14,Individual,Sibiu,România
+1439,GreenGrocer Plaza,5/26/2025,Coffee & Tea,Apples,2,21.65,43.3,4.33,38.97,37,14.0725,28.145,10.825,27.78,2025,5,May,2,Monday,22,Individual,Oradea,România
+9482,FreshMart Downtown,11/20/2024,Bread & Pastries,Cereal,2,29.62,59.24,8.89,50.35,423,19.253,38.506,11.844,23.52,2024,11,November,4,Wednesday,47,Individual,Sibiu,România
+7418,QuickStop Market,3/23/2024,Bread & Pastries,Pasta,4,21.01,84.04,8.4,75.64,212,13.6565,54.626,21.014,27.78,2024,3,March,1,Saturday,12,Individual,Brasov,România
+1894,QuickStop Market,4/6/2025,Bread & Pastries,Potatoes,3,18.39,55.17,3.78,51.39,320,11.9535,35.8605,15.5295,30.22,2025,4,April,2,Sunday,14,Individual,Brasov,România
+2163,Unknown Store,9/20/2024,Bread & Pastries,Bread,5,25.54,127.7,4.98,122.72,102,16.601,83.005,39.715,32.36,2024,9,September,3,Friday,38,Individual,Necunoscut,România
+1197,City Fresh Store,5/13/2024,Coffee & Tea,Chicken Breast,1,7.62,7.62,1.52,6.1,426,4.953,4.953,1.147,18.8,2024,5,May,2,Monday,20,Individual,Timisoara,România
+6185,GreenGrocer Plaza,11/17/2023,Dairy Products,Ground Beef,4,18.83,75.32,7.53,67.79,224,12.2395,48.958,18.832,27.78,2023,11,November,4,Friday,46,Individual,Oradea,România
+2106,FreshMart Downtown,8/17/2023,Cookies & Sweets,Chicken Breast,2,23.09,46.18,3.6,42.58,18,15.0085,30.017,12.563,29.5,2023,8,August,3,Thursday,33,Individual,Sibiu,România
+1990,SuperSave Central,4/11/2025,Coffee & Tea,Onions,3,7.48,22.44,2.24,20.2,146,4.862,14.586,5.614,27.79,2025,4,April,2,Friday,15,Individual,Cluj-Napoca,România
+5693,ValuePlus Market,12/7/2024,Bread & Pastries,Tomatoes,2,25.35,50.7,5.07,45.63,180,16.4775,32.955,12.675,27.78,2024,12,December,4,Saturday,49,Individual,Bucuresti,România
+9209,Corner Grocery,3/24/2025,Cookies & Sweets,Salmon,4,13.86,55.44,8.32,47.12,198,9.009,36.036,11.084,23.52,2025,3,March,1,Monday,13,Individual,Iasi,România
+9791,QuickStop Market,9/27/2024,Bread & Pastries,Tomatoes,2,14.63,29.26,4.39,24.87,277,9.5095,19.019,5.851,23.53,2024,9,September,3,Friday,39,Individual,Brasov,România
+2083,SuperSave Central,4/3/2024,Bread & Pastries,Rice,1,11.52,11.52,4.62,6.9,465,7.488,7.488,-0.588,-8.52,2024,4,April,2,Wednesday,14,Individual,Cluj-Napoca,România
+8167,City Fresh Store,2/23/2025,Coffee & Tea,Cereal,2,9.39,18.78,3.76,15.02,51,6.1035,12.207,2.813,18.73,2025,2,February,1,Sunday,8,Individual,Timisoara,România
+4909,SuperSave Central,9/20/2023,Cookies & Sweets,Chicken Breast,5,27.39,136.95,3.21,133.74,209,17.8035,89.0175,44.7225,33.44,2023,9,September,3,Wednesday,38,Individual,Cluj-Napoca,România
+8118,SuperSave Central,11/5/2023,Cookies & Sweets,Potatoes,4,14.82,59.28,3.75,55.53,392,9.633,38.532,16.998,30.61,2023,11,November,4,Sunday,44,Individual,Cluj-Napoca,România
+8428,MegaMart Westside,11/24/2024,Coffee & Tea,Apples,4,26.92,107.68,0,107.68,496,17.498,69.992,37.688,35,2024,11,November,4,Sunday,47,Individual,Constanta,România
+5403,GreenGrocer Plaza,2/26/2025,Coffee & Tea,Bread,3,25.97,77.91,4.24,73.67,458,16.8805,50.6415,23.0285,31.26,2025,2,February,1,Wednesday,9,Individual,Oradea,România
+2934,GreenGrocer Plaza,3/28/2025,Bread & Pastries,Bread,2,11.82,23.64,4.45,19.19,78,7.683,15.366,3.824,19.93,2025,3,March,1,Friday,13,Individual,Oradea,România
+5308,FreshMart Downtown,2/10/2025,Dairy Products,Tomatoes,3,19.13,57.39,11.48,45.91,98,12.4345,37.3035,8.6065,18.75,2025,2,February,1,Monday,7,Individual,Sibiu,România
+9185,MegaMart Westside,6/4/2025,Bread & Pastries,Apples,4,19.41,77.64,2.65,74.99,303,12.6165,50.466,24.524,32.7,2025,6,June,2,Wednesday,23,Individual,Constanta,România
+3734,QuickStop Market,5/18/2024,Bread & Pastries,Cheese,3,24.9,74.7,1.03,73.67,376,16.185,48.555,25.115,34.09,2024,5,May,2,Saturday,20,Individual,Brasov,România
+9336,MegaMart Westside,8/8/2023,Coffee & Tea,Orange Juice,4,11.73,46.92,7.04,39.88,153,7.6245,30.498,9.382,23.53,2023,8,August,3,Tuesday,32,Individual,Constanta,România
+1721,ValuePlus Market,6/3/2025,Bread & Pastries,Ground Beef,5,5.94,29.7,2.97,26.73,353,3.861,19.305,7.425,27.78,2025,6,June,2,Tuesday,23,Individual,Bucuresti,România
+1201,City Fresh Store,2/12/2024,Coffee & Tea,Cereal,4,14.44,57.76,5.78,51.98,460,9.386,37.544,14.436,27.77,2024,2,February,1,Monday,7,Individual,Timisoara,România
+3458,SuperSave Central,12/24/2023,Bread & Pastries,Chicken Breast,1,12.34,12.34,1.85,10.49,76,8.021,8.021,2.469,23.54,2023,12,December,4,Sunday,51,Individual,Cluj-Napoca,România
+7870,FamilyFood Express,1/28/2024,Coffee & Tea,Potatoes,4,13.61,54.44,5.44,49,436,8.8465,35.386,13.614,27.78,2024,1,January,1,Sunday,4,Individual,Craiova,România
+7108,MegaMart Westside,11/7/2023,Cookies & Sweets,Ground Beef,2,28.38,56.76,8.51,48.25,352,18.447,36.894,11.356,23.54,2023,11,November,4,Tuesday,45,Individual,Constanta,România
+9450,ValuePlus Market,9/11/2023,Coffee & Tea,Salmon,5,27.1,135.5,2.8,132.7,484,17.615,88.075,44.625,33.63,2023,9,September,3,Monday,37,Individual,Bucuresti,România
+2415,QuickStop Market,10/9/2024,Bread & Pastries,Tomatoes,4,21.31,85.24,12.79,72.45,436,13.8515,55.406,17.044,23.53,2024,10,October,4,Wednesday,41,Individual,Brasov,România
+8483,QuickStop Market,8/13/2023,Bread & Pastries,Eggs,3,1.72,5.16,2.47,2.69,333,1.118,3.354,-0.664,-24.68,2023,8,August,3,Sunday,32,Individual,Brasov,România
+7044,SuperSave Central,1/9/2024,Coffee & Tea,Tomatoes,5,5.54,27.7,4.75,22.95,227,3.601,18.005,4.945,21.55,2024,1,January,1,Tuesday,2,Individual,Cluj-Napoca,România
+5979,FreshMart Downtown,3/3/2025,Dairy Products,Milk,3,17.01,51.03,7.65,43.38,188,11.0565,33.1695,10.2105,23.54,2025,3,March,1,Monday,10,Individual,Sibiu,România
+9083,SuperSave Central,3/29/2025,Coffee & Tea,Bread,1,5.05,5.05,0,5.05,52,3.2825,3.2825,1.7675,35,2025,3,March,1,Saturday,13,Individual,Cluj-Napoca,România
+4201,FamilyFood Express,2/25/2025,Dairy Products,Orange Juice,3,10.8,32.4,2.97,29.43,211,7.02,21.06,8.37,28.44,2025,2,February,1,Tuesday,9,Individual,Craiova,România
+5016,FamilyFood Express,12/1/2023,Coffee & Tea,Apples,1,23.11,23.11,4.62,18.49,444,15.0215,15.0215,3.4685,18.76,2023,12,December,4,Friday,48,Individual,Craiova,România
+4361,ValuePlus Market,9/21/2024,Cookies & Sweets,Yogurt,2,4.26,8.52,0,8.52,198,2.769,5.538,2.982,35,2024,9,September,3,Saturday,38,Individual,Bucuresti,România
+4902,FamilyFood Express,6/28/2024,Bread & Pastries,Rice,2,26.7,53.4,8.01,45.39,418,17.355,34.71,10.68,23.53,2024,6,June,2,Friday,26,Individual,Craiova,România
+5584,City Fresh Store,10/18/2023,Cookies & Sweets,Cereal,4,29.53,118.12,11.81,106.31,308,19.1945,76.778,29.532,27.78,2023,10,October,4,Wednesday,42,Individual,Timisoara,România
+3141,QuickStop Market,2/6/2024,Coffee & Tea,Yogurt,3,1.7,5.1,1.02,4.08,139,1.105,3.315,0.765,18.75,2024,2,February,1,Tuesday,6,Individual,Brasov,România
+2785,FamilyFood Express,12/5/2023,Cookies & Sweets,Bread,4,26.53,106.12,1.42,104.7,256,17.2445,68.978,35.722,34.12,2023,12,December,4,Tuesday,49,Individual,Craiova,România
+6145,MegaMart Westside,6/17/2024,Cookies & Sweets,Chicken Breast,2,19.56,39.12,0,39.12,232,12.714,25.428,13.692,35,2024,6,June,2,Monday,25,Individual,Constanta,România
+6870,QuickStop Market,3/27/2025,Bread & Pastries,Tomatoes,3,24.92,74.76,14.95,59.81,277,16.198,48.594,11.216,18.75,2025,3,March,1,Thursday,13,Individual,Brasov,România
+6051,GreenGrocer Plaza,7/31/2024,Cookies & Sweets,Orange Juice,4,1.3,5.2,0.78,4.42,305,0.845,3.38,1.04,23.53,2024,7,July,3,Wednesday,31,Individual,Oradea,România
+3582,City Fresh Store,4/25/2025,Cookies & Sweets,Onions,1,13.25,13.25,0,13.25,300,8.6125,8.6125,4.6375,35,2025,4,April,2,Friday,17,Individual,Timisoara,România
+2494,ValuePlus Market,2/9/2025,Coffee & Tea,Yogurt,5,12.9,64.5,4.45,60.05,5,8.385,41.925,18.125,30.18,2025,2,February,1,Sunday,6,Individual,Bucuresti,România
+5896,GreenGrocer Plaza,2/25/2024,Bread & Pastries,Potatoes,4,8.21,32.84,3.28,29.56,198,5.3365,21.346,8.214,27.79,2024,2,February,1,Sunday,8,Individual,Oradea,România
+7625,City Fresh Store,5/31/2025,Dairy Products,Chicken Breast,2,5.03,10.06,1.01,9.05,379,3.2695,6.539,2.511,27.75,2025,5,May,2,Saturday,22,Individual,Timisoara,România
+5093,ValuePlus Market,10/19/2023,Dairy Products,Cheese,4,1.96,7.84,1.26,6.58,223,1.274,5.096,1.484,22.55,2023,10,October,4,Thursday,42,Individual,Bucuresti,România
+2376,City Fresh Store,11/1/2024,Bread & Pastries,Chicken Breast,2,12.24,24.48,4.9,19.58,324,7.956,15.912,3.668,18.73,2024,11,November,4,Friday,44,Individual,Timisoara,România
+3110,SuperSave Central,10/17/2023,Bread & Pastries,Carrots,3,15.41,46.23,1.12,45.11,38,10.0165,30.0495,15.0605,33.39,2023,10,October,4,Tuesday,42,Individual,Cluj-Napoca,România
+8096,MegaMart Westside,5/6/2025,Dairy Products,Potatoes,3,16.44,49.32,7.4,41.92,315,10.686,32.058,9.862,23.53,2025,5,May,2,Tuesday,19,Individual,Constanta,România
