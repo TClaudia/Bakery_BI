@@ -1408,7 +1408,7 @@ namespace BakeryBI
 
                 histSeries.Header = "Historical Trend";
 
-                histSeries.LineColor = System.Drawing.Color.Blue;
+                histSeries.Border.Fill.Color = System.Drawing.Color.Blue;
 
 
 
@@ -1424,9 +1424,9 @@ namespace BakeryBI
 
                 forecastSeries.Header = "Forecast";
 
-                forecastSeries.LineColor = System.Drawing.Color.Red;
+                forecastSeries.Border.Fill.Color = System.Drawing.Color.Red;
 
-                forecastSeries.LineStyle = eLineStyle.Dash;
+                forecastSeries.Border.LineStyle = eLineStyle.Dash;
 
 
 
