@@ -16,6 +16,7 @@ namespace BakeryBI
         private List<SalesRecord> filteredData;
         private SalesDataLoader dataLoader;
         private List<string> selectedClientTypes = new List<string>();
+        private List<string> selectedStoreNames = new List<string>();
 
         public MainForm()
         {
@@ -128,9 +129,17 @@ namespace BakeryBI
                 filteredData = filteredData.Where(r => r.ProductName == selectedProduct).ToList();
             }
 
+            if (allSalesData.Any())
+            {
+                SyncClientTypeCheckBoxStates();
+                SyncStoreCheckBoxStates();
+            }
+
             // Update both tabs
             UpdateSalesOverTimeTab();
             UpdateMaxMinProductsTab();
+            UpdateFutureSalesEstimationTab();
+            UpdateEvolutionOfProfitsTab();
         }
 
         #region Sales Over Time Tab
@@ -343,101 +352,30 @@ namespace BakeryBI
         #endregion
 
         //Sales analysis
-        private void InitializeCustomControlsAndEventsForSalesAnalysis()
-        {
-            cmbForecastMonths.Items.AddRange(Enumerable.Range(1, 12).Cast<object>().ToArray());
-            cmbForecastMonths.SelectedIndex = 2;
 
-            PopulateClientTypeFilters();
-
-            tabControl.SelectedIndexChanged += tabControl_SelectedIndexChanged;
-
-            cmbForecastMonths.SelectedIndexChanged += cmbForecastMonths_SelectedIndexChanged;
-        }
-        private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (tabControl.SelectedTab == tabFutureSalesEstimation)
-            {
-                cmbForecastMonths_SelectedIndexChanged(null, null);
-            }
-            else if (tabControl.SelectedTab == tabEvolutionOfProfits)
-            {
-                RenderProfitEvolutionChart(allSalesData, selectedClientTypes);
-            }
-        }
-        private void cmbForecastMonths_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cmbForecastMonths.SelectedItem != null && allSalesData.Any())
-            {
-                int forecastMonths = (int)cmbForecastMonths.SelectedItem;
-                RenderSalesEstimationChart(allSalesData, forecastMonths);
-            }
-        }
-        private void ClientTypeCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            CheckBox cb = sender as CheckBox;
-            string clientType = cb.Tag.ToString();
-
-            // Update the selected client types list
-            if (cb.Checked)
-            {
-                if (!selectedClientTypes.Contains(clientType)) selectedClientTypes.Add(clientType);
-            }
-            else
-            {
-                selectedClientTypes.Remove(clientType);
-            }
-
-            // Trigger chart update with new filters
-            RenderProfitEvolutionChart(allSalesData, selectedClientTypes);
-        }
-        private void PopulateClientTypeFilters()
-        {
-            pnlClientTypeFilters.Controls.Clear();
-
-            var clientTypes = allSalesData.Select(x => x.CustomerType).Distinct().OrderBy(x => x).ToList();
-
-            int xOffset = 10;
-
-            foreach (var clientType in clientTypes)
-            {
-                var cb = new CheckBox
-                {
-                    Text = clientType,
-                    Tag = clientType,
-                    Checked = true,
-                    Location = new Point(xOffset, 5),
-                    AutoSize = true
-                };
-
-                cb.CheckedChanged += ClientTypeCheckBox_CheckedChanged;
-
-                pnlClientTypeFilters.Controls.Add(cb);
-                xOffset += cb.Width + 10;
-            }
-            selectedClientTypes = clientTypes;
-        }
         private void RenderSalesEstimationChart(List<SalesRecord> filteredData, int forecastMonths)
         {
+            // Prepare for fresh redraw of the chart
             chartFutureSalesEstimation.Series.Clear();
             chartFutureSalesEstimation.ChartAreas.Clear();
 
             // Calculate actual monthly sales for both chart and table
             var monthlySalesSummary = filteredData
-                .GroupBy(r => new DateTime(r.TransactionDate.Year, r.TransactionDate.Month, 1))
-                .OrderBy(g => g.Key)
-                .Select(g => new
+                // Groups data per month by considering all transactions for the month are associated to the first day of the month in which they occured
+                .GroupBy(x => new DateTime(x.TransactionDate.Year, x.TransactionDate.Month, 1))
+                //Output is sorted chronologically
+                .OrderBy(x => x.Key)
+                // TotalSales per month is calculated by adding all the values for the month in the FinalAmount column
+                .Select(x => new
                 {
-                    Month = g.Key,
-                    TotalSales = g.Sum(r => r.FinalAmount)
+                    Month = x.Key,
+                    TotalSales = x.Sum(x => x.FinalAmount)
                 })
                 .ToList();
 
             // Populate Data Table (dgvSalesData)
-
             dgvSalesData.DataSource = monthlySalesSummary;
             dgvSalesData.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
-
             if (!monthlySalesSummary.Any()) return;
 
             // Chart Setup
@@ -487,25 +425,33 @@ namespace BakeryBI
             chartFutureSalesEstimation.ChartAreas["SalesArea"].RecalculateAxesScale();
         }
 
-
         private void RenderProfitEvolutionChart(List<SalesRecord> rawData, List<string> selectedClientTypes)
         {
+            // Prepare for fresh redraw of the chart
             chartEvolutionOfProfits.Series.Clear();
             chartEvolutionOfProfits.ChartAreas.Clear();
             chartEvolutionOfProfits.Legends.Clear();
 
-            // Filter Data based on ClientType selection
-            var filteredData = SalesUtility.ApplyFilters(rawData, selectedClientTypes);
+            // Applies global filters
+            List<SalesRecord> basedFilteredData = this.filteredData.ToList();
 
-            // Aggregate Data for Chart AND Table (Segmented by StoreName)
-            var monthlyProfitSummary = filteredData
+            // Applies tab specific filters
+            var fullyFilteredData = basedFilteredData
+                .Where(x => selectedClientTypes.Contains(x.CustomerType))
+                .Where(x => selectedStoreNames.Contains(x.StoreName))
+                .ToList();
+
+            var monthlyProfitSummary = fullyFilteredData
+                // Groups the sales data by Month (all transactions are considered for the 1st of the source month) and Store Name
                 .GroupBy(r => new { Date = new DateTime(r.TransactionDate.Year, r.TransactionDate.Month, 1), r.StoreName })
+                // Orders the entries by Month
                 .OrderBy(g => g.Key.Date)
+                // Calculates the Profit by Month per Store
                 .Select(g => new
                 {
                     Month = g.Key.Date,
                     Store = g.Key.StoreName,
-                    Profit = g.Sum(r => r.Profit) // decimal
+                    Profit = g.Sum(r => r.Profit)
                 })
                 .ToList();
 
@@ -530,9 +476,7 @@ namespace BakeryBI
             chartEvolutionOfProfits.Legends.Add(new Legend("StoreLegend"));
 
             // Create Chart Series
-            var storeGroups = monthlyProfitSummary
-                .GroupBy(r => r.Store)
-                .ToList();
+            var storeGroups = monthlyProfitSummary.GroupBy(r => r.Store).ToList();
 
             foreach (var storeGroup in storeGroups)
             {

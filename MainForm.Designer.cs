@@ -59,6 +59,7 @@
             dgvSalesData = new DataGridView();
             tabEvolutionOfProfits = new TabPage();
             splitContainerEvolutionOfProfit = new SplitContainer();
+            pnlStoreFilters = new Panel();
             chartEvolutionOfProfits = new System.Windows.Forms.DataVisualization.Charting.Chart();
             pnlClientTypeFilters = new Panel();
             dgvProfitData = new DataGridView();
@@ -504,6 +505,7 @@
             // 
             // splitContainerEvolutionOfProfit.Panel1
             // 
+            splitContainerEvolutionOfProfit.Panel1.Controls.Add(pnlStoreFilters);
             splitContainerEvolutionOfProfit.Panel1.Controls.Add(chartEvolutionOfProfits);
             splitContainerEvolutionOfProfit.Panel1.Controls.Add(pnlClientTypeFilters);
             // 
@@ -514,6 +516,14 @@
             splitContainerEvolutionOfProfit.SplitterDistance = 1289;
             splitContainerEvolutionOfProfit.SplitterWidth = 7;
             splitContainerEvolutionOfProfit.TabIndex = 0;
+            // 
+            // pnlStoreFilters
+            // 
+            pnlStoreFilters.Dock = DockStyle.Top;
+            pnlStoreFilters.Location = new Point(0, 30);
+            pnlStoreFilters.Name = "pnlStoreFilters";
+            pnlStoreFilters.Size = new Size(750, 100);
+            pnlStoreFilters.TabIndex = 2;
             // 
             // chartEvolutionOfProfits
             // 
@@ -636,5 +646,6 @@
         private Panel pnlClientTypeFilters;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartEvolutionOfProfits;
         private DataGridView dgvProfitData;
+        private Panel pnlStoreFilters;
     }
 }
