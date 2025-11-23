@@ -874,7 +874,7 @@ namespace BakeryBI
 
                 // Style headers
 
-                Excel.Range headerRange1 = (Excel.Range)monthlySheet.Range("A1", "C1");
+                Excel.Range headerRange1 = monthlySheet.Range["A1", "C1"];
 
                 headerRange1.Font.Bold = true;
 
@@ -1018,7 +1018,7 @@ namespace BakeryBI
 
                 // Style headers
 
-                Excel.Range headerRange2 = (Excel.Range)forecastSheet.Range("A1", "C1");
+                Excel.Range headerRange2 = forecastSheet.Range["A1", "C1"];
 
                 headerRange2.Font.Bold = true;
 
@@ -1060,7 +1060,7 @@ namespace BakeryBI
 
                     {
 
-                        Excel.Range forecastRowRange = (Excel.Range)forecastSheet.Range(forecastSheet.Cells[row, 1], forecastSheet.Cells[row, 3]);
+                        Excel.Range forecastRowRange = forecastSheet.Range[forecastSheet.Cells[row, 1], forecastSheet.Cells[row, 3]];
 
                         forecastRowRange.Interior.Color = System.Drawing.ColorTranslator.ToOle(Color.LightYellow);
 
@@ -1216,7 +1216,7 @@ namespace BakeryBI
 
                 // Style headers
 
-                Excel.Range headerRange3 = (Excel.Range)rawDataSheet.Range(rawDataSheet.Cells[headerRow, 1], rawDataSheet.Cells[headerRow, totalColumns]);
+                Excel.Range headerRange3 = rawDataSheet.Range[rawDataSheet.Cells[headerRow, 1], rawDataSheet.Cells[headerRow, totalColumns]];
 
                 headerRange3.Font.Bold = true;
 
@@ -1532,7 +1532,7 @@ namespace BakeryBI
 
                 // Style headers
 
-                Excel.Range headerRange4 = (Excel.Range)profitSheet.Range(profitSheet.Cells[1, 1], profitSheet.Cells[1, col]);
+                Excel.Range headerRange4 = profitSheet.Range[profitSheet.Cells[1, 1], profitSheet.Cells[1, col]];
 
                 headerRange4.Font.Bold = true;
 
@@ -1658,7 +1658,7 @@ namespace BakeryBI
 
                 // Style headers
 
-                Excel.Range headerRange5 = (Excel.Range)summarySheet.Range("A1", "F1");
+                Excel.Range headerRange5 = summarySheet.Range["A1", "F1"];
 
                 headerRange5.Font.Bold = true;
 
@@ -1830,7 +1830,7 @@ namespace BakeryBI
 
                 // Style headers
 
-                Excel.Range headerRange6 = (Excel.Range)detailSheet.Range("A1", "E1");
+                Excel.Range headerRange6 = detailSheet.Range["A1", "E1"];
 
                 headerRange6.Font.Bold = true;
 
@@ -1960,7 +1960,7 @@ namespace BakeryBI
 
                 // Style headers
 
-                Excel.Range headerRange7 = (Excel.Range)rawDataSheet.Range(rawDataSheet.Cells[headerRow, 1], rawDataSheet.Cells[headerRow, totalColumns]);
+                Excel.Range headerRange7 = rawDataSheet.Range[rawDataSheet.Cells[headerRow, 1], rawDataSheet.Cells[headerRow, totalColumns]];
 
                 headerRange7.Font.Bold = true;
 
