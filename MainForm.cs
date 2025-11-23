@@ -1281,7 +1281,8 @@ namespace BakeryBI
 
                 chartSheet.SetSourceData(chartRange);
 
-
+                // Configure chart to treat empty cells as gaps (not zeros) - must be set before adding series
+                chartSheet.DisplayBlanksAs = Excel.XlDisplayBlanksAs.xlNotPlotted;
 
                 // Configure chart type - Combo chart (Column + Line)
 
@@ -1359,9 +1360,20 @@ namespace BakeryBI
 
                     {
 
-                        var forecastPoint = trendAndForecastPoints.FirstOrDefault(t => t.Date == month && t.IsForecast);
+                        // Only show forecast dot if:
+                        // 1. The point is marked as forecast in trendAndForecastPoints
+                        // 2. AND there's no actual historical sales data for that month
+                        
+                        // Normalize dates to first of month for accurate comparison (both should already be normalized, but ensure consistency)
+                        var normalizedMonth = new DateTime(month.Year, month.Month, 1);
+                        var forecastPoint = trendAndForecastPoints.FirstOrDefault(t => 
+                            new DateTime(t.Date.Year, t.Date.Month, 1) == normalizedMonth && t.IsForecast);
+                        var hasHistoricalData = monthlySalesSummary.Any(m => 
+                            new DateTime(m.Month.Year, m.Month.Month, 1) == normalizedMonth);
 
-                        if (forecastPoint != null)
+                        // Only set value if it's a forecast month WITHOUT historical data
+                        // For all other cases (historical months or months without forecast), leave cell completely empty
+                        if (forecastPoint != null && !hasHistoricalData)
 
                         {
 
@@ -1369,13 +1381,8 @@ namespace BakeryBI
 
                         }
 
-                        else
-
-                        {
-
-                            ((Excel.Range)chartDataSheet.Cells[chartDataRow, forecastCol]).Value2 = "";
-
-                        }
+                        // Don't set anything for historical months - leave cell completely empty
+                        // Excel with DisplayBlanksAs = xlNotPlotted should ignore empty cells
 
                         chartDataRow++;
 
