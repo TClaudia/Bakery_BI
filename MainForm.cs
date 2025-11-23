@@ -1175,8 +1175,21 @@ namespace BakeryBI
                     Excel.Range salesForecastRange = forecastSheet.Range[$"C2:C{lastDataRow}"];
                     
                     // Add icon set conditional formatting
+                    // AddIconSetCondition() doesn't take parameters - it just creates the condition
                     Excel.FormatCondition iconSet = (Excel.FormatCondition)salesForecastRange.FormatConditions.AddIconSetCondition();
-                    iconSet.IconSet = forecastSheet.Application.IconSets[Excel.XlIconSet.xl3TrafficLights1];
+                    
+                    // Get IconSets collection and set the icon set type
+                    object iconSetsObj = forecastSheet.Application.IconSets;
+                    Excel.IconSets iconSets = (Excel.IconSets)iconSetsObj;
+                    object trafficLightsIconSet = iconSets[Excel.XlIconSet.xl3TrafficLights1];
+                    
+                    // Set IconSet property using reflection (required with embedded interop types)
+                    // The IconSet property isn't directly accessible with embedded types
+                    System.Reflection.PropertyInfo iconSetProp = iconSet.GetType().GetProperty("IconSet");
+                    if (iconSetProp != null && iconSetProp.CanWrite)
+                    {
+                        iconSetProp.SetValue(iconSet, trafficLightsIconSet, null);
+                    }
                     
                     // Configure icon criteria to use Number type referencing helper formula cells
                     // This allows automatic updates when threshold percentages change
