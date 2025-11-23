@@ -7,6 +7,8 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using BakeryBI.Data;
 using BakeryBI.Utils;
+using OfficeOpenXml;
+using System.IO;
 
 namespace BakeryBI
 {
@@ -22,6 +24,8 @@ namespace BakeryBI
         {
             InitializeComponent();
             dataLoader = new SalesDataLoader();
+
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -38,7 +42,7 @@ namespace BakeryBI
         {
             try
             {
-                string csvPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bakery_sales_cleaned.csv");
+                string csvPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data/bakery_sales_cleaned_locations.csv");
                 allSalesData = dataLoader.LoadFromCsv(csvPath);
 
                 if (allSalesData == null || allSalesData.Count == 0)
@@ -342,7 +346,7 @@ namespace BakeryBI
 
             dgvProductSales.DataSource = dt;
 
-           
+
             dgvProductSales.ColumnHeadersVisible = true;
 
             // Format currency column
@@ -759,5 +763,1242 @@ namespace BakeryBI
             RenderProfitEvolutionChart(filteredData, selectedClientTypes);
         }
 
+        private void exportToExcel3_Click(object sender, EventArgs e)
+
+        {
+
+            try
+
+            {
+
+                SaveFileDialog saveDialog = new SaveFileDialog
+
+                {
+
+                    Filter = "Excel Files|*.xlsx",
+
+                    FileName = $"FutureSalesEstimation_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx"
+
+                };
+
+
+
+                if (saveDialog.ShowDialog() == DialogResult.OK)
+
+                {
+
+                    ExportFutureSalesToExcel(saveDialog.FileName);
+
+                    MessageBox.Show($"Data exported successfully to:\n{saveDialog.FileName}",
+
+                    "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                }
+
+            }
+
+            catch (Exception ex)
+
+            {
+
+                MessageBox.Show($"Error exporting to Excel: {ex.Message}", "Error",
+
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            }
+
+        }
+
+
+
+        private void ExportFutureSalesToExcel(string filePath)
+
+        {
+
+            if (filteredData == null || !filteredData.Any())
+
+            {
+
+                MessageBox.Show("No data available to export.", "Warning",
+
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                return;
+
+            }
+
+
+
+            int forecastMonths = cmbForecastMonths.SelectedItem != null
+
+            ? (int)cmbForecastMonths.SelectedItem
+
+            : 3;
+
+
+
+            using (ExcelPackage package = new ExcelPackage())
+
+            {
+
+                // Sheet 1: Monthly Sales Data (Descriptive Analytics)
+
+                var monthlySheet = package.Workbook.Worksheets.Add("Monthly Sales Data");
+
+
+
+                // Headers
+
+                monthlySheet.Cells[1, 1].Value = "Month";
+
+                monthlySheet.Cells[1, 2].Value = "Total Sales";
+
+                monthlySheet.Cells[1, 3].Value = "Transaction Count";
+
+
+
+                // Style headers
+
+                monthlySheet.Cells[1, 1, 1, 3].Style.Font.Bold = true;
+
+                monthlySheet.Cells[1, 1, 1, 3].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+
+                monthlySheet.Cells[1, 1, 1, 3].Style.Fill.BackgroundColor.SetColor(Color.LightBlue);
+
+
+
+                // Calculate monthly sales
+
+                // NOTE: filteredData already contains data filtered by Date Range, Store, and Product (from global filters)
+
+                var monthlySales = filteredData
+
+          .GroupBy(x => new DateTime(x.TransactionDate.Year, x.TransactionDate.Month, 1))
+
+          .OrderBy(x => x.Key)
+
+          .Select(x => new
+
+          {
+
+              Month = x.Key,
+
+              TotalSales = x.Sum(r => r.FinalAmount),
+
+              TransactionCount = x.Count()
+
+          })
+
+          .ToList();
+
+
+
+                // Populate data
+
+                int row = 2;
+
+                foreach (var item in monthlySales)
+
+                {
+
+                    monthlySheet.Cells[row, 1].Value = item.Month.ToString("MMM yyyy");
+
+                    monthlySheet.Cells[row, 2].Value = (double)item.TotalSales;
+
+                    monthlySheet.Cells[row, 2].Style.Numberformat.Format = "$#,##0.00";
+
+                    monthlySheet.Cells[row, 3].Value = item.TransactionCount;
+
+                    row++;
+
+                }
+
+
+
+                // Add summary statistics (Descriptive Analytics)
+
+                int summaryRow = row + 2;
+
+                monthlySheet.Cells[summaryRow, 1].Value = "SUMMARY STATISTICS";
+
+                monthlySheet.Cells[summaryRow, 1].Style.Font.Bold = true;
+
+                monthlySheet.Cells[summaryRow, 1].Style.Font.Size = 12;
+
+
+
+                summaryRow++;
+
+                monthlySheet.Cells[summaryRow, 1].Value = "Total Sales:";
+
+                monthlySheet.Cells[summaryRow, 2].Value = (double)monthlySales.Sum(x => x.TotalSales);
+
+                monthlySheet.Cells[summaryRow, 2].Style.Numberformat.Format = "$#,##0.00";
+
+                monthlySheet.Cells[summaryRow, 2].Style.Font.Bold = true;
+
+
+
+                summaryRow++;
+
+                monthlySheet.Cells[summaryRow, 1].Value = "Average Monthly Sales:";
+
+                monthlySheet.Cells[summaryRow, 2].Value = (double)monthlySales.Average(x => x.TotalSales);
+
+                monthlySheet.Cells[summaryRow, 2].Style.Numberformat.Format = "$#,##0.00";
+
+
+
+                summaryRow++;
+
+                monthlySheet.Cells[summaryRow, 1].Value = "Maximum Monthly Sales:";
+
+                monthlySheet.Cells[summaryRow, 2].Value = (double)monthlySales.Max(x => x.TotalSales);
+
+                monthlySheet.Cells[summaryRow, 2].Style.Numberformat.Format = "$#,##0.00";
+
+
+
+                summaryRow++;
+
+                monthlySheet.Cells[summaryRow, 1].Value = "Minimum Monthly Sales:";
+
+                monthlySheet.Cells[summaryRow, 2].Value = (double)monthlySales.Min(x => x.TotalSales);
+
+                monthlySheet.Cells[summaryRow, 2].Style.Numberformat.Format = "$#,##0.00";
+
+
+
+                summaryRow++;
+
+                monthlySheet.Cells[summaryRow, 1].Value = "Total Transactions:";
+
+                monthlySheet.Cells[summaryRow, 2].Value = monthlySales.Sum(x => x.TransactionCount);
+
+
+
+                // Auto-fit columns
+
+                monthlySheet.Cells.AutoFitColumns();
+
+
+
+                // Sheet 2: Forecast Data (Predictive Analytics)
+
+                var forecastSheet = package.Workbook.Worksheets.Add("Forecast Data");
+
+
+
+                // Headers
+
+                forecastSheet.Cells[1, 1].Value = "Date";
+
+                forecastSheet.Cells[1, 2].Value = "Type";
+
+                forecastSheet.Cells[1, 3].Value = "Sales Forecast";
+
+
+
+                // Style headers
+
+                forecastSheet.Cells[1, 1, 1, 3].Style.Font.Bold = true;
+
+                forecastSheet.Cells[1, 1, 1, 3].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+
+                forecastSheet.Cells[1, 1, 1, 3].Style.Fill.BackgroundColor.SetColor(Color.LightGreen);
+
+
+
+                // Get forecast data
+
+                // NOTE: Uses filteredData which respects all global filters (Date Range, Store, Product)
+
+                var trendAndForecast = SalesUtility.CalculateTrendAndForecast(filteredData, forecastMonths);
+
+
+
+                // Populate forecast data
+
+                row = 2;
+
+                foreach (var point in trendAndForecast)
+
+                {
+
+                    forecastSheet.Cells[row, 1].Value = point.Date;
+
+                    forecastSheet.Cells[row, 1].Style.Numberformat.Format = "MMM yyyy";
+
+                    forecastSheet.Cells[row, 2].Value = point.IsForecast ? "Forecast" : "Historical Trend";
+
+                    forecastSheet.Cells[row, 3].Value = (double)point.Value;
+
+                    forecastSheet.Cells[row, 3].Style.Numberformat.Format = "$#,##0.00";
+
+
+
+                    // Highlight forecast rows
+
+                    if (point.IsForecast)
+
+                    {
+
+                        forecastSheet.Cells[row, 1, row, 3].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+
+                        forecastSheet.Cells[row, 1, row, 3].Style.Fill.BackgroundColor.SetColor(Color.LightYellow);
+
+                        forecastSheet.Cells[row, 2].Style.Font.Italic = true;
+
+                    }
+
+                    row++;
+
+                }
+
+
+
+                // Add forecast summary
+
+                var forecastPoints = trendAndForecast.Where(p => p.IsForecast).ToList();
+
+                if (forecastPoints.Any())
+
+                {
+
+                    summaryRow = row + 2;
+
+                    forecastSheet.Cells[summaryRow, 1].Value = "FORECAST SUMMARY";
+
+                    forecastSheet.Cells[summaryRow, 1].Style.Font.Bold = true;
+
+                    forecastSheet.Cells[summaryRow, 1].Style.Font.Size = 12;
+
+
+
+                    summaryRow++;
+
+                    forecastSheet.Cells[summaryRow, 1].Value = "Forecast Period:";
+
+                    forecastSheet.Cells[summaryRow, 2].Value = $"{forecastMonths} months";
+
+
+
+                    summaryRow++;
+
+                    forecastSheet.Cells[summaryRow, 1].Value = "Total Forecasted Sales:";
+
+                    forecastSheet.Cells[summaryRow, 2].Value = (double)forecastPoints.Sum(p => p.Value);
+
+                    forecastSheet.Cells[summaryRow, 2].Style.Numberformat.Format = "$#,##0.00";
+
+                    forecastSheet.Cells[summaryRow, 2].Style.Font.Bold = true;
+
+
+
+                    summaryRow++;
+
+                    forecastSheet.Cells[summaryRow, 1].Value = "Average Monthly Forecast:";
+
+                    forecastSheet.Cells[summaryRow, 2].Value = (double)forecastPoints.Average(p => p.Value);
+
+                    forecastSheet.Cells[summaryRow, 2].Style.Numberformat.Format = "$#,##0.00";
+
+                }
+
+
+
+                // Auto-fit columns
+
+                forecastSheet.Cells.AutoFitColumns();
+
+
+
+                // Sheet 3: Raw Dataset (Underlying Data Used for Analysis)
+
+                var rawDataSheet = package.Workbook.Worksheets.Add("Raw Dataset");
+
+
+
+                // Add title and summary info
+
+                rawDataSheet.Cells[1, 1].Value = "RAW DATASET - All Filtered Transaction Records";
+
+                rawDataSheet.Cells[1, 1].Style.Font.Bold = true;
+
+                rawDataSheet.Cells[1, 1].Style.Font.Size = 14;
+
+                rawDataSheet.Cells[2, 1].Value = $"Total Records: {filteredData.Count:N0}";
+
+                rawDataSheet.Cells[2, 1].Style.Font.Bold = true;
+
+                rawDataSheet.Cells[3, 1].Value = $"Export Date: {DateTime.Now:yyyy-MM-dd HH:mm:ss}";
+
+
+
+                // Headers - All fields from SalesRecord (starting at row 5)
+
+                int headerRow = 5;
+
+                int colIndex = 1;
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Customer ID";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Store Name";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Transaction Date";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Aisle";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Product Name";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Quantity";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Unit Price";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Total Amount";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Discount Amount";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Final Amount";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Loyalty Points";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Unit Cost";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Total Cost";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Profit";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Profit Margin";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Year";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Month";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Month Name";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Quarter";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Day of Week";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Week Number";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Customer Type";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Store City";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Store Country";
+
+
+
+                int totalColumns = colIndex - 1;
+
+
+
+                // Style headers
+
+                rawDataSheet.Cells[headerRow, 1, headerRow, totalColumns].Style.Font.Bold = true;
+
+                rawDataSheet.Cells[headerRow, 1, headerRow, totalColumns].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+
+                rawDataSheet.Cells[headerRow, 1, headerRow, totalColumns].Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+
+
+
+                // Populate raw data - Export all filtered records
+
+                // NOTE: This is the exact dataset used to generate the analytics above
+
+                row = headerRow + 1;
+
+                foreach (var record in filteredData.OrderBy(r => r.TransactionDate).ThenBy(r => r.StoreName))
+
+                {
+
+                    colIndex = 1;
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.CustomerId;
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.StoreName;
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.TransactionDate;
+
+                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "yyyy-mm-dd";
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.Aisle;
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.ProductName;
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.Quantity;
+
+                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.UnitPrice;
+
+                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "$#,##0.00";
+
+                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.TotalAmount;
+
+                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "$#,##0.00";
+
+                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.DiscountAmount;
+
+                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "$#,##0.00";
+
+                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.FinalAmount;
+
+                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "$#,##0.00";
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.LoyaltyPoints;
+
+                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.UnitCost;
+
+                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "$#,##0.00";
+
+                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.TotalCost;
+
+                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "$#,##0.00";
+
+                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.Profit;
+
+                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "$#,##0.00";
+
+                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.ProfitMargin;
+
+                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "0.00%";
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.Year;
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.Month;
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.MonthName;
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.Quarter;
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.DayOfWeek;
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.WeekNumber;
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.CustomerType;
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.StoreCity ?? "";
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.StoreCountry ?? "";
+
+                    row++;
+
+                }
+
+
+
+                // Auto-fit columns
+
+                rawDataSheet.Cells.AutoFitColumns();
+
+
+
+                // Save file
+
+                FileInfo file = new FileInfo(filePath);
+
+                package.SaveAs(file);
+
+            }
+
+        }
+
+        private void exportToExcel4_Click(object sender, EventArgs e)
+
+        {
+
+            try
+
+            {
+
+                SaveFileDialog saveDialog = new SaveFileDialog
+
+                {
+
+                    Filter = "Excel Files|*.xlsx",
+
+                    FileName = $"EvolutionOfProfits_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx"
+
+                };
+
+
+
+                if (saveDialog.ShowDialog() == DialogResult.OK)
+
+                {
+
+                    ExportProfitsToExcel(saveDialog.FileName);
+
+                    MessageBox.Show($"Data exported successfully to:\n{saveDialog.FileName}",
+
+                    "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                }
+
+            }
+
+            catch (Exception ex)
+
+            {
+
+                MessageBox.Show($"Error exporting to Excel: {ex.Message}", "Error",
+
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            }
+
+        }
+
+
+
+        private void ExportProfitsToExcel(string filePath)
+
+        {
+
+            if (filteredData == null || !filteredData.Any())
+
+            {
+
+                MessageBox.Show("No data available to export.", "Warning",
+
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                return;
+
+            }
+
+
+
+            // Apply tab-specific filters
+
+            // NOTE: filteredData already has global filters (Date Range, Store, Product) applied
+
+            // Now we apply the tab-specific filters (Client Type checkboxes and Store checkboxes)
+
+            var fullyFilteredData = filteredData
+
+          .Where(x => selectedClientTypes.Contains(x.CustomerType))
+
+          .Where(x => selectedStoreNames.Contains(x.StoreName))
+
+          .ToList();
+
+
+
+            if (!fullyFilteredData.Any())
+
+            {
+
+                MessageBox.Show("No data available for selected filters.", "Warning",
+
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                return;
+
+            }
+
+
+
+            using (ExcelPackage package = new ExcelPackage())
+
+            {
+
+                // Sheet 1: Monthly Profit by Store (Descriptive Analytics)
+
+                var profitSheet = package.Workbook.Worksheets.Add("Monthly Profit by Store");
+
+
+
+                // Calculate monthly profit by store
+
+                var monthlyProfit = fullyFilteredData
+
+          .GroupBy(r => new { Date = new DateTime(r.TransactionDate.Year, r.TransactionDate.Month, 1), r.StoreName })
+
+          .OrderBy(g => g.Key.Date)
+
+          .ThenBy(g => g.Key.StoreName)
+
+          .Select(g => new
+
+          {
+
+              Month = g.Key.Date,
+
+              Store = g.Key.StoreName,
+
+              Profit = g.Sum(r => r.Profit),
+
+              Sales = g.Sum(r => r.FinalAmount),
+
+              TransactionCount = g.Count()
+
+          })
+
+          .ToList();
+
+
+
+                // Get unique stores and months for pivot structure
+
+                var stores = monthlyProfit.Select(x => x.Store).Distinct().OrderBy(s => s).ToList();
+
+                var months = monthlyProfit.Select(x => x.Month).Distinct().OrderBy(m => m).ToList();
+
+
+
+                // Headers - First column is Month, then one column per store
+
+                profitSheet.Cells[1, 1].Value = "Month";
+
+                int col = 2;
+
+                foreach (var store in stores)
+
+                {
+
+                    profitSheet.Cells[1, col].Value = store;
+
+                    col++;
+
+                }
+
+                profitSheet.Cells[1, col].Value = "Total";
+
+
+
+                // Style headers
+
+                profitSheet.Cells[1, 1, 1, col].Style.Font.Bold = true;
+
+                profitSheet.Cells[1, 1, 1, col].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+
+                profitSheet.Cells[1, 1, 1, col].Style.Fill.BackgroundColor.SetColor(Color.LightBlue);
+
+
+
+                // Populate data
+
+                int row = 2;
+
+                foreach (var month in months)
+
+                {
+
+                    profitSheet.Cells[row, 1].Value = month.ToString("MMM yyyy");
+
+                    profitSheet.Cells[row, 1].Style.Numberformat.Format = "MMM yyyy";
+
+
+
+                    col = 2;
+
+                    decimal monthTotal = 0;
+
+                    foreach (var store in stores)
+
+                    {
+
+                        var storeData = monthlyProfit.FirstOrDefault(x => x.Month == month && x.Store == store);
+
+                        decimal profit = storeData?.Profit ?? 0;
+
+                        profitSheet.Cells[row, col].Value = (double)profit;
+
+                        profitSheet.Cells[row, col].Style.Numberformat.Format = "$#,##0.00";
+
+                        monthTotal += profit;
+
+                        col++;
+
+                    }
+
+
+
+                    // Total for the month
+
+                    profitSheet.Cells[row, col].Value = (double)monthTotal;
+
+                    profitSheet.Cells[row, col].Style.Numberformat.Format = "$#,##0.00";
+
+                    profitSheet.Cells[row, col].Style.Font.Bold = true;
+
+                    row++;
+
+                }
+
+
+
+                // Add totals row
+
+                profitSheet.Cells[row, 1].Value = "TOTAL";
+
+                profitSheet.Cells[row, 1].Style.Font.Bold = true;
+
+                col = 2;
+
+                foreach (var store in stores)
+
+                {
+
+                    decimal storeTotal = monthlyProfit.Where(x => x.Store == store).Sum(x => x.Profit);
+
+                    profitSheet.Cells[row, col].Value = (double)storeTotal;
+
+                    profitSheet.Cells[row, col].Style.Numberformat.Format = "$#,##0.00";
+
+                    profitSheet.Cells[row, col].Style.Font.Bold = true;
+
+                    col++;
+
+                }
+
+                decimal grandTotal = monthlyProfit.Sum(x => x.Profit);
+
+                profitSheet.Cells[row, col].Value = (double)grandTotal;
+
+                profitSheet.Cells[row, col].Style.Numberformat.Format = "$#,##0.00";
+
+                profitSheet.Cells[row, col].Style.Font.Bold = true;
+
+
+
+                // Auto-fit columns
+
+                profitSheet.Cells.AutoFitColumns();
+
+
+
+                // Sheet 2: Store Performance Summary (Descriptive Analytics)
+
+                var summarySheet = package.Workbook.Worksheets.Add("Store Performance Summary");
+
+
+
+                // Headers
+
+                summarySheet.Cells[1, 1].Value = "Store";
+
+                summarySheet.Cells[1, 2].Value = "Total Profit";
+
+                summarySheet.Cells[1, 3].Value = "Total Sales";
+
+                summarySheet.Cells[1, 4].Value = "Profit Margin %";
+
+                summarySheet.Cells[1, 5].Value = "Avg Monthly Profit";
+
+                summarySheet.Cells[1, 6].Value = "Transaction Count";
+
+
+
+                // Style headers
+
+                summarySheet.Cells[1, 1, 1, 6].Style.Font.Bold = true;
+
+                summarySheet.Cells[1, 1, 1, 6].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+
+                summarySheet.Cells[1, 1, 1, 6].Style.Fill.BackgroundColor.SetColor(Color.LightGreen);
+
+
+
+                // Calculate store summaries
+
+                var storeSummaries = monthlyProfit
+
+          .GroupBy(x => x.Store)
+
+          .Select(g => new
+
+          {
+
+              Store = g.Key,
+
+              TotalProfit = g.Sum(x => x.Profit),
+
+              TotalSales = g.Sum(x => x.Sales),
+
+              AvgMonthlyProfit = g.Average(x => x.Profit),
+
+              TransactionCount = g.Sum(x => x.TransactionCount),
+
+              MonthCount = g.Count()
+
+          })
+
+          .OrderByDescending(x => x.TotalProfit)
+
+          .ToList();
+
+
+
+                // Populate summary data
+
+                row = 2;
+
+                foreach (var summary in storeSummaries)
+
+                {
+
+                    summarySheet.Cells[row, 1].Value = summary.Store;
+
+                    summarySheet.Cells[row, 2].Value = (double)summary.TotalProfit;
+
+                    summarySheet.Cells[row, 2].Style.Numberformat.Format = "$#,##0.00";
+
+                    summarySheet.Cells[row, 3].Value = (double)summary.TotalSales;
+
+                    summarySheet.Cells[row, 3].Style.Numberformat.Format = "$#,##0.00";
+
+
+
+                    decimal profitMargin = summary.TotalSales != 0
+
+                    ? (summary.TotalProfit / summary.TotalSales) * 100
+
+                    : 0;
+
+                    summarySheet.Cells[row, 4].Value = (double)profitMargin;
+
+                    summarySheet.Cells[row, 4].Style.Numberformat.Format = "0.00%";
+
+
+
+                    summarySheet.Cells[row, 5].Value = (double)summary.AvgMonthlyProfit;
+
+                    summarySheet.Cells[row, 5].Style.Numberformat.Format = "$#,##0.00";
+
+                    summarySheet.Cells[row, 6].Value = summary.TransactionCount;
+
+                    row++;
+
+                }
+
+
+
+                // Add overall summary
+
+                int summaryRow = row + 2;
+
+                summarySheet.Cells[summaryRow, 1].Value = "OVERALL SUMMARY";
+
+                summarySheet.Cells[summaryRow, 1].Style.Font.Bold = true;
+
+                summarySheet.Cells[summaryRow, 1].Style.Font.Size = 12;
+
+
+
+                summaryRow++;
+
+                summarySheet.Cells[summaryRow, 1].Value = "Total Profit (All Stores):";
+
+                summarySheet.Cells[summaryRow, 2].Value = (double)storeSummaries.Sum(x => x.TotalProfit);
+
+                summarySheet.Cells[summaryRow, 2].Style.Numberformat.Format = "$#,##0.00";
+
+                summarySheet.Cells[summaryRow, 2].Style.Font.Bold = true;
+
+
+
+                summaryRow++;
+
+                summarySheet.Cells[summaryRow, 1].Value = "Total Sales (All Stores):";
+
+                summarySheet.Cells[summaryRow, 2].Value = (double)storeSummaries.Sum(x => x.TotalSales);
+
+                summarySheet.Cells[summaryRow, 2].Style.Numberformat.Format = "$#,##0.00";
+
+
+
+                summaryRow++;
+
+                summarySheet.Cells[summaryRow, 1].Value = "Overall Profit Margin:";
+
+                decimal overallMargin = storeSummaries.Sum(x => x.TotalSales) != 0
+
+                ? (storeSummaries.Sum(x => x.TotalProfit) / storeSummaries.Sum(x => x.TotalSales)) * 100
+
+                : 0;
+
+                summarySheet.Cells[summaryRow, 2].Value = (double)overallMargin;
+
+                summarySheet.Cells[summaryRow, 2].Style.Numberformat.Format = "0.00%";
+
+
+
+                summaryRow++;
+
+                summarySheet.Cells[summaryRow, 1].Value = "Best Performing Store:";
+
+                var bestStore = storeSummaries.OrderByDescending(x => x.TotalProfit).First();
+
+                summarySheet.Cells[summaryRow, 2].Value = $"{bestStore.Store} (${bestStore.TotalProfit:N2})";
+
+
+
+                // Auto-fit columns
+
+                summarySheet.Cells.AutoFitColumns();
+
+
+
+                // Sheet 3: Detailed Monthly Data
+
+                var detailSheet = package.Workbook.Worksheets.Add("Detailed Monthly Data");
+
+
+
+                // Headers
+
+                detailSheet.Cells[1, 1].Value = "Month";
+
+                detailSheet.Cells[1, 2].Value = "Store";
+
+                detailSheet.Cells[1, 3].Value = "Profit";
+
+                detailSheet.Cells[1, 4].Value = "Sales";
+
+                detailSheet.Cells[1, 5].Value = "Transaction Count";
+
+
+
+                // Style headers
+
+                detailSheet.Cells[1, 1, 1, 5].Style.Font.Bold = true;
+
+                detailSheet.Cells[1, 1, 1, 5].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+
+                detailSheet.Cells[1, 1, 1, 5].Style.Fill.BackgroundColor.SetColor(Color.LightYellow);
+
+
+
+                // Populate detailed data
+
+                row = 2;
+
+                foreach (var item in monthlyProfit.OrderBy(x => x.Month).ThenBy(x => x.Store))
+
+                {
+
+                    detailSheet.Cells[row, 1].Value = item.Month.ToString("MMM yyyy");
+
+                    detailSheet.Cells[row, 2].Value = item.Store;
+
+                    detailSheet.Cells[row, 3].Value = (double)item.Profit;
+
+                    detailSheet.Cells[row, 3].Style.Numberformat.Format = "$#,##0.00";
+
+                    detailSheet.Cells[row, 4].Value = (double)item.Sales;
+
+                    detailSheet.Cells[row, 4].Style.Numberformat.Format = "$#,##0.00";
+
+                    detailSheet.Cells[row, 5].Value = item.TransactionCount;
+
+                    row++;
+
+                }
+
+
+
+                // Auto-fit columns
+
+                detailSheet.Cells.AutoFitColumns();
+
+
+
+                // Sheet 4: Raw Dataset (Underlying Data Used for Analysis)
+
+                var rawDataSheet = package.Workbook.Worksheets.Add("Raw Dataset");
+
+
+
+                // Add title and summary info
+
+                rawDataSheet.Cells[1, 1].Value = "RAW DATASET - All Filtered Transaction Records";
+
+                rawDataSheet.Cells[1, 1].Style.Font.Bold = true;
+
+                rawDataSheet.Cells[1, 1].Style.Font.Size = 14;
+
+                rawDataSheet.Cells[2, 1].Value = $"Total Records: {fullyFilteredData.Count:N0}";
+
+                rawDataSheet.Cells[2, 1].Style.Font.Bold = true;
+
+                rawDataSheet.Cells[3, 1].Value = $"Export Date: {DateTime.Now:yyyy-MM-dd HH:mm:ss}";
+
+
+
+                // Headers - All fields from SalesRecord (starting at row 5)
+
+                int headerRow = 5;
+
+                int colIndex = 1;
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Customer ID";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Store Name";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Store City";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Store Country";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Transaction Date";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Aisle";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Product Name";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Quantity";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Unit Price";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Total Amount";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Discount Amount";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Final Amount";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Loyalty Points";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Unit Cost";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Total Cost";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Profit";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Profit Margin";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Year";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Month";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Month Name";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Quarter";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Day of Week";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Week Number";
+
+                rawDataSheet.Cells[headerRow, colIndex++].Value = "Customer Type";
+
+
+
+                int totalColumns = colIndex - 1;
+
+
+
+                // Style headers
+
+                rawDataSheet.Cells[headerRow, 1, headerRow, totalColumns].Style.Font.Bold = true;
+
+                rawDataSheet.Cells[headerRow, 1, headerRow, totalColumns].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+
+                rawDataSheet.Cells[headerRow, 1, headerRow, totalColumns].Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+
+
+
+                // Populate raw data - Export all filtered records
+
+                // NOTE: This is the exact dataset (fullyFilteredData) used to generate the analytics above
+
+                // It includes both global filters AND tab-specific filters (Client Types & Store checkboxes)
+
+                row = headerRow + 1;
+
+                foreach (var record in fullyFilteredData.OrderBy(r => r.TransactionDate).ThenBy(r => r.StoreName))
+
+                {
+
+                    colIndex = 1;
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.CustomerId;
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.StoreName;
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.TransactionDate;
+
+                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "yyyy-mm-dd";
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.Aisle;
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.ProductName;
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.Quantity;
+
+                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.UnitPrice;
+
+                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "$#,##0.00";
+
+                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.TotalAmount;
+
+                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "$#,##0.00";
+
+                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.DiscountAmount;
+
+                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "$#,##0.00";
+
+                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.FinalAmount;
+
+                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "$#,##0.00";
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.LoyaltyPoints;
+
+                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.UnitCost;
+
+                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "$#,##0.00";
+
+                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.TotalCost;
+
+                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "$#,##0.00";
+
+                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.Profit;
+
+                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "$#,##0.00";
+
+                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.ProfitMargin;
+
+                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "0.00%";
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.Year;
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.Month;
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.MonthName;
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.Quarter;
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.DayOfWeek;
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.WeekNumber;
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.CustomerType;
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.StoreCity ?? "";
+
+                    rawDataSheet.Cells[row, colIndex++].Value = record.StoreCountry ?? "";
+
+                    row++;
+
+                }
+
+
+
+                // Auto-fit columns
+
+                rawDataSheet.Cells.AutoFitColumns();
+
+
+
+                // Save file
+
+                FileInfo file = new FileInfo(filePath);
+
+                package.SaveAs(file);
+
+            }
+
+        }
     }
 }

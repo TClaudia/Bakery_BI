@@ -26,5 +26,7 @@ namespace BakeryBI.Data
         public string DayOfWeek { get; set; }
         public int WeekNumber { get; set; }
         public string CustomerType { get; set; }
+        public string StoreCity { get; set; }
+        public string StoreCountry { get; set; }
     }
 }
