@@ -7,8 +7,9 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using BakeryBI.Data;
 using BakeryBI.Utils;
-using OfficeOpenXml;
 using System.IO;
+using Excel = Microsoft.Office.Interop.Excel;
+using System.Runtime.InteropServices;
 
 namespace BakeryBI
 {
@@ -24,8 +25,6 @@ namespace BakeryBI
         {
             InitializeComponent();
             dataLoader = new SalesDataLoader();
-
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -837,33 +836,49 @@ namespace BakeryBI
 
 
 
-            using (ExcelPackage package = new ExcelPackage())
+            Excel.Application excelApp = null;
+
+            Excel.Workbook workbook = null;
+
+            try
 
             {
 
+                excelApp = new Excel.Application();
+
+                excelApp.Visible = false;
+
+                excelApp.DisplayAlerts = false;
+
+                workbook = excelApp.Workbooks.Add();
+
+
+
                 // Sheet 1: Monthly Sales Data (Descriptive Analytics)
 
-                var monthlySheet = package.Workbook.Worksheets.Add("Monthly Sales Data");
+                Excel.Worksheet monthlySheet = (Excel.Worksheet)workbook.Worksheets[1];
+
+                monthlySheet.Name = "Monthly Sales Data";
 
 
 
                 // Headers
 
-                monthlySheet.Cells[1, 1].Value = "Month";
+                ((Excel.Range)monthlySheet.Cells[1, 1]).Value2 = "Month";
 
-                monthlySheet.Cells[1, 2].Value = "Total Sales";
+                ((Excel.Range)monthlySheet.Cells[1, 2]).Value2 = "Total Sales";
 
-                monthlySheet.Cells[1, 3].Value = "Transaction Count";
+                ((Excel.Range)monthlySheet.Cells[1, 3]).Value2 = "Transaction Count";
 
 
 
                 // Style headers
 
-                monthlySheet.Cells[1, 1, 1, 3].Style.Font.Bold = true;
+                Excel.Range headerRange1 = monthlySheet.get_Range("A1", "C1");
 
-                monthlySheet.Cells[1, 1, 1, 3].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                headerRange1.Font.Bold = true;
 
-                monthlySheet.Cells[1, 1, 1, 3].Style.Fill.BackgroundColor.SetColor(Color.LightBlue);
+                headerRange1.Interior.Color = System.Drawing.ColorTranslator.ToOle(Color.LightBlue);
 
 
 
@@ -901,13 +916,13 @@ namespace BakeryBI
 
                 {
 
-                    monthlySheet.Cells[row, 1].Value = item.Month.ToString("MMM yyyy");
+                    ((Excel.Range)monthlySheet.Cells[row, 1]).Value2 = item.Month.ToString("MMM yyyy");
 
-                    monthlySheet.Cells[row, 2].Value = (double)item.TotalSales;
+                    ((Excel.Range)monthlySheet.Cells[row, 2]).Value2 = (double)item.TotalSales;
 
-                    monthlySheet.Cells[row, 2].Style.Numberformat.Format = "$#,##0.00";
+                    ((Excel.Range)monthlySheet.Cells[row, 2]).NumberFormat = "$#,##0.00";
 
-                    monthlySheet.Cells[row, 3].Value = item.TransactionCount;
+                    ((Excel.Range)monthlySheet.Cells[row, 3]).Value2 = item.TransactionCount;
 
                     row++;
 
@@ -919,93 +934,95 @@ namespace BakeryBI
 
                 int summaryRow = row + 2;
 
-                monthlySheet.Cells[summaryRow, 1].Value = "SUMMARY STATISTICS";
+                ((Excel.Range)monthlySheet.Cells[summaryRow, 1]).Value2 = "SUMMARY STATISTICS";
 
-                monthlySheet.Cells[summaryRow, 1].Style.Font.Bold = true;
+                ((Excel.Range)monthlySheet.Cells[summaryRow, 1]).Font.Bold = true;
 
-                monthlySheet.Cells[summaryRow, 1].Style.Font.Size = 12;
-
-
-
-                summaryRow++;
-
-                monthlySheet.Cells[summaryRow, 1].Value = "Total Sales:";
-
-                monthlySheet.Cells[summaryRow, 2].Value = (double)monthlySales.Sum(x => x.TotalSales);
-
-                monthlySheet.Cells[summaryRow, 2].Style.Numberformat.Format = "$#,##0.00";
-
-                monthlySheet.Cells[summaryRow, 2].Style.Font.Bold = true;
+                ((Excel.Range)monthlySheet.Cells[summaryRow, 1]).Font.Size = 12;
 
 
 
                 summaryRow++;
 
-                monthlySheet.Cells[summaryRow, 1].Value = "Average Monthly Sales:";
+                ((Excel.Range)monthlySheet.Cells[summaryRow, 1]).Value2 = "Total Sales:";
 
-                monthlySheet.Cells[summaryRow, 2].Value = (double)monthlySales.Average(x => x.TotalSales);
+                ((Excel.Range)monthlySheet.Cells[summaryRow, 2]).Value2 = (double)monthlySales.Sum(x => x.TotalSales);
 
-                monthlySheet.Cells[summaryRow, 2].Style.Numberformat.Format = "$#,##0.00";
+                ((Excel.Range)monthlySheet.Cells[summaryRow, 2]).NumberFormat = "$#,##0.00";
 
-
-
-                summaryRow++;
-
-                monthlySheet.Cells[summaryRow, 1].Value = "Maximum Monthly Sales:";
-
-                monthlySheet.Cells[summaryRow, 2].Value = (double)monthlySales.Max(x => x.TotalSales);
-
-                monthlySheet.Cells[summaryRow, 2].Style.Numberformat.Format = "$#,##0.00";
+                ((Excel.Range)monthlySheet.Cells[summaryRow, 2]).Font.Bold = true;
 
 
 
                 summaryRow++;
 
-                monthlySheet.Cells[summaryRow, 1].Value = "Minimum Monthly Sales:";
+                ((Excel.Range)monthlySheet.Cells[summaryRow, 1]).Value2 = "Average Monthly Sales:";
 
-                monthlySheet.Cells[summaryRow, 2].Value = (double)monthlySales.Min(x => x.TotalSales);
+                ((Excel.Range)monthlySheet.Cells[summaryRow, 2]).Value2 = (double)monthlySales.Average(x => x.TotalSales);
 
-                monthlySheet.Cells[summaryRow, 2].Style.Numberformat.Format = "$#,##0.00";
+                ((Excel.Range)monthlySheet.Cells[summaryRow, 2]).NumberFormat = "$#,##0.00";
 
 
 
                 summaryRow++;
 
-                monthlySheet.Cells[summaryRow, 1].Value = "Total Transactions:";
+                ((Excel.Range)monthlySheet.Cells[summaryRow, 1]).Value2 = "Maximum Monthly Sales:";
 
-                monthlySheet.Cells[summaryRow, 2].Value = monthlySales.Sum(x => x.TransactionCount);
+                ((Excel.Range)monthlySheet.Cells[summaryRow, 2]).Value2 = (double)monthlySales.Max(x => x.TotalSales);
+
+                ((Excel.Range)monthlySheet.Cells[summaryRow, 2]).NumberFormat = "$#,##0.00";
+
+
+
+                summaryRow++;
+
+                ((Excel.Range)monthlySheet.Cells[summaryRow, 1]).Value2 = "Minimum Monthly Sales:";
+
+                ((Excel.Range)monthlySheet.Cells[summaryRow, 2]).Value2 = (double)monthlySales.Min(x => x.TotalSales);
+
+                ((Excel.Range)monthlySheet.Cells[summaryRow, 2]).NumberFormat = "$#,##0.00";
+
+
+
+                summaryRow++;
+
+                ((Excel.Range)monthlySheet.Cells[summaryRow, 1]).Value2 = "Total Transactions:";
+
+                ((Excel.Range)monthlySheet.Cells[summaryRow, 2]).Value2 = monthlySales.Sum(x => x.TransactionCount);
 
 
 
                 // Auto-fit columns
 
-                monthlySheet.Cells.AutoFitColumns();
+                monthlySheet.Columns.AutoFit();
 
 
 
                 // Sheet 2: Forecast Data (Predictive Analytics)
 
-                var forecastSheet = package.Workbook.Worksheets.Add("Forecast Data");
+                Excel.Worksheet forecastSheet = (Excel.Worksheet)workbook.Worksheets.Add();
+
+                forecastSheet.Name = "Forecast Data";
 
 
 
                 // Headers
 
-                forecastSheet.Cells[1, 1].Value = "Date";
+                ((Excel.Range)forecastSheet.Cells[1, 1]).Value2 = "Date";
 
-                forecastSheet.Cells[1, 2].Value = "Type";
+                ((Excel.Range)forecastSheet.Cells[1, 2]).Value2 = "Type";
 
-                forecastSheet.Cells[1, 3].Value = "Sales Forecast";
+                ((Excel.Range)forecastSheet.Cells[1, 3]).Value2 = "Sales Forecast";
 
 
 
                 // Style headers
 
-                forecastSheet.Cells[1, 1, 1, 3].Style.Font.Bold = true;
+                Excel.Range headerRange2 = forecastSheet.get_Range("A1", "C1");
 
-                forecastSheet.Cells[1, 1, 1, 3].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                headerRange2.Font.Bold = true;
 
-                forecastSheet.Cells[1, 1, 1, 3].Style.Fill.BackgroundColor.SetColor(Color.LightGreen);
+                headerRange2.Interior.Color = System.Drawing.ColorTranslator.ToOle(Color.LightGreen);
 
 
 
@@ -1025,15 +1042,15 @@ namespace BakeryBI
 
                 {
 
-                    forecastSheet.Cells[row, 1].Value = point.Date;
+                    ((Excel.Range)forecastSheet.Cells[row, 1]).Value2 = point.Date;
 
-                    forecastSheet.Cells[row, 1].Style.Numberformat.Format = "MMM yyyy";
+                    ((Excel.Range)forecastSheet.Cells[row, 1]).NumberFormat = "MMM yyyy";
 
-                    forecastSheet.Cells[row, 2].Value = point.IsForecast ? "Forecast" : "Historical Trend";
+                    ((Excel.Range)forecastSheet.Cells[row, 2]).Value2 = point.IsForecast ? "Forecast" : "Historical Trend";
 
-                    forecastSheet.Cells[row, 3].Value = (double)point.Value;
+                    ((Excel.Range)forecastSheet.Cells[row, 3]).Value2 = (double)point.Value;
 
-                    forecastSheet.Cells[row, 3].Style.Numberformat.Format = "$#,##0.00";
+                    ((Excel.Range)forecastSheet.Cells[row, 3]).NumberFormat = "$#,##0.00";
 
 
 
@@ -1043,11 +1060,11 @@ namespace BakeryBI
 
                     {
 
-                        forecastSheet.Cells[row, 1, row, 3].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                        Excel.Range forecastRowRange = forecastSheet.get_Range(forecastSheet.Cells[row, 1], forecastSheet.Cells[row, 3]);
 
-                        forecastSheet.Cells[row, 1, row, 3].Style.Fill.BackgroundColor.SetColor(Color.LightYellow);
+                        forecastRowRange.Interior.Color = System.Drawing.ColorTranslator.ToOle(Color.LightYellow);
 
-                        forecastSheet.Cells[row, 2].Style.Font.Italic = true;
+                        ((Excel.Range)forecastSheet.Cells[row, 2]).Font.Italic = true;
 
                     }
 
@@ -1067,41 +1084,41 @@ namespace BakeryBI
 
                     summaryRow = row + 2;
 
-                    forecastSheet.Cells[summaryRow, 1].Value = "FORECAST SUMMARY";
+                    ((Excel.Range)forecastSheet.Cells[summaryRow, 1]).Value2 = "FORECAST SUMMARY";
 
-                    forecastSheet.Cells[summaryRow, 1].Style.Font.Bold = true;
+                    ((Excel.Range)forecastSheet.Cells[summaryRow, 1]).Font.Bold = true;
 
-                    forecastSheet.Cells[summaryRow, 1].Style.Font.Size = 12;
-
-
-
-                    summaryRow++;
-
-                    forecastSheet.Cells[summaryRow, 1].Value = "Forecast Period:";
-
-                    forecastSheet.Cells[summaryRow, 2].Value = $"{forecastMonths} months";
+                    ((Excel.Range)forecastSheet.Cells[summaryRow, 1]).Font.Size = 12;
 
 
 
                     summaryRow++;
 
-                    forecastSheet.Cells[summaryRow, 1].Value = "Total Forecasted Sales:";
+                    ((Excel.Range)forecastSheet.Cells[summaryRow, 1]).Value2 = "Forecast Period:";
 
-                    forecastSheet.Cells[summaryRow, 2].Value = (double)forecastPoints.Sum(p => p.Value);
-
-                    forecastSheet.Cells[summaryRow, 2].Style.Numberformat.Format = "$#,##0.00";
-
-                    forecastSheet.Cells[summaryRow, 2].Style.Font.Bold = true;
+                    ((Excel.Range)forecastSheet.Cells[summaryRow, 2]).Value2 = $"{forecastMonths} months";
 
 
 
                     summaryRow++;
 
-                    forecastSheet.Cells[summaryRow, 1].Value = "Average Monthly Forecast:";
+                    ((Excel.Range)forecastSheet.Cells[summaryRow, 1]).Value2 = "Total Forecasted Sales:";
 
-                    forecastSheet.Cells[summaryRow, 2].Value = (double)forecastPoints.Average(p => p.Value);
+                    ((Excel.Range)forecastSheet.Cells[summaryRow, 2]).Value2 = (double)forecastPoints.Sum(p => p.Value);
 
-                    forecastSheet.Cells[summaryRow, 2].Style.Numberformat.Format = "$#,##0.00";
+                    ((Excel.Range)forecastSheet.Cells[summaryRow, 2]).NumberFormat = "$#,##0.00";
+
+                    ((Excel.Range)forecastSheet.Cells[summaryRow, 2]).Font.Bold = true;
+
+
+
+                    summaryRow++;
+
+                    ((Excel.Range)forecastSheet.Cells[summaryRow, 1]).Value2 = "Average Monthly Forecast:";
+
+                    ((Excel.Range)forecastSheet.Cells[summaryRow, 2]).Value2 = (double)forecastPoints.Average(p => p.Value);
+
+                    ((Excel.Range)forecastSheet.Cells[summaryRow, 2]).NumberFormat = "$#,##0.00";
 
                 }
 
@@ -1109,29 +1126,31 @@ namespace BakeryBI
 
                 // Auto-fit columns
 
-                forecastSheet.Cells.AutoFitColumns();
+                forecastSheet.Columns.AutoFit();
 
 
 
                 // Sheet 3: Raw Dataset (Underlying Data Used for Analysis)
 
-                var rawDataSheet = package.Workbook.Worksheets.Add("Raw Dataset");
+                Excel.Worksheet rawDataSheet = (Excel.Worksheet)workbook.Worksheets.Add();
+
+                rawDataSheet.Name = "Raw Dataset";
 
 
 
                 // Add title and summary info
 
-                rawDataSheet.Cells[1, 1].Value = "RAW DATASET - All Filtered Transaction Records";
+                ((Excel.Range)rawDataSheet.Cells[1, 1]).Value2 = "RAW DATASET - All Filtered Transaction Records";
 
-                rawDataSheet.Cells[1, 1].Style.Font.Bold = true;
+                ((Excel.Range)rawDataSheet.Cells[1, 1]).Font.Bold = true;
 
-                rawDataSheet.Cells[1, 1].Style.Font.Size = 14;
+                ((Excel.Range)rawDataSheet.Cells[1, 1]).Font.Size = 14;
 
-                rawDataSheet.Cells[2, 1].Value = $"Total Records: {filteredData.Count:N0}";
+                ((Excel.Range)rawDataSheet.Cells[2, 1]).Value2 = $"Total Records: {filteredData.Count:N0}";
 
-                rawDataSheet.Cells[2, 1].Style.Font.Bold = true;
+                ((Excel.Range)rawDataSheet.Cells[2, 1]).Font.Bold = true;
 
-                rawDataSheet.Cells[3, 1].Value = $"Export Date: {DateTime.Now:yyyy-MM-dd HH:mm:ss}";
+                ((Excel.Range)rawDataSheet.Cells[3, 1]).Value2 = $"Export Date: {DateTime.Now:yyyy-MM-dd HH:mm:ss}";
 
 
 
@@ -1141,53 +1160,53 @@ namespace BakeryBI
 
                 int colIndex = 1;
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Customer ID";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Customer ID";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Store Name";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Store Name";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Transaction Date";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Transaction Date";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Aisle";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Aisle";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Product Name";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Product Name";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Quantity";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Quantity";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Unit Price";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Unit Price";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Total Amount";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Total Amount";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Discount Amount";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Discount Amount";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Final Amount";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Final Amount";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Loyalty Points";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Loyalty Points";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Unit Cost";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Unit Cost";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Total Cost";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Total Cost";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Profit";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Profit";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Profit Margin";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Profit Margin";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Year";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Year";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Month";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Month";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Month Name";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Month Name";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Quarter";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Quarter";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Day of Week";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Day of Week";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Week Number";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Week Number";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Customer Type";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Customer Type";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Store City";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Store City";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Store Country";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Store Country";
 
 
 
@@ -1197,11 +1216,11 @@ namespace BakeryBI
 
                 // Style headers
 
-                rawDataSheet.Cells[headerRow, 1, headerRow, totalColumns].Style.Font.Bold = true;
+                Excel.Range headerRange3 = rawDataSheet.get_Range(rawDataSheet.Cells[headerRow, 1], rawDataSheet.Cells[headerRow, totalColumns]);
 
-                rawDataSheet.Cells[headerRow, 1, headerRow, totalColumns].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                headerRange3.Font.Bold = true;
 
-                rawDataSheet.Cells[headerRow, 1, headerRow, totalColumns].Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+                headerRange3.Interior.Color = System.Drawing.ColorTranslator.ToOle(Color.LightGray);
 
 
 
@@ -1217,71 +1236,71 @@ namespace BakeryBI
 
                     colIndex = 1;
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.CustomerId;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.CustomerId;
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.StoreName;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.StoreName;
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.TransactionDate;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.TransactionDate;
 
-                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "yyyy-mm-dd";
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex - 1]).NumberFormat = "yyyy-mm-dd";
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.Aisle;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.Aisle;
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.ProductName;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.ProductName;
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.Quantity;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.Quantity;
 
-                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.UnitPrice;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = (double)record.UnitPrice;
 
-                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "$#,##0.00";
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex - 1]).NumberFormat = "$#,##0.00";
 
-                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.TotalAmount;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = (double)record.TotalAmount;
 
-                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "$#,##0.00";
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex - 1]).NumberFormat = "$#,##0.00";
 
-                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.DiscountAmount;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = (double)record.DiscountAmount;
 
-                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "$#,##0.00";
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex - 1]).NumberFormat = "$#,##0.00";
 
-                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.FinalAmount;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = (double)record.FinalAmount;
 
-                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "$#,##0.00";
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex - 1]).NumberFormat = "$#,##0.00";
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.LoyaltyPoints;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.LoyaltyPoints;
 
-                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.UnitCost;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = (double)record.UnitCost;
 
-                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "$#,##0.00";
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex - 1]).NumberFormat = "$#,##0.00";
 
-                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.TotalCost;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = (double)record.TotalCost;
 
-                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "$#,##0.00";
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex - 1]).NumberFormat = "$#,##0.00";
 
-                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.Profit;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = (double)record.Profit;
 
-                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "$#,##0.00";
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex - 1]).NumberFormat = "$#,##0.00";
 
-                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.ProfitMargin;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = (double)record.ProfitMargin;
 
-                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "0.00%";
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex - 1]).NumberFormat = "0.00%";
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.Year;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.Year;
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.Month;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.Month;
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.MonthName;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.MonthName;
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.Quarter;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.Quarter;
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.DayOfWeek;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.DayOfWeek;
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.WeekNumber;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.WeekNumber;
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.CustomerType;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.CustomerType;
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.StoreCity ?? "";
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.StoreCity ?? "";
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.StoreCountry ?? "";
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.StoreCountry ?? "";
 
                     row++;
 
@@ -1291,15 +1310,41 @@ namespace BakeryBI
 
                 // Auto-fit columns
 
-                rawDataSheet.Cells.AutoFitColumns();
+                rawDataSheet.Columns.AutoFit();
 
 
 
                 // Save file
 
-                FileInfo file = new FileInfo(filePath);
+                workbook.SaveAs(filePath);
 
-                package.SaveAs(file);
+            }
+
+            finally
+
+            {
+
+                // Clean up COM objects
+
+                if (workbook != null)
+
+                {
+
+                    workbook.Close(false);
+
+                    Marshal.ReleaseComObject(workbook);
+
+                }
+
+                if (excelApp != null)
+
+                {
+
+                    excelApp.Quit();
+
+                    Marshal.ReleaseComObject(excelApp);
+
+                }
 
             }
 
@@ -1401,13 +1446,29 @@ namespace BakeryBI
 
 
 
-            using (ExcelPackage package = new ExcelPackage())
+            Excel.Application excelApp = null;
+
+            Excel.Workbook workbook = null;
+
+            try
 
             {
 
+                excelApp = new Excel.Application();
+
+                excelApp.Visible = false;
+
+                excelApp.DisplayAlerts = false;
+
+                workbook = excelApp.Workbooks.Add();
+
+
+
                 // Sheet 1: Monthly Profit by Store (Descriptive Analytics)
 
-                var profitSheet = package.Workbook.Worksheets.Add("Monthly Profit by Store");
+                Excel.Worksheet profitSheet = (Excel.Worksheet)workbook.Worksheets[1];
+
+                profitSheet.Name = "Monthly Profit by Store";
 
 
 
@@ -1451,7 +1512,7 @@ namespace BakeryBI
 
                 // Headers - First column is Month, then one column per store
 
-                profitSheet.Cells[1, 1].Value = "Month";
+                ((Excel.Range)profitSheet.Cells[1, 1]).Value2 = "Month";
 
                 int col = 2;
 
@@ -1459,23 +1520,23 @@ namespace BakeryBI
 
                 {
 
-                    profitSheet.Cells[1, col].Value = store;
+                    ((Excel.Range)profitSheet.Cells[1, col]).Value2 = store;
 
                     col++;
 
                 }
 
-                profitSheet.Cells[1, col].Value = "Total";
+                ((Excel.Range)profitSheet.Cells[1, col]).Value2 = "Total";
 
 
 
                 // Style headers
 
-                profitSheet.Cells[1, 1, 1, col].Style.Font.Bold = true;
+                Excel.Range headerRange4 = profitSheet.get_Range(profitSheet.Cells[1, 1], profitSheet.Cells[1, col]);
 
-                profitSheet.Cells[1, 1, 1, col].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                headerRange4.Font.Bold = true;
 
-                profitSheet.Cells[1, 1, 1, col].Style.Fill.BackgroundColor.SetColor(Color.LightBlue);
+                headerRange4.Interior.Color = System.Drawing.ColorTranslator.ToOle(Color.LightBlue);
 
 
 
@@ -1487,9 +1548,9 @@ namespace BakeryBI
 
                 {
 
-                    profitSheet.Cells[row, 1].Value = month.ToString("MMM yyyy");
+                    ((Excel.Range)profitSheet.Cells[row, 1]).Value2 = month.ToString("MMM yyyy");
 
-                    profitSheet.Cells[row, 1].Style.Numberformat.Format = "MMM yyyy";
+                    ((Excel.Range)profitSheet.Cells[row, 1]).NumberFormat = "MMM yyyy";
 
 
 
@@ -1505,9 +1566,9 @@ namespace BakeryBI
 
                         decimal profit = storeData?.Profit ?? 0;
 
-                        profitSheet.Cells[row, col].Value = (double)profit;
+                        ((Excel.Range)profitSheet.Cells[row, col]).Value2 = (double)profit;
 
-                        profitSheet.Cells[row, col].Style.Numberformat.Format = "$#,##0.00";
+                        ((Excel.Range)profitSheet.Cells[row, col]).NumberFormat = "$#,##0.00";
 
                         monthTotal += profit;
 
@@ -1519,11 +1580,11 @@ namespace BakeryBI
 
                     // Total for the month
 
-                    profitSheet.Cells[row, col].Value = (double)monthTotal;
+                    ((Excel.Range)profitSheet.Cells[row, col]).Value2 = (double)monthTotal;
 
-                    profitSheet.Cells[row, col].Style.Numberformat.Format = "$#,##0.00";
+                    ((Excel.Range)profitSheet.Cells[row, col]).NumberFormat = "$#,##0.00";
 
-                    profitSheet.Cells[row, col].Style.Font.Bold = true;
+                    ((Excel.Range)profitSheet.Cells[row, col]).Font.Bold = true;
 
                     row++;
 
@@ -1533,9 +1594,9 @@ namespace BakeryBI
 
                 // Add totals row
 
-                profitSheet.Cells[row, 1].Value = "TOTAL";
+                ((Excel.Range)profitSheet.Cells[row, 1]).Value2 = "TOTAL";
 
-                profitSheet.Cells[row, 1].Style.Font.Bold = true;
+                ((Excel.Range)profitSheet.Cells[row, 1]).Font.Bold = true;
 
                 col = 2;
 
@@ -1545,11 +1606,11 @@ namespace BakeryBI
 
                     decimal storeTotal = monthlyProfit.Where(x => x.Store == store).Sum(x => x.Profit);
 
-                    profitSheet.Cells[row, col].Value = (double)storeTotal;
+                    ((Excel.Range)profitSheet.Cells[row, col]).Value2 = (double)storeTotal;
 
-                    profitSheet.Cells[row, col].Style.Numberformat.Format = "$#,##0.00";
+                    ((Excel.Range)profitSheet.Cells[row, col]).NumberFormat = "$#,##0.00";
 
-                    profitSheet.Cells[row, col].Style.Font.Bold = true;
+                    ((Excel.Range)profitSheet.Cells[row, col]).Font.Bold = true;
 
                     col++;
 
@@ -1557,49 +1618,51 @@ namespace BakeryBI
 
                 decimal grandTotal = monthlyProfit.Sum(x => x.Profit);
 
-                profitSheet.Cells[row, col].Value = (double)grandTotal;
+                ((Excel.Range)profitSheet.Cells[row, col]).Value2 = (double)grandTotal;
 
-                profitSheet.Cells[row, col].Style.Numberformat.Format = "$#,##0.00";
+                ((Excel.Range)profitSheet.Cells[row, col]).NumberFormat = "$#,##0.00";
 
-                profitSheet.Cells[row, col].Style.Font.Bold = true;
+                ((Excel.Range)profitSheet.Cells[row, col]).Font.Bold = true;
 
 
 
                 // Auto-fit columns
 
-                profitSheet.Cells.AutoFitColumns();
+                profitSheet.Columns.AutoFit();
 
 
 
                 // Sheet 2: Store Performance Summary (Descriptive Analytics)
 
-                var summarySheet = package.Workbook.Worksheets.Add("Store Performance Summary");
+                Excel.Worksheet summarySheet = (Excel.Worksheet)workbook.Worksheets.Add();
+
+                summarySheet.Name = "Store Performance Summary";
 
 
 
                 // Headers
 
-                summarySheet.Cells[1, 1].Value = "Store";
+                ((Excel.Range)summarySheet.Cells[1, 1]).Value2 = "Store";
 
-                summarySheet.Cells[1, 2].Value = "Total Profit";
+                ((Excel.Range)summarySheet.Cells[1, 2]).Value2 = "Total Profit";
 
-                summarySheet.Cells[1, 3].Value = "Total Sales";
+                ((Excel.Range)summarySheet.Cells[1, 3]).Value2 = "Total Sales";
 
-                summarySheet.Cells[1, 4].Value = "Profit Margin %";
+                ((Excel.Range)summarySheet.Cells[1, 4]).Value2 = "Profit Margin %";
 
-                summarySheet.Cells[1, 5].Value = "Avg Monthly Profit";
+                ((Excel.Range)summarySheet.Cells[1, 5]).Value2 = "Avg Monthly Profit";
 
-                summarySheet.Cells[1, 6].Value = "Transaction Count";
+                ((Excel.Range)summarySheet.Cells[1, 6]).Value2 = "Transaction Count";
 
 
 
                 // Style headers
 
-                summarySheet.Cells[1, 1, 1, 6].Style.Font.Bold = true;
+                Excel.Range headerRange5 = summarySheet.get_Range("A1", "F1");
 
-                summarySheet.Cells[1, 1, 1, 6].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                headerRange5.Font.Bold = true;
 
-                summarySheet.Cells[1, 1, 1, 6].Style.Fill.BackgroundColor.SetColor(Color.LightGreen);
+                headerRange5.Interior.Color = System.Drawing.ColorTranslator.ToOle(Color.LightGreen);
 
 
 
@@ -1641,15 +1704,15 @@ namespace BakeryBI
 
                 {
 
-                    summarySheet.Cells[row, 1].Value = summary.Store;
+                    ((Excel.Range)summarySheet.Cells[row, 1]).Value2 = summary.Store;
 
-                    summarySheet.Cells[row, 2].Value = (double)summary.TotalProfit;
+                    ((Excel.Range)summarySheet.Cells[row, 2]).Value2 = (double)summary.TotalProfit;
 
-                    summarySheet.Cells[row, 2].Style.Numberformat.Format = "$#,##0.00";
+                    ((Excel.Range)summarySheet.Cells[row, 2]).NumberFormat = "$#,##0.00";
 
-                    summarySheet.Cells[row, 3].Value = (double)summary.TotalSales;
+                    ((Excel.Range)summarySheet.Cells[row, 3]).Value2 = (double)summary.TotalSales;
 
-                    summarySheet.Cells[row, 3].Style.Numberformat.Format = "$#,##0.00";
+                    ((Excel.Range)summarySheet.Cells[row, 3]).NumberFormat = "$#,##0.00";
 
 
 
@@ -1659,17 +1722,17 @@ namespace BakeryBI
 
                     : 0;
 
-                    summarySheet.Cells[row, 4].Value = (double)profitMargin;
+                    ((Excel.Range)summarySheet.Cells[row, 4]).Value2 = (double)profitMargin;
 
-                    summarySheet.Cells[row, 4].Style.Numberformat.Format = "0.00%";
+                    ((Excel.Range)summarySheet.Cells[row, 4]).NumberFormat = "0.00%";
 
 
 
-                    summarySheet.Cells[row, 5].Value = (double)summary.AvgMonthlyProfit;
+                    ((Excel.Range)summarySheet.Cells[row, 5]).Value2 = (double)summary.AvgMonthlyProfit;
 
-                    summarySheet.Cells[row, 5].Style.Numberformat.Format = "$#,##0.00";
+                    ((Excel.Range)summarySheet.Cells[row, 5]).NumberFormat = "$#,##0.00";
 
-                    summarySheet.Cells[row, 6].Value = summary.TransactionCount;
+                    ((Excel.Range)summarySheet.Cells[row, 6]).Value2 = summary.TransactionCount;
 
                     row++;
 
@@ -1681,39 +1744,39 @@ namespace BakeryBI
 
                 int summaryRow = row + 2;
 
-                summarySheet.Cells[summaryRow, 1].Value = "OVERALL SUMMARY";
+                ((Excel.Range)summarySheet.Cells[summaryRow, 1]).Value2 = "OVERALL SUMMARY";
 
-                summarySheet.Cells[summaryRow, 1].Style.Font.Bold = true;
+                ((Excel.Range)summarySheet.Cells[summaryRow, 1]).Font.Bold = true;
 
-                summarySheet.Cells[summaryRow, 1].Style.Font.Size = 12;
-
-
-
-                summaryRow++;
-
-                summarySheet.Cells[summaryRow, 1].Value = "Total Profit (All Stores):";
-
-                summarySheet.Cells[summaryRow, 2].Value = (double)storeSummaries.Sum(x => x.TotalProfit);
-
-                summarySheet.Cells[summaryRow, 2].Style.Numberformat.Format = "$#,##0.00";
-
-                summarySheet.Cells[summaryRow, 2].Style.Font.Bold = true;
+                ((Excel.Range)summarySheet.Cells[summaryRow, 1]).Font.Size = 12;
 
 
 
                 summaryRow++;
 
-                summarySheet.Cells[summaryRow, 1].Value = "Total Sales (All Stores):";
+                ((Excel.Range)summarySheet.Cells[summaryRow, 1]).Value2 = "Total Profit (All Stores):";
 
-                summarySheet.Cells[summaryRow, 2].Value = (double)storeSummaries.Sum(x => x.TotalSales);
+                ((Excel.Range)summarySheet.Cells[summaryRow, 2]).Value2 = (double)storeSummaries.Sum(x => x.TotalProfit);
 
-                summarySheet.Cells[summaryRow, 2].Style.Numberformat.Format = "$#,##0.00";
+                ((Excel.Range)summarySheet.Cells[summaryRow, 2]).NumberFormat = "$#,##0.00";
+
+                ((Excel.Range)summarySheet.Cells[summaryRow, 2]).Font.Bold = true;
 
 
 
                 summaryRow++;
 
-                summarySheet.Cells[summaryRow, 1].Value = "Overall Profit Margin:";
+                ((Excel.Range)summarySheet.Cells[summaryRow, 1]).Value2 = "Total Sales (All Stores):";
+
+                ((Excel.Range)summarySheet.Cells[summaryRow, 2]).Value2 = (double)storeSummaries.Sum(x => x.TotalSales);
+
+                ((Excel.Range)summarySheet.Cells[summaryRow, 2]).NumberFormat = "$#,##0.00";
+
+
+
+                summaryRow++;
+
+                ((Excel.Range)summarySheet.Cells[summaryRow, 1]).Value2 = "Overall Profit Margin:";
 
                 decimal overallMargin = storeSummaries.Sum(x => x.TotalSales) != 0
 
@@ -1721,55 +1784,57 @@ namespace BakeryBI
 
                 : 0;
 
-                summarySheet.Cells[summaryRow, 2].Value = (double)overallMargin;
+                ((Excel.Range)summarySheet.Cells[summaryRow, 2]).Value2 = (double)overallMargin;
 
-                summarySheet.Cells[summaryRow, 2].Style.Numberformat.Format = "0.00%";
+                ((Excel.Range)summarySheet.Cells[summaryRow, 2]).NumberFormat = "0.00%";
 
 
 
                 summaryRow++;
 
-                summarySheet.Cells[summaryRow, 1].Value = "Best Performing Store:";
+                ((Excel.Range)summarySheet.Cells[summaryRow, 1]).Value2 = "Best Performing Store:";
 
                 var bestStore = storeSummaries.OrderByDescending(x => x.TotalProfit).First();
 
-                summarySheet.Cells[summaryRow, 2].Value = $"{bestStore.Store} (${bestStore.TotalProfit:N2})";
+                ((Excel.Range)summarySheet.Cells[summaryRow, 2]).Value2 = $"{bestStore.Store} (${bestStore.TotalProfit:N2})";
 
 
 
                 // Auto-fit columns
 
-                summarySheet.Cells.AutoFitColumns();
+                summarySheet.Columns.AutoFit();
 
 
 
                 // Sheet 3: Detailed Monthly Data
 
-                var detailSheet = package.Workbook.Worksheets.Add("Detailed Monthly Data");
+                Excel.Worksheet detailSheet = (Excel.Worksheet)workbook.Worksheets.Add();
+
+                detailSheet.Name = "Detailed Monthly Data";
 
 
 
                 // Headers
 
-                detailSheet.Cells[1, 1].Value = "Month";
+                ((Excel.Range)detailSheet.Cells[1, 1]).Value2 = "Month";
 
-                detailSheet.Cells[1, 2].Value = "Store";
+                ((Excel.Range)detailSheet.Cells[1, 2]).Value2 = "Store";
 
-                detailSheet.Cells[1, 3].Value = "Profit";
+                ((Excel.Range)detailSheet.Cells[1, 3]).Value2 = "Profit";
 
-                detailSheet.Cells[1, 4].Value = "Sales";
+                ((Excel.Range)detailSheet.Cells[1, 4]).Value2 = "Sales";
 
-                detailSheet.Cells[1, 5].Value = "Transaction Count";
+                ((Excel.Range)detailSheet.Cells[1, 5]).Value2 = "Transaction Count";
 
 
 
                 // Style headers
 
-                detailSheet.Cells[1, 1, 1, 5].Style.Font.Bold = true;
+                Excel.Range headerRange6 = detailSheet.get_Range("A1", "E1");
 
-                detailSheet.Cells[1, 1, 1, 5].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                headerRange6.Font.Bold = true;
 
-                detailSheet.Cells[1, 1, 1, 5].Style.Fill.BackgroundColor.SetColor(Color.LightYellow);
+                headerRange6.Interior.Color = System.Drawing.ColorTranslator.ToOle(Color.LightYellow);
 
 
 
@@ -1781,19 +1846,19 @@ namespace BakeryBI
 
                 {
 
-                    detailSheet.Cells[row, 1].Value = item.Month.ToString("MMM yyyy");
+                    ((Excel.Range)detailSheet.Cells[row, 1]).Value2 = item.Month.ToString("MMM yyyy");
 
-                    detailSheet.Cells[row, 2].Value = item.Store;
+                    ((Excel.Range)detailSheet.Cells[row, 2]).Value2 = item.Store;
 
-                    detailSheet.Cells[row, 3].Value = (double)item.Profit;
+                    ((Excel.Range)detailSheet.Cells[row, 3]).Value2 = (double)item.Profit;
 
-                    detailSheet.Cells[row, 3].Style.Numberformat.Format = "$#,##0.00";
+                    ((Excel.Range)detailSheet.Cells[row, 3]).NumberFormat = "$#,##0.00";
 
-                    detailSheet.Cells[row, 4].Value = (double)item.Sales;
+                    ((Excel.Range)detailSheet.Cells[row, 4]).Value2 = (double)item.Sales;
 
-                    detailSheet.Cells[row, 4].Style.Numberformat.Format = "$#,##0.00";
+                    ((Excel.Range)detailSheet.Cells[row, 4]).NumberFormat = "$#,##0.00";
 
-                    detailSheet.Cells[row, 5].Value = item.TransactionCount;
+                    ((Excel.Range)detailSheet.Cells[row, 5]).Value2 = item.TransactionCount;
 
                     row++;
 
@@ -1803,85 +1868,89 @@ namespace BakeryBI
 
                 // Auto-fit columns
 
-                detailSheet.Cells.AutoFitColumns();
+                detailSheet.Columns.AutoFit();
 
 
 
                 // Sheet 4: Raw Dataset (Underlying Data Used for Analysis)
 
-                var rawDataSheet = package.Workbook.Worksheets.Add("Raw Dataset");
+                Excel.Worksheet rawDataSheet = (Excel.Worksheet)workbook.Worksheets.Add();
+
+                rawDataSheet.Name = "Raw Dataset";
 
 
 
                 // Add title and summary info
 
-                rawDataSheet.Cells[1, 1].Value = "RAW DATASET - All Filtered Transaction Records";
+                ((Excel.Range)rawDataSheet.Cells[1, 1]).Value2 = "RAW DATASET - All Filtered Transaction Records";
 
-                rawDataSheet.Cells[1, 1].Style.Font.Bold = true;
+                ((Excel.Range)rawDataSheet.Cells[1, 1]).Font.Bold = true;
 
-                rawDataSheet.Cells[1, 1].Style.Font.Size = 14;
+                ((Excel.Range)rawDataSheet.Cells[1, 1]).Font.Size = 14;
 
-                rawDataSheet.Cells[2, 1].Value = $"Total Records: {fullyFilteredData.Count:N0}";
+                ((Excel.Range)rawDataSheet.Cells[2, 1]).Value2 = $"Total Records: {fullyFilteredData.Count:N0}";
 
-                rawDataSheet.Cells[2, 1].Style.Font.Bold = true;
+                ((Excel.Range)rawDataSheet.Cells[2, 1]).Font.Bold = true;
 
-                rawDataSheet.Cells[3, 1].Value = $"Export Date: {DateTime.Now:yyyy-MM-dd HH:mm:ss}";
+                ((Excel.Range)rawDataSheet.Cells[3, 1]).Value2 = $"Export Date: {DateTime.Now:yyyy-MM-dd HH:mm:ss}";
 
 
 
                 // Headers - All fields from SalesRecord (starting at row 5)
 
+                // StoreCity and StoreCountry are the last two columns
+
                 int headerRow = 5;
 
                 int colIndex = 1;
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Customer ID";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Customer ID";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Store Name";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Store Name";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Store City";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Transaction Date";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Store Country";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Aisle";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Transaction Date";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Product Name";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Aisle";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Quantity";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Product Name";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Unit Price";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Quantity";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Total Amount";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Unit Price";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Discount Amount";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Total Amount";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Final Amount";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Discount Amount";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Loyalty Points";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Final Amount";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Unit Cost";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Loyalty Points";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Total Cost";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Unit Cost";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Profit";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Total Cost";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Profit Margin";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Profit";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Year";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Profit Margin";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Month";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Year";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Month Name";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Month";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Quarter";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Month Name";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Day of Week";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Quarter";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Week Number";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Day of Week";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Customer Type";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Week Number";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Store City";
 
-                rawDataSheet.Cells[headerRow, colIndex++].Value = "Customer Type";
+                ((Excel.Range)rawDataSheet.Cells[headerRow, colIndex++]).Value2 = "Store Country";
 
 
 
@@ -1891,11 +1960,11 @@ namespace BakeryBI
 
                 // Style headers
 
-                rawDataSheet.Cells[headerRow, 1, headerRow, totalColumns].Style.Font.Bold = true;
+                Excel.Range headerRange7 = rawDataSheet.get_Range(rawDataSheet.Cells[headerRow, 1], rawDataSheet.Cells[headerRow, totalColumns]);
 
-                rawDataSheet.Cells[headerRow, 1, headerRow, totalColumns].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                headerRange7.Font.Bold = true;
 
-                rawDataSheet.Cells[headerRow, 1, headerRow, totalColumns].Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+                headerRange7.Interior.Color = System.Drawing.ColorTranslator.ToOle(Color.LightGray);
 
 
 
@@ -1913,71 +1982,71 @@ namespace BakeryBI
 
                     colIndex = 1;
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.CustomerId;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.CustomerId;
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.StoreName;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.StoreName;
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.TransactionDate;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.TransactionDate;
 
-                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "yyyy-mm-dd";
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex - 1]).NumberFormat = "yyyy-mm-dd";
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.Aisle;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.Aisle;
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.ProductName;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.ProductName;
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.Quantity;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.Quantity;
 
-                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.UnitPrice;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = (double)record.UnitPrice;
 
-                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "$#,##0.00";
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex - 1]).NumberFormat = "$#,##0.00";
 
-                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.TotalAmount;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = (double)record.TotalAmount;
 
-                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "$#,##0.00";
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex - 1]).NumberFormat = "$#,##0.00";
 
-                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.DiscountAmount;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = (double)record.DiscountAmount;
 
-                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "$#,##0.00";
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex - 1]).NumberFormat = "$#,##0.00";
 
-                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.FinalAmount;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = (double)record.FinalAmount;
 
-                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "$#,##0.00";
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex - 1]).NumberFormat = "$#,##0.00";
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.LoyaltyPoints;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.LoyaltyPoints;
 
-                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.UnitCost;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = (double)record.UnitCost;
 
-                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "$#,##0.00";
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex - 1]).NumberFormat = "$#,##0.00";
 
-                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.TotalCost;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = (double)record.TotalCost;
 
-                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "$#,##0.00";
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex - 1]).NumberFormat = "$#,##0.00";
 
-                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.Profit;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = (double)record.Profit;
 
-                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "$#,##0.00";
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex - 1]).NumberFormat = "$#,##0.00";
 
-                    rawDataSheet.Cells[row, colIndex++].Value = (double)record.ProfitMargin;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = (double)record.ProfitMargin;
 
-                    rawDataSheet.Cells[row, colIndex - 1].Style.Numberformat.Format = "0.00%";
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex - 1]).NumberFormat = "0.00%";
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.Year;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.Year;
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.Month;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.Month;
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.MonthName;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.MonthName;
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.Quarter;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.Quarter;
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.DayOfWeek;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.DayOfWeek;
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.WeekNumber;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.WeekNumber;
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.CustomerType;
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.CustomerType;
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.StoreCity ?? "";
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.StoreCity ?? "";
 
-                    rawDataSheet.Cells[row, colIndex++].Value = record.StoreCountry ?? "";
+                    ((Excel.Range)rawDataSheet.Cells[row, colIndex++]).Value2 = record.StoreCountry ?? "";
 
                     row++;
 
@@ -1987,15 +2056,41 @@ namespace BakeryBI
 
                 // Auto-fit columns
 
-                rawDataSheet.Cells.AutoFitColumns();
+                rawDataSheet.Columns.AutoFit();
 
 
 
                 // Save file
 
-                FileInfo file = new FileInfo(filePath);
+                workbook.SaveAs(filePath);
 
-                package.SaveAs(file);
+            }
+
+            finally
+
+            {
+
+                // Clean up COM objects
+
+                if (workbook != null)
+
+                {
+
+                    workbook.Close(false);
+
+                    Marshal.ReleaseComObject(workbook);
+
+                }
+
+                if (excelApp != null)
+
+                {
+
+                    excelApp.Quit();
+
+                    Marshal.ReleaseComObject(excelApp);
+
+                }
 
             }
 
