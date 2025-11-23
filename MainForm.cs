@@ -10,6 +10,7 @@ using BakeryBI.Utils;
 using OfficeOpenXml;
 using OfficeOpenXml.Drawing.Chart;
 using System.IO;
+using OfficeOpenXml.Drawing;
 
 namespace BakeryBI
 {
