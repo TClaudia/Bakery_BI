@@ -567,7 +567,197 @@ namespace BakeryBI
             legend.Docking = Docking.Top;
             chartMaxMinProducts.Legends.Add(legend);
         }
+        private void InitializeCustomControlsAndEventsForSalesAnalysis()
+        {
+            cmbForecastMonths.Items.AddRange(Enumerable.Range(1, 12).Cast<object>().ToArray());
+            cmbForecastMonths.SelectedIndex = 2;
 
-     
+            PopulateClientTypeFilters();
+            InitializeDefaultStoreFiler();
+
+            PopulateStoreFilters();
+
+            tabControl.SelectedIndexChanged += tabControl_SelectedIndexChanged;
+
+            cmbForecastMonths.SelectedIndexChanged += cmbForecastMonths_SelectedIndexChanged;
+        }
+        private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (tabControl.SelectedTab == tabFutureSalesEstimation)
+            {
+                cmbForecastMonths_SelectedIndexChanged(null, null);
+            }
+            else if (tabControl.SelectedTab == tabEvolutionOfProfits)
+            {
+                RenderProfitEvolutionChart(allSalesData, selectedClientTypes);
+            }
+        }
+        private void cmbForecastMonths_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbForecastMonths.SelectedItem != null && allSalesData.Any())
+            {
+                int forecastMonths = (int)cmbForecastMonths.SelectedItem;
+                RenderSalesEstimationChart(allSalesData, forecastMonths);
+            }
+        }
+        private void ClientTypeCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox cb = sender as CheckBox;
+            string clientType = cb.Tag.ToString();
+
+            if (cb.Checked)
+            {
+                if (!selectedClientTypes.Contains(clientType)) selectedClientTypes.Add(clientType);
+            }
+            else
+            {
+                selectedClientTypes.Remove(clientType);
+            }
+
+            RenderProfitEvolutionChart(allSalesData, selectedClientTypes);
+        }
+
+        private void StoreCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox cb = sender as CheckBox;
+            string storeName = cb.Tag.ToString();
+
+            if (cb.Checked)
+            {
+                if (!selectedStoreNames.Contains(storeName)) selectedStoreNames.Add(storeName);
+            }
+            else selectedStoreNames.Remove(storeName);
+
+            RenderProfitEvolutionChart(allSalesData, selectedClientTypes);
+        }
+        private void PopulateClientTypeFilters()
+        {
+            pnlClientTypeFilters.Controls.Clear();
+
+            var clientTypes = allSalesData.Select(x => x.CustomerType).Distinct().OrderBy(x => x).ToList();
+
+            int xOffset = 10;
+
+            foreach (var clientType in clientTypes)
+            {
+                var cb = new CheckBox
+                {
+                    Text = clientType,
+                    Tag = clientType,
+                    Checked = true,
+                    Location = new Point(xOffset, 5),
+                    AutoSize = true
+                };
+
+                cb.CheckedChanged += ClientTypeCheckBox_CheckedChanged;
+
+                pnlClientTypeFilters.Controls.Add(cb);
+                xOffset += cb.Width + 10;
+            }
+            selectedClientTypes = clientTypes;
+        }
+
+        private void PopulateStoreFilters()
+        {
+            pnlStoreFilters.Controls.Clear();
+
+            var storeNames = allSalesData.Select(x => x.StoreName).Distinct().OrderBy(x => x).ToList();
+
+            const int ColumnCount = 5;
+            const int Margin = 10;
+            const int ControlHeight = 25;
+            const int ColumnWidth = 150;
+
+            int xOffset = Margin;
+            int yOffset = Margin;
+
+            for (int i = 0; i < storeNames.Count; i++)
+            {
+                string storeName = storeNames[i];
+
+                var cb = new CheckBox
+                {
+                    Text = storeName,
+                    Tag = storeName,
+                    Checked = true,
+                    Location = new Point(xOffset, yOffset),
+                    Width = ColumnWidth - Margin,
+                    AutoSize = false
+                };
+
+                cb.CheckedChanged += StoreCheckBox_CheckedChanged;
+
+                pnlStoreFilters.Controls.Add(cb);
+
+                if ((i + 1) % ColumnCount == 0)
+                {
+                    xOffset = Margin;
+                    yOffset += ControlHeight + Margin;
+                }
+                else xOffset += ColumnWidth;
+            }
+            selectedStoreNames = storeNames;
+        }
+        private void InitializeDefaultStoreFiler()
+        {
+            if (allSalesData == null || !allSalesData.Any()) return;
+            selectedStoreNames = allSalesData.Select(x => x.StoreName).Distinct().OrderBy(x => x).ToList();
+        }
+
+        private void SyncClientTypeCheckBoxStates()
+        {
+            // Iterate through all CheckBox controls in the filter panel
+            foreach (CheckBox cb in pnlClientTypeFilters.Controls.OfType<CheckBox>())
+            {
+                string clientType = cb.Tag.ToString();
+
+                // If the global list contains the client type, the box should be checked.
+                cb.Checked = selectedClientTypes.Contains(clientType);
+            }
+        }
+        private void SyncStoreCheckBoxStates()
+        {
+            if (filteredData == null || !filteredData.Any()) return;
+
+            // 1. Determine which stores still exist in the data after primary filtering
+            var storesInCurrentData = filteredData.Select(r => r.StoreName).Distinct().ToList();
+
+            // 2. Iterate through all CheckBox controls in the filter panel (assuming pnlStoreFilters still exists)
+            foreach (CheckBox cb in pnlStoreFilters.Controls.OfType<CheckBox>())
+            {
+                string storeName = cb.Tag.ToString();
+
+                // Disable the checkbox if the store doesn't exist in the current filtered data, 
+                // but keep the checked state based on the global filter list.
+                cb.Enabled = storesInCurrentData.Contains(storeName);
+
+                // Crucial: The CHECKED state must still reflect the user's manual selection (selectedStoreNames)
+                cb.Checked = selectedStoreNames.Contains(storeName);
+
+                // Optional: Add visual cue for disabled control
+                if (!cb.Enabled)
+                {
+                    cb.ForeColor = Color.DarkGray;
+                }
+                else
+                {
+                    cb.ForeColor = Color.Black;
+                }
+            }
+        }
+        private void UpdateFutureSalesEstimationTab()
+        {
+            if (cmbForecastMonths.SelectedItem != null && filteredData.Any())
+            {
+                int forecastMonths = (int)cmbForecastMonths.SelectedItem;
+                RenderSalesEstimationChart(filteredData, forecastMonths);
+            }
+        }
+
+        private void UpdateEvolutionOfProfitsTab()
+        {
+            RenderProfitEvolutionChart(filteredData, selectedClientTypes);
+        }
+
     }
 }
