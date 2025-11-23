@@ -1141,116 +1141,112 @@ namespace BakeryBI
 
 
                 // Prepare data for chart
+                // Read data directly from Forecast Data sheet to ensure consistency
 
-                // Calculate monthly sales (same as in Windows Form)
-
+                // Calculate monthly sales for Actual Sales column
                 var monthlySalesSummary = filteredData
-
                     .GroupBy(x => new DateTime(x.TransactionDate.Year, x.TransactionDate.Month, 1))
-
                     .OrderBy(x => x.Key)
-
                     .Select(x => new
-
                     {
-
                         Month = x.Key,
-
                         TotalSales = x.Sum(r => r.FinalAmount)
-
                     })
-
                     .ToList();
 
+                // Read data from Forecast Data sheet
+                // Column A: Date, Column B: Type, Column C: Sales Forecast
+                var forecastDataList = new List<(DateTime Date, string Type, double SalesForecast)>();
+                
+                int forecastDataRow = 2; // Start after header
+                while (true)
+                {
+                    object dateObj = ((Excel.Range)forecastSheet.Cells[forecastDataRow, 1]).Value2;
+                    object typeObj = ((Excel.Range)forecastSheet.Cells[forecastDataRow, 2]).Value2;
+                    object salesObj = ((Excel.Range)forecastSheet.Cells[forecastDataRow, 3]).Value2;
 
+                    // Stop if we hit an empty row
+                    if (dateObj == null || typeObj == null || salesObj == null)
+                        break;
 
-                // Get trend and forecast points (same as in Windows Form)
+                    DateTime date = DateTime.FromOADate((double)dateObj);
+                    string type = typeObj.ToString();
+                    double salesForecast = (double)salesObj;
 
-                var trendAndForecastPoints = SalesUtility.CalculateTrendAndForecast(filteredData, forecastMonths);
+                    forecastDataList.Add((date, type, salesForecast));
+                    forecastDataRow++;
+                }
 
-
-
-                // Populate chart data: Month, Actual Sales, Trend & Forecast
-
+                // Populate chart data: Month, Actual Sales, Trend & Forecast (Historical), Forecast (Dots)
                 int chartDataRow = 1;
 
                 ((Excel.Range)chartDataSheet.Cells[chartDataRow, 1]).Value2 = "Month";
-
                 ((Excel.Range)chartDataSheet.Cells[chartDataRow, 2]).Value2 = "Actual Sales";
-
                 ((Excel.Range)chartDataSheet.Cells[chartDataRow, 3]).Value2 = "Trend & Forecast";
-
-
+                ((Excel.Range)chartDataSheet.Cells[chartDataRow, 4]).Value2 = "Forecast";
 
                 chartDataRow = 2;
 
-                // Get all unique months from both actual sales and trend/forecast
-                // Normalize all dates to first of month to ensure consistency
-                var allMonths = monthlySalesSummary.Select(m => new DateTime(m.Month.Year, m.Month.Month, 1))
-                    .Union(trendAndForecastPoints.Select(t => new DateTime(t.Date.Year, t.Date.Month, 1)))
-                    .Distinct() // Ensure no duplicates
+                // Get all unique months from forecast data and actual sales
+                var allMonths = forecastDataList.Select(f => new DateTime(f.Date.Year, f.Date.Month, 1))
+                    .Union(monthlySalesSummary.Select(m => new DateTime(m.Month.Year, m.Month.Month, 1)))
+                    .Distinct()
                     .OrderBy(m => m)
                     .ToList();
 
-
-
                 foreach (var month in allMonths)
-
                 {
+                    var normalizedMonth = new DateTime(month.Year, month.Month, 1);
 
-                    ((Excel.Range)chartDataSheet.Cells[chartDataRow, 1]).Value2 = month;
-
+                    ((Excel.Range)chartDataSheet.Cells[chartDataRow, 1]).Value2 = normalizedMonth;
                     ((Excel.Range)chartDataSheet.Cells[chartDataRow, 1]).NumberFormat = "MMM yyyy";
 
-
-
-                    // Actual Sales (only for historical months)
-
-                    var actualSales = monthlySalesSummary.FirstOrDefault(m => m.Month == month);
-
+                    // Actual Sales (only for months with actual sales data)
+                    var actualSales = monthlySalesSummary.FirstOrDefault(m => 
+                        new DateTime(m.Month.Year, m.Month.Month, 1) == normalizedMonth);
                     if (actualSales != null)
-
                     {
-
                         ((Excel.Range)chartDataSheet.Cells[chartDataRow, 2]).Value2 = (double)actualSales.TotalSales;
-
                     }
-
                     else
-
                     {
-
                         ((Excel.Range)chartDataSheet.Cells[chartDataRow, 2]).Value2 = "";
-
                     }
 
+                    // Find corresponding entry in Forecast Data
+                    var forecastEntry = forecastDataList.FirstOrDefault(f => 
+                        new DateTime(f.Date.Year, f.Date.Month, 1) == normalizedMonth);
 
-
-                    // Trend & Forecast (for ALL months - continuous line through historical and forecast)
-                    // This creates a seamless trend line that extends into the forecast period
-
-                    var trendPoint = trendAndForecastPoints.FirstOrDefault(t => t.Date == month);
-
-                    if (trendPoint != null)
-
+                    if (forecastEntry != null)
                     {
+                        // Column 3: Trend & Forecast - only for "Historical Trend" entries
+                        if (forecastEntry.Type == "Historical Trend")
+                        {
+                            ((Excel.Range)chartDataSheet.Cells[chartDataRow, 3]).Value2 = forecastEntry.SalesForecast;
+                        }
+                        else
+                        {
+                            ((Excel.Range)chartDataSheet.Cells[chartDataRow, 3]).Value2 = "";
+                        }
 
-                        ((Excel.Range)chartDataSheet.Cells[chartDataRow, 3]).Value2 = (double)trendPoint.Value;
-
+                        // Column 4: Forecast - only for "Forecast" entries (will show as dots)
+                        if (forecastEntry.Type == "Forecast")
+                        {
+                            ((Excel.Range)chartDataSheet.Cells[chartDataRow, 4]).Value2 = forecastEntry.SalesForecast;
+                        }
+                        else
+                        {
+                            ((Excel.Range)chartDataSheet.Cells[chartDataRow, 4]).Value2 = "";
+                        }
                     }
-
                     else
-
                     {
-
+                        // No forecast data for this month
                         ((Excel.Range)chartDataSheet.Cells[chartDataRow, 3]).Value2 = "";
-
+                        ((Excel.Range)chartDataSheet.Cells[chartDataRow, 4]).Value2 = "";
                     }
-
-
 
                     chartDataRow++;
-
                 }
 
 
@@ -1259,7 +1255,8 @@ namespace BakeryBI
 
                 int lastRow = chartDataRow - 1;
 
-                Excel.Range chartRange = chartDataSheet.Range[chartDataSheet.Cells[1, 1], chartDataSheet.Cells[lastRow, 3]];
+                // Chart range includes: Month, Actual Sales, Trend & Forecast (Historical), Forecast (Dots)
+                Excel.Range chartRange = chartDataSheet.Range[chartDataSheet.Cells[1, 1], chartDataSheet.Cells[lastRow, 4]];
 
                 
 
@@ -1332,102 +1329,46 @@ namespace BakeryBI
 
 
 
-                // Format forecast portion of the line (dashed)
-
-                // Note: Excel doesn't support per-point line styles easily, so we'll add a separate series for forecast
-
-                // Add forecast series as separate line with dashed style
-
-                var forecastMonthsList = trendAndForecastPoints.Where(p => p.IsForecast).Select(p => p.Date).ToList();
-
-                if (forecastMonthsList.Any())
-
+                // Series 3: Forecast (Dots only - from Forecast Data sheet, Type = "Forecast")
+                // Data is already populated in column 4 from Forecast Data sheet
+                if (seriesCollection.Count >= 3)
                 {
-
-                    // Create forecast data in new columns
-
-                    chartDataRow = 2;
-
-                    int forecastCol = 4;
-
-                    ((Excel.Range)chartDataSheet.Cells[1, forecastCol]).Value2 = "Forecast";
-
-                    // Build a set of historical months for fast lookup (normalized to first of month)
-                    var historicalMonthsSet = new HashSet<DateTime>(
-                        monthlySalesSummary.Select(m => new DateTime(m.Month.Year, m.Month.Month, 1))
-                    );
-
-                    // Get the last historical month - this is the definitive cutoff point
-                    // Forecast should only appear for months STRICTLY AFTER this month
-                    DateTime? lastHistoricalMonth = monthlySalesSummary.Any() 
-                        ? new DateTime(monthlySalesSummary.Max(m => m.Month).Year, monthlySalesSummary.Max(m => m.Month).Month, 1)
-                        : null;
-
-                    foreach (var month in allMonths)
-
-                    {
-
-                        // Normalize dates to first of month for accurate comparison
-                        var normalizedMonth = new DateTime(month.Year, month.Month, 1);
-                        
-                        // Find forecast point for this month
-                        var forecastPoint = trendAndForecastPoints.FirstOrDefault(t => 
-                            new DateTime(t.Date.Year, t.Date.Month, 1) == normalizedMonth && t.IsForecast);
-                        
-                        // Check if this month has historical data
-                        var hasHistoricalData = historicalMonthsSet.Contains(normalizedMonth);
-                        
-                        // Check if this month is strictly after the last historical month
-                        var isAfterLastHistorical = lastHistoricalMonth.HasValue && normalizedMonth > lastHistoricalMonth.Value;
-
-                        // Only show forecast dot if ALL of the following are true:
-                        // 1. There's a forecast point for this month
-                        // 2. The month has NO historical data
-                        // 3. The month is STRICTLY AFTER the last historical month (prevents overlap)
-                        if (forecastPoint != null && !hasHistoricalData && isAfterLastHistorical)
-
-                        {
-
-                            ((Excel.Range)chartDataSheet.Cells[chartDataRow, forecastCol]).Value2 = (double)forecastPoint.Value;
-
-                        }
-
-                        // Don't set anything for historical months - leave cell completely empty
-                        // Excel with DisplayBlanksAs = xlNotPlotted should ignore empty cells
-
-                        chartDataRow++;
-
-                    }
-
-
-
-                    // Add forecast series
-
-                    Excel.Range forecastRange = chartDataSheet.Range[chartDataSheet.Cells[1, forecastCol], chartDataSheet.Cells[lastRow, forecastCol]];
-
-                    Excel.Series forecastSeries = (Excel.Series)seriesCollection.NewSeries();
-
+                    Excel.Series forecastSeries = (Excel.Series)seriesCollection.Item(3);
                     forecastSeries.Name = "Forecast";
-
                     forecastSeries.ChartType = Excel.XlChartType.xlLine;
-
-                    forecastSeries.Values = forecastRange;
-
-                    forecastSeries.XValues = chartDataSheet.Range[chartDataSheet.Cells[2, 1], chartDataSheet.Cells[lastRow, 1]];
-
+                    
                     // Hide the line - show only dots (markers) for forecast points
                     forecastSeries.Format.Line.Visible = 0; // 0 = msoFalse (invisible line)
-
+                    
                     // Configure markers (dots) only
                     forecastSeries.MarkerStyle = Excel.XlMarkerStyle.xlMarkerStyleCircle;
-
                     forecastSeries.MarkerSize = 8; // Larger dots for better visibility
-
+                    
                     // Set marker color to red
                     forecastSeries.MarkerForegroundColor = System.Drawing.ColorTranslator.ToOle(Color.Red);
-
                     forecastSeries.MarkerBackgroundColor = System.Drawing.ColorTranslator.ToOle(Color.Red);
-
+                }
+                else if (forecastDataList.Any(f => f.Type == "Forecast"))
+                {
+                    // Add forecast series if it doesn't exist yet
+                    Excel.Range forecastRange = chartDataSheet.Range[chartDataSheet.Cells[1, 4], chartDataSheet.Cells[lastRow, 4]];
+                    Excel.Series forecastSeries = (Excel.Series)seriesCollection.NewSeries();
+                    
+                    forecastSeries.Name = "Forecast";
+                    forecastSeries.ChartType = Excel.XlChartType.xlLine;
+                    forecastSeries.Values = forecastRange;
+                    forecastSeries.XValues = chartDataSheet.Range[chartDataSheet.Cells[2, 1], chartDataSheet.Cells[lastRow, 1]];
+                    
+                    // Hide the line - show only dots (markers) for forecast points
+                    forecastSeries.Format.Line.Visible = 0; // 0 = msoFalse (invisible line)
+                    
+                    // Configure markers (dots) only
+                    forecastSeries.MarkerStyle = Excel.XlMarkerStyle.xlMarkerStyleCircle;
+                    forecastSeries.MarkerSize = 8; // Larger dots for better visibility
+                    
+                    // Set marker color to red
+                    forecastSeries.MarkerForegroundColor = System.Drawing.ColorTranslator.ToOle(Color.Red);
+                    forecastSeries.MarkerBackgroundColor = System.Drawing.ColorTranslator.ToOle(Color.Red);
                 }
 
 
