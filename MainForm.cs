@@ -1212,23 +1212,62 @@ namespace BakeryBI
                     
                     // Configure icon criteria to use Number type referencing helper formula cells
                     // This allows automatic updates when threshold percentages change
-                    Excel.IconCriteria criteria = (Excel.IconCriteria)iconSet.IconCriteria;
-                    
-                    // Get the calculated values from helper cells (they will auto-update when thresholds change)
-                    double lowThresholdValue = (double)lowValueCell.Value2;
-                    double highThresholdValue = (double)highValueCell.Value2;
-                    
-                    // Icon 1 (Red): Values <= Low threshold value
-                    criteria.Item(1).Type = Excel.XlConditionValueTypes.xlConditionValueNumber;
-                    criteria.Item(1).Value = lowThresholdValue;
-                    
-                    // Icon 2 (Yellow): Values between Low and High threshold values
-                    criteria.Item(2).Type = Excel.XlConditionValueTypes.xlConditionValueNumber;
-                    criteria.Item(2).Value = highThresholdValue;
-                    
-                    // Icon 3 (Green): Values >= High threshold value
-                    criteria.Item(3).Type = Excel.XlConditionValueTypes.xlConditionValueNumber;
-                    criteria.Item(3).Value = highThresholdValue;
+                    // Access IconCriteria using reflection and set properties individually
+                    try
+                    {
+                        // Get IconCriteria property
+                        System.Reflection.PropertyInfo iconCriteriaProp = iconSet.GetType().GetProperty("IconCriteria");
+                        if (iconCriteriaProp != null)
+                        {
+                            object criteriaObj = iconCriteriaProp.GetValue(iconSet);
+                            if (criteriaObj != null)
+                            {
+                                // Get the calculated values from helper cells
+                                double lowThresholdValue = (double)lowValueCell.Value2;
+                                double highThresholdValue = (double)highValueCell.Value2;
+                                
+                                // Get Item method to access individual criteria
+                                System.Reflection.MethodInfo itemMethod = criteriaObj.GetType().GetMethod("Item", new Type[] { typeof(int) });
+                                if (itemMethod != null)
+                                {
+                                    // Icon 1 (Red): Values <= Low threshold value
+                                    object item1 = itemMethod.Invoke(criteriaObj, new object[] { 1 });
+                                    if (item1 != null)
+                                    {
+                                        System.Reflection.PropertyInfo type1 = item1.GetType().GetProperty("Type");
+                                        System.Reflection.PropertyInfo value1 = item1.GetType().GetProperty("Value");
+                                        if (type1 != null) type1.SetValue(item1, Excel.XlConditionValueTypes.xlConditionValueNumber);
+                                        if (value1 != null) value1.SetValue(item1, lowThresholdValue);
+                                    }
+                                    
+                                    // Icon 2 (Yellow): Values between Low and High threshold values
+                                    object item2 = itemMethod.Invoke(criteriaObj, new object[] { 2 });
+                                    if (item2 != null)
+                                    {
+                                        System.Reflection.PropertyInfo type2 = item2.GetType().GetProperty("Type");
+                                        System.Reflection.PropertyInfo value2 = item2.GetType().GetProperty("Value");
+                                        if (type2 != null) type2.SetValue(item2, Excel.XlConditionValueTypes.xlConditionValueNumber);
+                                        if (value2 != null) value2.SetValue(item2, highThresholdValue);
+                                    }
+                                    
+                                    // Icon 3 (Green): Values >= High threshold value
+                                    object item3 = itemMethod.Invoke(criteriaObj, new object[] { 3 });
+                                    if (item3 != null)
+                                    {
+                                        System.Reflection.PropertyInfo type3 = item3.GetType().GetProperty("Type");
+                                        System.Reflection.PropertyInfo value3 = item3.GetType().GetProperty("Value");
+                                        if (type3 != null) type3.SetValue(item3, Excel.XlConditionValueTypes.xlConditionValueNumber);
+                                        if (value3 != null) value3.SetValue(item3, highThresholdValue);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        // If setting criteria fails, Excel will use default criteria
+                        // Users can manually adjust in Excel if needed
+                    }
                     
                     // Note: The helper cells (lowValueRef and highValueRef) contain formulas that
                     // automatically recalculate when threshold percentages change. However, Excel's
