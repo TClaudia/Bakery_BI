@@ -11,6 +11,8 @@ using OfficeOpenXml;
 using OfficeOpenXml.Drawing.Chart;
 using System.IO;
 using OfficeOpenXml.Drawing;
+using Microsoft.Office.Interop.Excel;
+using System.Runtime.InteropServices;
 
 namespace BakeryBI
 {
@@ -1161,164 +1163,6 @@ namespace BakeryBI
 
 
 
-                // Add chart to Forecast Data sheet, positioned next to the data table
-
-                // Chart: Historical bars with trend lines (blue for historical, red dashed for forecast)
-
-                // Since EPPlus doesn't support combo charts, we'll create a Line chart
-
-                // and style the historical data to be more prominent, with trend lines
-
-                var forecastChart = forecastSheet.Drawings.AddChart("ForecastChart", eChartType.Line);
-
-                forecastChart.Title.Text = "Sales Trend and Forecast";
-
-                // Position chart next to data table (starting at column F, row 1)
-
-                forecastChart.SetPosition(0, 0, 5, 0); // Row 0, Column 5 (which is column F)
-
-                forecastChart.SetSize(600, 400);
-
-
-
-                // Find row ranges for historical and forecast data
-
-                List<int> historicalRows = new List<int>();
-
-                List<int> forecastRows = new List<int>();
-
-
-
-                for (int i = 0; i < trendAndForecast.Count; i++)
-
-                {
-
-                    int sheetRow = i + 2; // Data starts at row 2 (row 1 is header)
-
-                    if (trendAndForecast[i].IsForecast)
-
-                    {
-
-                        forecastRows.Add(sheetRow);
-
-                    }
-
-                    else
-
-                    {
-
-                        historicalRows.Add(sheetRow);
-
-                    }
-
-                }
-
-
-
-                // Add Column Chart for Historical Data Bars (separate chart that will overlay)
-
-                if (historicalRows.Any())
-
-                {
-
-                    var barChart = forecastSheet.Drawings.AddChart("HistoricalBarsChart", eChartType.ColumnClustered);
-
-                    barChart.Title.Text = ""; // No title, will overlay with line chart
-
-                    // Position at same location as line chart
-
-                    barChart.SetPosition(0, 0, 5, 0);
-
-                    barChart.SetSize(600, 400);
-
-
-
-                    var histBarSeries = barChart.Series.Add(
-
-                        forecastSheet.Cells[$"C{historicalRows.Min()}:C{historicalRows.Max()}"],  // Y-axis: Sales Forecast (column C)
-
-                        forecastSheet.Cells[$"A{historicalRows.Min()}:A{historicalRows.Max()}"]   // X-axis: Date
-
-                    );
-
-                    histBarSeries.Header = "Historical Sales";
-
-                    histBarSeries.Fill.Color = System.Drawing.Color.LightBlue;
-
-                    // Hide axes and legend for overlay chart
-
-                    barChart.XAxis.Deleted = true;
-
-                    barChart.YAxis.Deleted = true;
-
-                    barChart.Legend.Position = eLegendPosition.None;
-
-                }
-
-
-
-                // Add Historical Trend Line (blue line for historical months only)
-
-                if (historicalRows.Any())
-
-                {
-
-                    var histTrendSeries = forecastChart.Series.Add(
-
-                        forecastSheet.Cells[$"D{historicalRows.Min()}:D{historicalRows.Max()}"],  // Y-axis: Historical Sales (helper column D)
-
-                        forecastSheet.Cells[$"A{historicalRows.Min()}:A{historicalRows.Max()}"]   // X-axis: Date
-
-                    );
-
-                    histTrendSeries.Header = "Historical Trend";
-
-                    histTrendSeries.Border.Fill.Color = System.Drawing.Color.Blue;
-
-                    histTrendSeries.Border.Width = 2;
-
-                }
-
-
-
-                // Add Forecast Trend Line (red dashed line for forecast months only)
-
-                if (forecastRows.Any())
-
-                {
-
-                    var forecastTrendSeries = forecastChart.Series.Add(
-
-                        forecastSheet.Cells[$"E{forecastRows.Min()}:E{forecastRows.Max()}"],  // Y-axis: Forecast Sales (helper column E)
-
-                        forecastSheet.Cells[$"A{forecastRows.Min()}:A{forecastRows.Max()}"]   // X-axis: Date
-
-                    );
-
-                    forecastTrendSeries.Header = "Forecast";
-
-                    forecastTrendSeries.Border.Fill.Color = System.Drawing.Color.Red;
-
-                    forecastTrendSeries.Border.LineStyle = eLineStyle.Dash;
-
-                    forecastTrendSeries.Border.Width = 2;
-
-                }
-
-
-
-                forecastChart.YAxis.Format = "$#,##0";
-
-                forecastChart.XAxis.Title.Text = "Date";
-
-                forecastChart.YAxis.Title.Text = "Sales Forecast ($)";
-
-                forecastChart.Legend.Position = eLegendPosition.Bottom;
-
-                forecastChart.Legend.Position = eLegendPosition.Bottom;
-
-
-
                 // Sheet 3: Raw Dataset (Underlying Data Used for Analysis)
 
                 var rawDataSheet = package.Workbook.Worksheets.Add("Raw Dataset");
@@ -1506,6 +1350,234 @@ namespace BakeryBI
                 FileInfo file = new FileInfo(filePath);
 
                 package.SaveAs(file);
+
+            }
+
+
+
+            // Add charts using Microsoft.Office.Interop.Excel
+
+            Application excelApp = null;
+
+            Workbook workbook = null;
+
+            try
+
+            {
+
+                excelApp = new Application();
+
+                excelApp.Visible = false;
+
+                excelApp.DisplayAlerts = false;
+
+
+
+                workbook = excelApp.Workbooks.Open(filePath);
+
+
+
+                // Get the Forecast Data worksheet
+
+                Worksheet forecastWs = workbook.Worksheets["Forecast Data"] as Worksheet;
+
+                if (forecastWs != null)
+
+                {
+
+                    // Find the last row with data in column A
+
+                    int lastRow = forecastWs.Cells[forecastWs.Rows.Count, 1].End[XlDirection.xlUp].Row;
+
+
+
+                    // Find rows with historical data (column D has values) and forecast data (column E has values)
+
+                    int histLastRow = 0;
+
+                    int forecastFirstRow = 0;
+
+                    int forecastLastRow = 0;
+
+
+
+                    for (int i = 2; i <= lastRow; i++)
+
+                    {
+
+                        if (forecastWs.Cells[i, 4].Value2 != null && histLastRow == 0)
+
+                        {
+
+                            histLastRow = i;
+
+                        }
+
+                        if (forecastWs.Cells[i, 5].Value2 != null)
+
+                        {
+
+                            if (forecastFirstRow == 0) forecastFirstRow = i;
+
+                            forecastLastRow = i;
+
+                        }
+
+                    }
+
+
+
+                    // Create a combo chart (bars + lines)
+
+                    ChartObjects chartObjects = forecastWs.ChartObjects() as ChartObjects;
+
+                    ChartObject chartObject = chartObjects.Add(400, 10, 600, 400) as ChartObject; // Position next to data (column F)
+
+                    Chart chart = chartObject.Chart;
+
+
+
+                    // Set initial chart type
+
+                    chart.ChartType = XlChartType.xlColumnClustered;
+
+
+
+                    // Add Historical Sales as bars (column C) - only for rows with historical data
+
+                    if (histLastRow > 0)
+
+                    {
+
+                        Series histBarsSeries = chart.SeriesCollection().NewSeries();
+
+                        histBarsSeries.Name = "Historical Sales";
+
+                        histBarsSeries.Values = forecastWs.Range(forecastWs.Cells[2, 3], forecastWs.Cells[histLastRow, 3]);
+
+                        histBarsSeries.XValues = forecastWs.Range(forecastWs.Cells[2, 1], forecastWs.Cells[histLastRow, 1]);
+
+                        histBarsSeries.ChartType = XlChartType.xlColumnClustered;
+
+                        histBarsSeries.Format.Fill.ForeColor.RGB = System.Drawing.Color.LightBlue.ToArgb();
+
+                    }
+
+
+
+                    // Add Historical Trend as line (column D) - only for rows with historical data
+
+                    if (histLastRow > 0)
+
+                    {
+
+                        Series histTrendSeries = chart.SeriesCollection().NewSeries();
+
+                        histTrendSeries.Name = "Historical Trend";
+
+                        histTrendSeries.Values = forecastWs.Range(forecastWs.Cells[2, 4], forecastWs.Cells[histLastRow, 4]);
+
+                        histTrendSeries.XValues = forecastWs.Range(forecastWs.Cells[2, 1], forecastWs.Cells[histLastRow, 1]);
+
+                        histTrendSeries.ChartType = XlChartType.xlLine;
+
+                        histTrendSeries.Format.Line.ForeColor.RGB = System.Drawing.Color.Blue.ToArgb();
+
+                        histTrendSeries.Format.Line.Weight = 2;
+
+                    }
+
+
+
+                    // Add Forecast as dashed line (column E) - only for rows with forecast data
+
+                    if (forecastFirstRow > 0 && forecastLastRow > 0)
+
+                    {
+
+                        Series forecastSeries = chart.SeriesCollection().NewSeries();
+
+                        forecastSeries.Name = "Forecast";
+
+                        forecastSeries.Values = forecastWs.Range(forecastWs.Cells[forecastFirstRow, 5], forecastWs.Cells[forecastLastRow, 5]);
+
+                        forecastSeries.XValues = forecastWs.Range(forecastWs.Cells[forecastFirstRow, 1], forecastWs.Cells[forecastLastRow, 1]);
+
+                        forecastSeries.ChartType = XlChartType.xlLine;
+
+                        forecastSeries.Format.Line.ForeColor.RGB = System.Drawing.Color.Red.ToArgb();
+
+                        forecastSeries.Format.Line.DashStyle = Microsoft.Office.Core.MsoLineDashStyle.msoLineDash;
+
+                        forecastSeries.Format.Line.Weight = 2;
+
+                    }
+
+
+
+                    // Set chart title
+
+                    chart.HasTitle = true;
+
+                    chart.ChartTitle.Text = "Sales Trend and Forecast";
+
+
+
+                    // Format axes
+
+                    chart.Axes(XlAxisType.xlValue).TickLabels.NumberFormat = "$#,##0";
+
+                    chart.Axes(XlAxisType.xlCategory).CategoryType = XlCategoryType.xlCategoryScale;
+
+
+
+                    // Position legend
+
+                    chart.HasLegend = true;
+
+                    chart.Legend.Position = XlLegendPosition.xlLegendPositionBottom;
+
+                }
+
+
+
+                workbook.Save();
+
+                workbook.Close();
+
+            }
+
+            catch (Exception ex)
+
+            {
+
+                MessageBox.Show($"Error creating charts: {ex.Message}", "Warning",
+
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+            }
+
+            finally
+
+            {
+
+                if (workbook != null)
+
+                {
+
+                    Marshal.ReleaseComObject(workbook);
+
+                }
+
+                if (excelApp != null)
+
+                {
+
+                    excelApp.Quit();
+
+                    Marshal.ReleaseComObject(excelApp);
+
+                }
 
             }
 
