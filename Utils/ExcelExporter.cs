@@ -271,8 +271,7 @@ namespace BakeryBI.Utils
                 ((Excel.Range)monthlySheet.Cells[summaryRow, 2]).Value2 = monthlySales.Sum(x => x.TransactionCount);
 
                 // Apply icon set conditional formatting to Total Sales column (Column B)
-                int lastDataRow = row - 1;
-                ApplyIconSetConditionalFormatting(monthlySheet, "B", lastDataRow, summaryRow + 3);
+                ApplyIconSetConditionalFormatting(monthlySheet, "B", row - 1, summaryRow + 3);
 
                 // Auto-fit columns
                 monthlySheet.Columns.AutoFit();
@@ -343,8 +342,7 @@ namespace BakeryBI.Utils
                 }
 
                 // Apply icon set conditional formatting to Sales Forecast column (Column C)
-                int lastDataRow = row - 1;
-                ApplyIconSetConditionalFormatting(forecastSheet, "C", lastDataRow, summaryRow + 3);
+                ApplyIconSetConditionalFormatting(forecastSheet, "C", row - 1, summaryRow + 3);
 
                 // Auto-fit columns
                 forecastSheet.Columns.AutoFit();
