@@ -1177,12 +1177,12 @@ namespace BakeryBI
                     forecastDataRow++;
                 }
 
-                // Populate chart data: Month, Actual Sales, Trend & Forecast (Historical), Forecast (Dots)
+                // Populate chart data: Month, Actual Sales, Actual Sales Line (for trendline), Forecast (Dots)
                 int chartDataRow = 1;
 
                 ((Excel.Range)chartDataSheet.Cells[chartDataRow, 1]).Value2 = "Month";
                 ((Excel.Range)chartDataSheet.Cells[chartDataRow, 2]).Value2 = "Actual Sales";
-                ((Excel.Range)chartDataSheet.Cells[chartDataRow, 3]).Value2 = "Trend & Forecast";
+                ((Excel.Range)chartDataSheet.Cells[chartDataRow, 3]).Value2 = "Actual Sales Line";
                 ((Excel.Range)chartDataSheet.Cells[chartDataRow, 4]).Value2 = "Forecast";
 
                 chartDataRow = 2;
@@ -1213,36 +1213,28 @@ namespace BakeryBI
                         ((Excel.Range)chartDataSheet.Cells[chartDataRow, 2]).Value2 = "";
                     }
 
-                    // Find corresponding entry in Forecast Data
-                    var forecastEntry = forecastDataList.FirstOrDefault(f => 
-                        new DateTime(f.Date.Year, f.Date.Month, 1) == normalizedMonth);
-
-                    if (forecastEntry != null)
+                    // Column 3: Actual Sales Line (same as Column 2, but for line series - used for trendline calculation)
+                    // This will be invisible but needed for Excel to calculate the trendline
+                    if (actualSales != null)
                     {
-                        // Column 3: Trend & Forecast - only for "Historical Trend" entries
-                        if (forecastEntry.Type == "Historical Trend")
-                        {
-                            ((Excel.Range)chartDataSheet.Cells[chartDataRow, 3]).Value2 = forecastEntry.SalesForecast;
-                        }
-                        else
-                        {
-                            ((Excel.Range)chartDataSheet.Cells[chartDataRow, 3]).Value2 = "";
-                        }
-
-                        // Column 4: Forecast - only for "Forecast" entries (will show as dots)
-                        if (forecastEntry.Type == "Forecast")
-                        {
-                            ((Excel.Range)chartDataSheet.Cells[chartDataRow, 4]).Value2 = forecastEntry.SalesForecast;
-                        }
-                        else
-                        {
-                            ((Excel.Range)chartDataSheet.Cells[chartDataRow, 4]).Value2 = "";
-                        }
+                        ((Excel.Range)chartDataSheet.Cells[chartDataRow, 3]).Value2 = (double)actualSales.TotalSales;
                     }
                     else
                     {
-                        // No forecast data for this month
                         ((Excel.Range)chartDataSheet.Cells[chartDataRow, 3]).Value2 = "";
+                    }
+
+                    // Column 4: Forecast - only for "Forecast" entries (will show as dots)
+                    var forecastEntry = forecastDataList.FirstOrDefault(f => 
+                        new DateTime(f.Date.Year, f.Date.Month, 1) == normalizedMonth);
+
+                    // Check if entry was found and is a Forecast type
+                    if (forecastEntry.Date != default(DateTime) && !string.IsNullOrEmpty(forecastEntry.Type) && forecastEntry.Type == "Forecast")
+                    {
+                        ((Excel.Range)chartDataSheet.Cells[chartDataRow, 4]).Value2 = forecastEntry.SalesForecast;
+                    }
+                    else
+                    {
                         ((Excel.Range)chartDataSheet.Cells[chartDataRow, 4]).Value2 = "";
                     }
 
@@ -1309,22 +1301,33 @@ namespace BakeryBI
 
 
 
-                // Series 2: Trend & Forecast (Line chart)
-
+                // Series 2: Actual Sales Line (for trendline calculation)
+                // Create a line series with actual sales data - trendlines work on line/scatter charts
                 if (seriesCollection.Count >= 2)
-
                 {
-
-                    Excel.Series trendSeries = (Excel.Series)seriesCollection.Item(2);
-
-                    trendSeries.Name = "Trend & Forecast";
-
-                    trendSeries.ChartType = Excel.XlChartType.xlLine;
-
-                    trendSeries.Format.Line.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(Color.Red);
-
-                    trendSeries.Format.Line.Weight = 3;
-
+                    Excel.Series actualSalesLineSeries = (Excel.Series)seriesCollection.Item(2);
+                    actualSalesLineSeries.Name = "Actual Sales Line";
+                    actualSalesLineSeries.ChartType = Excel.XlChartType.xlLine;
+                    
+                    // Make this series invisible (we only need it for the trendline)
+                    actualSalesLineSeries.Format.Line.Visible = 0; // Hide the line
+                    actualSalesLineSeries.MarkerStyle = Excel.XlMarkerStyle.xlMarkerStyleNone; // No markers
+                    
+                    // Add linear trendline to this series
+                    Excel.Trendlines trendlines = (Excel.Trendlines)actualSalesLineSeries.Trendlines();
+                    Excel.Trendline trendline = (Excel.Trendline)trendlines.Add(Excel.XlTrendlineType.xlLinear);
+                    
+                    // Configure trendline
+                    trendline.Name = "Trend & Forecast";
+                    trendline.Format.Line.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(Color.Red);
+                    trendline.Format.Line.Weight = 3;
+                    
+                    // Extend trendline forward for forecasting (number of periods to forecast)
+                    trendline.Forward = forecastMonths;
+                    
+                    // Optional: Display equation and R-squared on chart
+                    trendline.DisplayEquation = false;
+                    trendline.DisplayRSquared = false;
                 }
 
 
