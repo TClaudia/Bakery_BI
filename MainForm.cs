@@ -1194,6 +1194,30 @@ namespace BakeryBI
                     .OrderBy(m => m)
                     .ToList();
 
+                // Find the last historical month (for forecast calculation)
+                DateTime? lastHistoricalMonth = monthlySalesSummary.Any() 
+                    ? new DateTime(monthlySalesSummary.Max(m => m.Month).Year, monthlySalesSummary.Max(m => m.Month).Month, 1)
+                    : null;
+
+                // Determine the range of historical data for FORECAST.LINEAR formula
+                int firstHistoricalRow = 0;
+                int lastHistoricalRow = 0;
+                int historicalDataCount = 0;
+
+                foreach (var month in allMonths)
+                {
+                    var normalizedMonth = new DateTime(month.Year, month.Month, 1);
+                    var actualSales = monthlySalesSummary.FirstOrDefault(m => 
+                        new DateTime(m.Month.Year, m.Month.Month, 1) == normalizedMonth);
+                    
+                    if (actualSales != null)
+                    {
+                        if (firstHistoricalRow == 0) firstHistoricalRow = chartDataRow;
+                        lastHistoricalRow = chartDataRow;
+                        historicalDataCount++;
+                    }
+                }
+
                 foreach (var month in allMonths)
                 {
                     var normalizedMonth = new DateTime(month.Year, month.Month, 1);
@@ -1224,14 +1248,31 @@ namespace BakeryBI
                         ((Excel.Range)chartDataSheet.Cells[chartDataRow, 3]).Value2 = "";
                     }
 
-                    // Column 4: Forecast - only for "Forecast" entries (will show as dots)
-                    var forecastEntry = forecastDataList.FirstOrDefault(f => 
-                        new DateTime(f.Date.Year, f.Date.Month, 1) == normalizedMonth);
-
-                    // Check if entry was found and is a Forecast type
-                    if (forecastEntry.Date != default(DateTime) && !string.IsNullOrEmpty(forecastEntry.Type) && forecastEntry.Type == "Forecast")
+                    // Column 4: Forecast - use Excel's FORECAST.LINEAR function for forecast months
+                    // Only calculate forecast for months after the last historical month
+                    bool isForecastMonth = lastHistoricalMonth.HasValue && normalizedMonth > lastHistoricalMonth.Value;
+                    
+                    if (isForecastMonth && firstHistoricalRow > 0 && lastHistoricalRow > 0)
                     {
-                        ((Excel.Range)chartDataSheet.Cells[chartDataRow, 4]).Value2 = forecastEntry.SalesForecast;
+                        // Use Excel's FORECAST.LINEAR function
+                        // FORECAST.LINEAR(x, known_y's, known_x's)
+                        // x = current month's index (1, 2, 3, ... based on position)
+                        // known_y's = historical sales values (Column 2)
+                        // known_x's = historical indices (1, 2, 3, ... for each historical month)
+                        
+                        // Calculate the index for this forecast month (1-based, relative to first historical month)
+                        int forecastIndex = chartDataRow - firstHistoricalRow + 1;
+                        
+                        // Build the formula with absolute references
+                        string knownYsRange = $"$B${firstHistoricalRow}:$B${lastHistoricalRow}";
+                        string knownXsRange = $"ROW($A${firstHistoricalRow}:$A${lastHistoricalRow})-ROW($A${firstHistoricalRow})+1";
+                        string xValue = forecastIndex.ToString();
+                        
+                        // Use FORECAST.LINEAR (Excel 2016+) - calculates linear forecast based on historical data
+                        // This is Excel's native function, similar to how trendlines work
+                        string forecastFormula = $"=FORECAST.LINEAR({xValue},{knownYsRange},{knownXsRange})";
+                        
+                        ((Excel.Range)chartDataSheet.Cells[chartDataRow, 4]).Formula = forecastFormula;
                     }
                     else
                     {
