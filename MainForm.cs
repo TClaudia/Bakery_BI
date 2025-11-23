@@ -111,7 +111,7 @@ namespace BakeryBI
 
             // Apply Date Range filter
             DateTime dateFrom = dtpFrom.Value.Date;
-            DateTime dateTo = dtpTo.Value.Date.AddDays(1).AddSeconds(-1); 
+            DateTime dateTo = dtpTo.Value.Date.AddDays(1).AddSeconds(-1);
             filteredData = filteredData.Where(r => r.TransactionDate >= dateFrom && r.TransactionDate <= dateTo).ToList();
 
             // Apply Store filter
@@ -165,7 +165,7 @@ namespace BakeryBI
             foreach (var item in timeData)
             {
                 int pointIndex = chartSalesOverTime.Series["Sales"].Points.AddXY(
-                    item.SortKey.ToOADate(),      
+                    item.SortKey.ToOADate(),
                     (double)item.TotalSales       // Cast to double
                 );
                 chartSalesOverTime.Series["Sales"].Points[pointIndex].Label = $"${item.TotalSales:N0}";
@@ -283,7 +283,7 @@ namespace BakeryBI
             }
 
             var chartArea = chartMaxMinProducts.ChartAreas[0];
-            chartArea.AxisX.CustomLabels.Clear();  
+            chartArea.AxisX.CustomLabels.Clear();
 
             for (int i = 0; i < productSales.Count; i++)
             {
@@ -333,7 +333,7 @@ namespace BakeryBI
 
             dgvProductSales.DataSource = dt;
 
-            // ⭐ Simple header configuration (like your working example)
+           
             dgvProductSales.ColumnHeadersVisible = true;
 
             // Format currency column
@@ -564,8 +564,8 @@ namespace BakeryBI
             chartArea.AxisY.Title = "Sales Amount ($)";
 
             // Configure X-axis for DateTime
-            chartArea.AxisX.IntervalType = DateTimeIntervalType.Months;  
-            chartArea.AxisX.LabelStyle.Format = "MMM yyyy";              
+            chartArea.AxisX.IntervalType = DateTimeIntervalType.Months;
+            chartArea.AxisX.LabelStyle.Format = "MMM yyyy";
             chartArea.AxisX.LabelStyle.Angle = -45;
             chartArea.AxisX.MajorGrid.LineColor = Color.LightGray;
             chartArea.AxisY.MajorGrid.LineColor = Color.LightGray;
@@ -580,7 +580,7 @@ namespace BakeryBI
             series.MarkerStyle = MarkerStyle.Circle;
             series.MarkerSize = 8;
             series.MarkerColor = Color.DarkGreen;
-            series.XValueType = ChartValueType.DateTime;  
+            series.XValueType = ChartValueType.DateTime;
             chartSalesOverTime.Series.Add(series);
 
             // Add Legend
@@ -598,9 +598,9 @@ namespace BakeryBI
             chartArea.AxisX.Title = "Product";
             chartArea.AxisY.Title = "Sales Amount ($)";
 
-           
+
             chartArea.AxisX.Interval = 1;
-            chartArea.AxisX.IntervalType = DateTimeIntervalType.NotSet;  
+            chartArea.AxisX.IntervalType = DateTimeIntervalType.NotSet;
             chartArea.AxisX.IsMarginVisible = true;
 
             chartArea.AxisX.LabelStyle.Angle = -45;
@@ -623,5 +623,7 @@ namespace BakeryBI
             legend.Docking = Docking.Top;
             chartMaxMinProducts.Legends.Add(legend);
         }
+
+     
     }
 }
