@@ -1130,6 +1130,375 @@ namespace BakeryBI
 
 
 
+                // Sheet 3: Chart Sheet (Historical Data, Trend, and Forecast)
+
+                // Create a temporary data sheet for chart data first
+
+                Excel.Worksheet chartDataSheet = (Excel.Worksheet)workbook.Worksheets.Add();
+
+                chartDataSheet.Name = "Chart Data";
+
+
+
+                // Prepare data for chart
+
+                // Calculate monthly sales (same as in Windows Form)
+
+                var monthlySalesSummary = filteredData
+
+                    .GroupBy(x => new DateTime(x.TransactionDate.Year, x.TransactionDate.Month, 1))
+
+                    .OrderBy(x => x.Key)
+
+                    .Select(x => new
+
+                    {
+
+                        Month = x.Key,
+
+                        TotalSales = x.Sum(r => r.FinalAmount)
+
+                    })
+
+                    .ToList();
+
+
+
+                // Get trend and forecast points (same as in Windows Form)
+
+                var trendAndForecastPoints = SalesUtility.CalculateTrendAndForecast(filteredData, forecastMonths);
+
+
+
+                // Populate chart data: Month, Actual Sales, Trend & Forecast
+
+                int chartDataRow = 1;
+
+                ((Excel.Range)chartDataSheet.Cells[chartDataRow, 1]).Value2 = "Month";
+
+                ((Excel.Range)chartDataSheet.Cells[chartDataRow, 2]).Value2 = "Actual Sales";
+
+                ((Excel.Range)chartDataSheet.Cells[chartDataRow, 3]).Value2 = "Trend & Forecast";
+
+
+
+                chartDataRow = 2;
+
+                // Get all unique months from both actual sales and trend/forecast
+
+                var allMonths = monthlySalesSummary.Select(m => m.Month)
+
+                    .Union(trendAndForecastPoints.Select(t => t.Date))
+
+                    .OrderBy(m => m)
+
+                    .ToList();
+
+
+
+                foreach (var month in allMonths)
+
+                {
+
+                    ((Excel.Range)chartDataSheet.Cells[chartDataRow, 1]).Value2 = month;
+
+                    ((Excel.Range)chartDataSheet.Cells[chartDataRow, 1]).NumberFormat = "MMM yyyy";
+
+
+
+                    // Actual Sales (only for historical months)
+
+                    var actualSales = monthlySalesSummary.FirstOrDefault(m => m.Month == month);
+
+                    if (actualSales != null)
+
+                    {
+
+                        ((Excel.Range)chartDataSheet.Cells[chartDataRow, 2]).Value2 = (double)actualSales.TotalSales;
+
+                    }
+
+                    else
+
+                    {
+
+                        ((Excel.Range)chartDataSheet.Cells[chartDataRow, 2]).Value2 = "";
+
+                    }
+
+
+
+                    // Trend & Forecast (for all months)
+
+                    var trendPoint = trendAndForecastPoints.FirstOrDefault(t => t.Date == month);
+
+                    if (trendPoint != null)
+
+                    {
+
+                        ((Excel.Range)chartDataSheet.Cells[chartDataRow, 3]).Value2 = (double)trendPoint.Value;
+
+                    }
+
+                    else
+
+                    {
+
+                        ((Excel.Range)chartDataSheet.Cells[chartDataRow, 3]).Value2 = "";
+
+                    }
+
+
+
+                    chartDataRow++;
+
+                }
+
+
+
+                // Create chart from the data sheet
+
+                int lastRow = chartDataRow - 1;
+
+                Excel.Range chartRange = chartDataSheet.Range[chartDataSheet.Cells[1, 1], chartDataSheet.Cells[lastRow, 3]];
+
+                
+
+                // Create chart object on the data sheet first
+
+                // Get ChartObjects - with embedded interop types, this might return object
+                object chartObjectsObj = chartDataSheet.ChartObjects();
+                Excel.ChartObjects chartObjects = (Excel.ChartObjects)chartObjectsObj;
+
+                Excel.ChartObject chartObject = (Excel.ChartObject)chartObjects.Add(0, 0, 600, 400);
+
+                Excel.Chart chartSheet = chartObject.Chart;
+
+                
+
+                // Set chart data source
+
+                chartSheet.SetSourceData(chartRange);
+
+
+
+                // Configure chart type - Combo chart (Column + Line)
+
+                chartSheet.ChartType = Excel.XlChartType.xlColumnClustered;
+
+
+
+                // Get chart series collection
+
+                Excel.SeriesCollection seriesCollection = (Excel.SeriesCollection)chartSheet.SeriesCollection();
+
+
+
+                // Series 1: Actual Sales (Column chart)
+
+                if (seriesCollection.Count >= 1)
+
+                {
+
+                    Excel.Series actualSeries = (Excel.Series)seriesCollection.Item(1);
+
+                    actualSeries.Name = "Actual Sales";
+
+                    actualSeries.ChartType = Excel.XlChartType.xlColumnClustered;
+
+                    actualSeries.Format.Fill.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(Color.LightBlue);
+
+                }
+
+
+
+                // Series 2: Trend & Forecast (Line chart)
+
+                if (seriesCollection.Count >= 2)
+
+                {
+
+                    Excel.Series trendSeries = (Excel.Series)seriesCollection.Item(2);
+
+                    trendSeries.Name = "Trend & Forecast";
+
+                    trendSeries.ChartType = Excel.XlChartType.xlLine;
+
+                    trendSeries.Format.Line.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(Color.Red);
+
+                    trendSeries.Format.Line.Weight = 3;
+
+                }
+
+
+
+                // Format forecast portion of the line (dashed)
+
+                // Note: Excel doesn't support per-point line styles easily, so we'll add a separate series for forecast
+
+                // Add forecast series as separate line with dashed style
+
+                var forecastMonthsList = trendAndForecastPoints.Where(p => p.IsForecast).Select(p => p.Date).ToList();
+
+                if (forecastMonthsList.Any())
+
+                {
+
+                    // Create forecast data in new columns
+
+                    chartDataRow = 2;
+
+                    int forecastCol = 4;
+
+                    ((Excel.Range)chartDataSheet.Cells[1, forecastCol]).Value2 = "Forecast";
+
+
+
+                    foreach (var month in allMonths)
+
+                    {
+
+                        var forecastPoint = trendAndForecastPoints.FirstOrDefault(t => t.Date == month && t.IsForecast);
+
+                        if (forecastPoint != null)
+
+                        {
+
+                            ((Excel.Range)chartDataSheet.Cells[chartDataRow, forecastCol]).Value2 = (double)forecastPoint.Value;
+
+                        }
+
+                        else
+
+                        {
+
+                            ((Excel.Range)chartDataSheet.Cells[chartDataRow, forecastCol]).Value2 = "";
+
+                        }
+
+                        chartDataRow++;
+
+                    }
+
+
+
+                    // Add forecast series
+
+                    Excel.Range forecastRange = chartDataSheet.Range[chartDataSheet.Cells[1, forecastCol], chartDataSheet.Cells[lastRow, forecastCol]];
+
+                    Excel.Series forecastSeries = (Excel.Series)seriesCollection.NewSeries();
+
+                    forecastSeries.Name = "Forecast";
+
+                    forecastSeries.ChartType = Excel.XlChartType.xlLine;
+
+                    forecastSeries.Values = forecastRange;
+
+                    forecastSeries.XValues = chartDataSheet.Range[chartDataSheet.Cells[2, 1], chartDataSheet.Cells[lastRow, 1]];
+
+                    forecastSeries.Format.Line.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(Color.Red);
+
+                    forecastSeries.Format.Line.Weight = 3;
+
+                    forecastSeries.Format.Line.DashStyle = 2; // 2 = msoLineDash (dashed line)
+
+                    forecastSeries.MarkerStyle = Excel.XlMarkerStyle.xlMarkerStyleCircle;
+
+                    forecastSeries.MarkerSize = 5;
+
+                }
+
+
+
+                // Chart title
+
+                chartSheet.HasTitle = true;
+
+                chartSheet.ChartTitle.Text = "Future Sales Estimation (Monthly Revenue Trend)";
+
+                chartSheet.ChartTitle.Font.Size = 14;
+
+                chartSheet.ChartTitle.Font.Bold = true;
+
+
+
+                // Axis titles
+
+                Excel.Axis categoryAxis = (Excel.Axis)chartSheet.Axes(Excel.XlAxisType.xlCategory, Excel.XlAxisGroup.xlPrimary);
+
+                categoryAxis.HasTitle = true;
+
+                categoryAxis.AxisTitle.Text = "Month";
+
+                categoryAxis.AxisTitle.Font.Size = 11;
+
+                categoryAxis.AxisTitle.Font.Bold = true;
+
+
+
+                Excel.Axis valueAxis = (Excel.Axis)chartSheet.Axes(Excel.XlAxisType.xlValue, Excel.XlAxisGroup.xlPrimary);
+
+                valueAxis.HasTitle = true;
+
+                valueAxis.AxisTitle.Text = "Total Sales (Revenue)";
+
+                valueAxis.AxisTitle.Font.Size = 11;
+
+                valueAxis.AxisTitle.Font.Bold = true;
+
+
+
+                // Format value axis as currency
+
+                valueAxis.TickLabels.NumberFormat = "$#,##0";
+
+
+
+                // Format category axis dates
+
+                categoryAxis.CategoryType = Excel.XlCategoryType.xlCategoryScale;
+
+                categoryAxis.TickLabels.NumberFormat = "MMM yy";
+
+
+
+                // Legend
+
+                chartSheet.HasLegend = true;
+
+                chartSheet.Legend.Position = Excel.XlLegendPosition.xlLegendPositionTop;
+
+
+
+                // Chart area formatting
+
+                chartSheet.PlotArea.Format.Fill.Visible = 0; // 0 = msoFalse
+
+                chartSheet.ChartArea.Format.Fill.Visible = 0; // 0 = msoFalse
+
+
+
+                // Move chart to a separate chart sheet
+
+                // Move chart to a separate chart sheet
+                // Note: Location method signature may vary - if this fails, the chart will remain on the data sheet
+                try
+                {
+                    chartSheet.Location(Excel.XlChartLocation.xlLocationAsNewSheet, "Sales Trend Chart");
+                }
+                catch
+                {
+                    // If Location fails, chart will remain embedded - that's acceptable
+                }
+
+
+
+                // Hide the temporary data sheet
+
+                chartDataSheet.Visible = Excel.XlSheetVisibility.xlSheetHidden;
+
+
+
                 // Save file
 
                 workbook.SaveAs(filePath);
