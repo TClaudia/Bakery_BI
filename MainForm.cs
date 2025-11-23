@@ -1387,7 +1387,9 @@ namespace BakeryBI
 
                     // Find the last row with data in column A
 
-                    int lastRow = forecastWs.Cells[forecastWs.Rows.Count, 1].End[Excel.XlDirection.xlUp].Row;
+                    Excel.Range lastCell = forecastWs.Cells[forecastWs.Rows.Count, 1] as Excel.Range;
+
+                    int lastRow = lastCell.End[Excel.XlDirection.xlUp].Row;
 
 
 
