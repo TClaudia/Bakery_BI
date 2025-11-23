@@ -1199,24 +1199,10 @@ namespace BakeryBI
                     ? new DateTime(monthlySalesSummary.Max(m => m.Month).Year, monthlySalesSummary.Max(m => m.Month).Month, 1)
                     : null;
 
-                // Determine the range of historical data for FORECAST.LINEAR formula
+                // Determine the range of historical data for FORECAST.LINEAR formula and trendline
+                // Calculate these during data population to get correct row numbers
                 int firstHistoricalRow = 0;
                 int lastHistoricalRow = 0;
-                int historicalDataCount = 0;
-
-                foreach (var month in allMonths)
-                {
-                    var normalizedMonth = new DateTime(month.Year, month.Month, 1);
-                    var actualSales = monthlySalesSummary.FirstOrDefault(m => 
-                        new DateTime(m.Month.Year, m.Month.Month, 1) == normalizedMonth);
-                    
-                    if (actualSales != null)
-                    {
-                        if (firstHistoricalRow == 0) firstHistoricalRow = chartDataRow;
-                        lastHistoricalRow = chartDataRow;
-                        historicalDataCount++;
-                    }
-                }
 
                 foreach (var month in allMonths)
                 {
@@ -1231,6 +1217,10 @@ namespace BakeryBI
                     if (actualSales != null)
                     {
                         ((Excel.Range)chartDataSheet.Cells[chartDataRow, 2]).Value2 = (double)actualSales.TotalSales;
+                        
+                        // Track historical data rows for trendline calculation
+                        if (firstHistoricalRow == 0) firstHistoricalRow = chartDataRow;
+                        lastHistoricalRow = chartDataRow;
                     }
                     else
                     {
@@ -1239,12 +1229,14 @@ namespace BakeryBI
 
                     // Column 3: Actual Sales Line (same as Column 2, but for line series - used for trendline calculation)
                     // This will be invisible but needed for Excel to calculate the trendline
+                    // IMPORTANT: Only populate for historical months (not forecast months)
                     if (actualSales != null)
                     {
                         ((Excel.Range)chartDataSheet.Cells[chartDataRow, 3]).Value2 = (double)actualSales.TotalSales;
                     }
                     else
                     {
+                        // Leave empty for forecast months - this ensures trendline only uses historical data
                         ((Excel.Range)chartDataSheet.Cells[chartDataRow, 3]).Value2 = "";
                     }
 
