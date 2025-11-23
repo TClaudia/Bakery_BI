@@ -1313,17 +1313,17 @@ namespace BakeryBI
                     actualSalesLineSeries.Format.Line.Visible = 0; // Hide the line
                     actualSalesLineSeries.MarkerStyle = Excel.XlMarkerStyle.xlMarkerStyleNone; // No markers
                     
-                    // Add linear trendline to this series
+                    // Add linear trendline to this series - only for historical data (no forward extension)
                     Excel.Trendlines trendlines = (Excel.Trendlines)actualSalesLineSeries.Trendlines();
                     Excel.Trendline trendline = (Excel.Trendline)trendlines.Add(Excel.XlTrendlineType.xlLinear);
                     
-                    // Configure trendline
-                    trendline.Name = "Trend & Forecast";
+                    // Configure trendline - only shows historical trend, not forecast
+                    trendline.Name = "Trend";
                     trendline.Format.Line.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(Color.Red);
                     trendline.Format.Line.Weight = 3;
                     
-                    // Extend trendline forward for forecasting (number of periods to forecast)
-                    trendline.Forward = forecastMonths;
+                    // Do NOT extend trendline forward - only show historical trend
+                    trendline.Forward = 0;
                     
                     // Optional: Display equation and R-squared on chart
                     trendline.DisplayEquation = false;
