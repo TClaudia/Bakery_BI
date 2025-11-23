@@ -1355,7 +1355,7 @@ namespace BakeryBI
 
 
 
-            // Add charts using Microsoft.Office.Interop.Excel
+            // Add charts using Microsoft.Office.Interop.Excel (optional - will skip if Excel/Office is not available)
 
             Excel.Application excelApp = null;
 
@@ -1364,6 +1364,8 @@ namespace BakeryBI
             try
 
             {
+
+                // Try to create Excel application - this will fail if Excel/Office is not installed
 
                 excelApp = new Excel.Application();
 
@@ -1528,8 +1530,16 @@ namespace BakeryBI
 
                         forecastSeries.Format.Line.ForeColor.RGB = System.Drawing.Color.Red.ToArgb();
 
-                        // Set line style to dashed
-                        forecastSeries.Format.Line.DashStyle = Microsoft.Office.Core.MsoLineDashStyle.msoLineDash;
+                        // Set line style to dashed using numeric value to avoid Office.Core dependency
+                        // 2 = msoLineDash (dashed line style)
+                        try
+                        {
+                            forecastSeries.Format.Line.DashStyle = 2;
+                        }
+                        catch
+                        {
+                            // If setting dash style fails, line will be solid (still red)
+                        }
 
                         forecastSeries.Format.Line.Weight = 2;
 
@@ -1575,13 +1585,55 @@ namespace BakeryBI
 
             }
 
+            catch (System.IO.FileNotFoundException ex) when (ex.Message.Contains("office", StringComparison.OrdinalIgnoreCase) || ex.Message.Contains("Office", StringComparison.OrdinalIgnoreCase))
+
+            {
+
+                // Office assembly not found - Excel/Office may not be installed or Office PIA not available
+
+                // Data export was successful, charts are optional - silently continue
+
+                System.Diagnostics.Debug.WriteLine($"Office assembly not found. Charts skipped. Error: {ex.Message}");
+
+            }
+
+            catch (System.Reflection.ReflectionTypeLoadException ex) when (ex.Message.Contains("office", StringComparison.OrdinalIgnoreCase) || ex.Message.Contains("Office", StringComparison.OrdinalIgnoreCase))
+
+            {
+
+                // Office assembly loading failed
+
+                System.Diagnostics.Debug.WriteLine($"Office assembly could not be loaded. Charts skipped. Error: {ex.Message}");
+
+            }
+
+            catch (COMException ex)
+
+            {
+
+                // COM interop error - Excel may not be installed
+
+                System.Diagnostics.Debug.WriteLine($"COM interop error. Charts skipped. Error: {ex.Message}");
+
+            }
+
+            catch (Exception ex) when (ex.Message.Contains("office", StringComparison.OrdinalIgnoreCase) || ex.Message.Contains("Office", StringComparison.OrdinalIgnoreCase) || ex.Message.Contains("assembly", StringComparison.OrdinalIgnoreCase))
+
+            {
+
+                // Office/assembly related errors - silently skip chart creation
+
+                System.Diagnostics.Debug.WriteLine($"Error creating charts (Office assembly issue). Charts skipped. Error: {ex.Message}");
+
+            }
+
             catch (Exception ex)
 
             {
 
-                MessageBox.Show($"Error creating charts: {ex.Message}", "Warning",
+                // Other unexpected errors - log but don't show message to user
 
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                System.Diagnostics.Debug.WriteLine($"Unexpected error creating charts: {ex.Message}");
 
             }
 
@@ -1589,23 +1641,45 @@ namespace BakeryBI
 
             {
 
-                if (workbook != null)
+                try
 
                 {
 
-                    Marshal.ReleaseComObject(workbook);
+                    if (workbook != null)
+
+                    {
+
+                        workbook.Close(false); // Close without saving (already saved above)
+
+                        Marshal.ReleaseComObject(workbook);
+
+                        workbook = null;
+
+                    }
 
                 }
 
-                if (excelApp != null)
+                catch { }
+
+                try
 
                 {
 
-                    excelApp.Quit();
+                    if (excelApp != null)
 
-                    Marshal.ReleaseComObject(excelApp);
+                    {
+
+                        excelApp.Quit();
+
+                        Marshal.ReleaseComObject(excelApp);
+
+                        excelApp = null;
+
+                    }
 
                 }
+
+                catch { }
 
             }
 
