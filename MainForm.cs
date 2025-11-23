@@ -1165,9 +1165,13 @@ namespace BakeryBI
 
                 // Chart: Historical Trend vs Forecast Combined Chart (includes prediction)
 
-                // Use Line chart type as base, we'll add column series separately
+                // Note: EPPlus doesn't support combo charts (mixing bars and lines in one chart)
 
-                var forecastChart = forecastSheet.Drawings.AddChart("ForecastChart", eChartType.Line);
+                // We'll use a Column chart for bars, and users can manually change series to line if needed
+
+                // Or we create two charts side by side
+
+                var forecastChart = forecastSheet.Drawings.AddChart("ForecastChart", eChartType.ColumnClustered);
 
                 forecastChart.Title.Text = "Sales Trend and Forecast";
 
@@ -1219,8 +1223,6 @@ namespace BakeryBI
 
                 {
 
-                    // Create a column series for historical data
-
                     var histBarSeries = forecastChart.Series.Add(
 
                         forecastSheet.Cells[$"C{historicalRows.Min()}:C{historicalRows.Max()}"],  // Y-axis: Sales Forecast (column C)
@@ -1231,8 +1233,6 @@ namespace BakeryBI
 
                     histBarSeries.Header = "Historical Sales (Bars)";
 
-                    histBarSeries.ChartType = eChartType.ColumnClustered;
-
                     histBarSeries.Fill.Color = System.Drawing.Color.LightBlue;
 
                 }
@@ -1240,6 +1240,10 @@ namespace BakeryBI
 
 
                 // Add Historical Trend Line Series (only for months with historical data)
+
+                // Since we're using Column chart, this will also appear as columns
+
+                // Users can manually change this series to line type in Excel if needed
 
                 if (historicalRows.Any())
 
@@ -1255,9 +1259,9 @@ namespace BakeryBI
 
                     histSeries.Header = "Historical Trend";
 
-                    histSeries.Border.Fill.Color = System.Drawing.Color.Blue;
+                    histSeries.Fill.Color = System.Drawing.Color.Blue;
 
-                    histSeries.Border.Width = 2;
+                    histSeries.Fill.Transparency = 30; // Make it slightly transparent
 
                 }
 
@@ -1279,13 +1283,29 @@ namespace BakeryBI
 
                     forecastSeries.Header = "Forecast";
 
-                    forecastSeries.Border.Fill.Color = System.Drawing.Color.Red;
+                    forecastSeries.Fill.Color = System.Drawing.Color.Red;
 
-                    forecastSeries.Border.LineStyle = eLineStyle.Dash;
-
-                    forecastSeries.Border.Width = 2;
+                    forecastSeries.Fill.Transparency = 30;
 
                 }
+
+
+
+                forecastChart.YAxis.Format = "$#,##0";
+
+                forecastChart.XAxis.Title.Text = "Date";
+
+                forecastChart.YAxis.Title.Text = "Sales Forecast ($)";
+
+                forecastChart.Legend.Position = eLegendPosition.Bottom;
+
+
+
+                // Note: EPPlus doesn't support combo charts (mixing bars and lines)
+
+                // All series will appear as columns. Users can manually change series chart types in Excel:
+
+                // Right-click a series -> Change Series Chart Type -> Select Line for trend series
 
 
 
