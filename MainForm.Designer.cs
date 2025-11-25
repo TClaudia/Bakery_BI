@@ -57,13 +57,11 @@ namespace BakeryBI {
             lblMaxProduct = new Label();
             tabFutureSalesEstimation = new TabPage();
             splitContainerFutureSalesEstimation = new SplitContainer();
-            exportToExcel3 = new Button();
             chartFutureSalesEstimation = new System.Windows.Forms.DataVisualization.Charting.Chart();
             cmbForecastMonths = new ComboBox();
             dgvSalesData = new DataGridView();
             tabEvolutionOfProfits = new TabPage();
             splitContainerEvolutionOfProfit = new SplitContainer();
-            exportToExcel4 = new Button();
             pnlStoreFilters = new Panel();
             chartEvolutionOfProfits = new System.Windows.Forms.DataVisualization.Charting.Chart();
             pnlClientTypeFilters = new Panel();
@@ -116,47 +114,45 @@ namespace BakeryBI {
             panelFilters.Controls.Add(lblTitle);
             panelFilters.Dock = DockStyle.Top;
             panelFilters.Location = new Point(0, 0);
-            panelFilters.Margin = new Padding(2, 3, 2, 3);
+            panelFilters.Margin = new Padding(3, 6, 3, 6);
             panelFilters.Name = "panelFilters";
-            panelFilters.Size = new Size(1122, 90);
+            panelFilters.Size = new Size(1923, 180);
             panelFilters.TabIndex = 0;
             // 
             // lblDateTo
             // 
             lblDateTo.AutoSize = true;
-            lblDateTo.Location = new Point(198, 68);
-            lblDateTo.Margin = new Padding(2, 0, 2, 0);
+            lblDateTo.Location = new Point(339, 136);
             lblDateTo.Name = "lblDateTo";
-            lblDateTo.Size = new Size(23, 15);
+            lblDateTo.Size = new Size(39, 30);
             lblDateTo.TabIndex = 9;
             lblDateTo.Text = "To:";
             // 
             // lblDateFrom
             // 
             lblDateFrom.AutoSize = true;
-            lblDateFrom.Location = new Point(9, 68);
-            lblDateFrom.Margin = new Padding(2, 0, 2, 0);
+            lblDateFrom.Location = new Point(15, 136);
             lblDateFrom.Name = "lblDateFrom";
-            lblDateFrom.Size = new Size(38, 15);
+            lblDateFrom.Size = new Size(65, 30);
             lblDateFrom.TabIndex = 8;
             lblDateFrom.Text = "From:";
             // 
             // dtpTo
             // 
             dtpTo.Format = DateTimePickerFormat.Short;
-            dtpTo.Location = new Point(233, 65);
-            dtpTo.Margin = new Padding(2, 3, 2, 3);
+            dtpTo.Location = new Point(399, 130);
+            dtpTo.Margin = new Padding(3, 6, 3, 6);
             dtpTo.Name = "dtpTo";
-            dtpTo.Size = new Size(118, 23);
+            dtpTo.Size = new Size(199, 35);
             dtpTo.TabIndex = 7;
             // 
             // dtpFrom
             // 
             dtpFrom.Format = DateTimePickerFormat.Short;
-            dtpFrom.Location = new Point(58, 65);
-            dtpFrom.Margin = new Padding(2, 3, 2, 3);
+            dtpFrom.Location = new Point(99, 130);
+            dtpFrom.Margin = new Padding(3, 6, 3, 6);
             dtpFrom.Name = "dtpFrom";
-            dtpFrom.Size = new Size(118, 23);
+            dtpFrom.Size = new Size(199, 35);
             dtpFrom.TabIndex = 6;
             // 
             // btnApplyFilters
@@ -164,10 +160,10 @@ namespace BakeryBI {
             btnApplyFilters.BackColor = Color.MediumSeaGreen;
             btnApplyFilters.Font = new Font("Arial", 10F, FontStyle.Bold);
             btnApplyFilters.ForeColor = Color.White;
-            btnApplyFilters.Location = new Point(408, 38);
-            btnApplyFilters.Margin = new Padding(2, 3, 2, 3);
+            btnApplyFilters.Location = new Point(699, 76);
+            btnApplyFilters.Margin = new Padding(3, 6, 3, 6);
             btnApplyFilters.Name = "btnApplyFilters";
-            btnApplyFilters.Size = new Size(117, 25);
+            btnApplyFilters.Size = new Size(201, 50);
             btnApplyFilters.TabIndex = 5;
             btnApplyFilters.Text = "Apply Filters";
             btnApplyFilters.UseVisualStyleBackColor = false;
@@ -177,39 +173,37 @@ namespace BakeryBI {
             // 
             cmbStore.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbStore.FormattingEnabled = true;
-            cmbStore.Location = new Point(58, 42);
-            cmbStore.Margin = new Padding(2, 3, 2, 3);
+            cmbStore.Location = new Point(99, 84);
+            cmbStore.Margin = new Padding(3, 6, 3, 6);
             cmbStore.Name = "cmbStore";
-            cmbStore.Size = new Size(148, 23);
+            cmbStore.Size = new Size(251, 38);
             cmbStore.TabIndex = 4;
             // 
             // cmbProduct
             // 
             cmbProduct.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbProduct.FormattingEnabled = true;
-            cmbProduct.Location = new Point(262, 42);
-            cmbProduct.Margin = new Padding(2, 3, 2, 3);
+            cmbProduct.Location = new Point(449, 84);
+            cmbProduct.Margin = new Padding(3, 6, 3, 6);
             cmbProduct.Name = "cmbProduct";
-            cmbProduct.Size = new Size(130, 23);
+            cmbProduct.Size = new Size(220, 38);
             cmbProduct.TabIndex = 3;
             // 
             // lblProduct
             // 
             lblProduct.AutoSize = true;
-            lblProduct.Location = new Point(210, 44);
-            lblProduct.Margin = new Padding(2, 0, 2, 0);
+            lblProduct.Location = new Point(360, 88);
             lblProduct.Name = "lblProduct";
-            lblProduct.Size = new Size(52, 15);
+            lblProduct.Size = new Size(90, 30);
             lblProduct.TabIndex = 2;
             lblProduct.Text = "Product:";
             // 
             // lblStore
             // 
             lblStore.AutoSize = true;
-            lblStore.Location = new Point(9, 44);
-            lblStore.Margin = new Padding(2, 0, 2, 0);
+            lblStore.Location = new Point(15, 88);
             lblStore.Name = "lblStore";
-            lblStore.Size = new Size(37, 15);
+            lblStore.Size = new Size(65, 30);
             lblStore.TabIndex = 1;
             lblStore.Text = "Store:";
             // 
@@ -217,10 +211,9 @@ namespace BakeryBI {
             // 
             lblTitle.AutoSize = true;
             lblTitle.Font = new Font("Arial", 14F, FontStyle.Bold);
-            lblTitle.Location = new Point(9, 12);
-            lblTitle.Margin = new Padding(2, 0, 2, 0);
+            lblTitle.Location = new Point(15, 24);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(255, 22);
+            lblTitle.Size = new Size(442, 38);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "BAKERY SALES ANALYSIS";
             // 
@@ -231,21 +224,21 @@ namespace BakeryBI {
             tabControl.Controls.Add(tabFutureSalesEstimation);
             tabControl.Controls.Add(tabEvolutionOfProfits);
             tabControl.Dock = DockStyle.Fill;
-            tabControl.Location = new Point(0, 90);
-            tabControl.Margin = new Padding(2, 3, 2, 3);
+            tabControl.Location = new Point(0, 180);
+            tabControl.Margin = new Padding(3, 6, 3, 6);
             tabControl.Name = "tabControl";
             tabControl.SelectedIndex = 0;
-            tabControl.Size = new Size(1122, 440);
+            tabControl.Size = new Size(1923, 880);
             tabControl.TabIndex = 1;
             // 
             // tabSalesOverTime
             // 
             tabSalesOverTime.Controls.Add(splitContainerSales);
-            tabSalesOverTime.Location = new Point(4, 24);
-            tabSalesOverTime.Margin = new Padding(2, 3, 2, 3);
+            tabSalesOverTime.Location = new Point(4, 39);
+            tabSalesOverTime.Margin = new Padding(3, 6, 3, 6);
             tabSalesOverTime.Name = "tabSalesOverTime";
-            tabSalesOverTime.Padding = new Padding(2, 3, 2, 3);
-            tabSalesOverTime.Size = new Size(1114, 412);
+            tabSalesOverTime.Padding = new Padding(3, 6, 3, 6);
+            tabSalesOverTime.Size = new Size(1915, 837);
             tabSalesOverTime.TabIndex = 0;
             tabSalesOverTime.Text = "Sales Over Time";
             tabSalesOverTime.UseVisualStyleBackColor = true;
@@ -282,7 +275,7 @@ namespace BakeryBI {
             legend1.Name = "Legend1";
             chartSalesOverTime.Legends.Add(legend1);
             chartSalesOverTime.Location = new Point(0, 0);
-            chartSalesOverTime.Margin = new Padding(2, 3, 2, 3);
+            chartSalesOverTime.Margin = new Padding(3, 6, 3, 6);
             chartSalesOverTime.Name = "chartSalesOverTime";
             series1.BorderWidth = 3;
             series1.ChartArea = "ChartArea1";
@@ -307,7 +300,7 @@ namespace BakeryBI {
             dgvSalesTimeData.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvSalesTimeData.Dock = DockStyle.Fill;
             dgvSalesTimeData.Location = new Point(0, 0);
-            dgvSalesTimeData.Margin = new Padding(2, 3, 2, 3);
+            dgvSalesTimeData.Margin = new Padding(3, 6, 3, 6);
             dgvSalesTimeData.Name = "dgvSalesTimeData";
             dgvSalesTimeData.ReadOnly = true;
             dgvSalesTimeData.RowHeadersWidth = 51;
@@ -319,11 +312,11 @@ namespace BakeryBI {
             // 
             tabMaxMinProducts.Controls.Add(splitContainerMaxMin);
             tabMaxMinProducts.Controls.Add(panelMaxMin);
-            tabMaxMinProducts.Location = new Point(4, 24);
-            tabMaxMinProducts.Margin = new Padding(2, 3, 2, 3);
+            tabMaxMinProducts.Location = new Point(4, 39);
+            tabMaxMinProducts.Margin = new Padding(3, 6, 3, 6);
             tabMaxMinProducts.Name = "tabMaxMinProducts";
-            tabMaxMinProducts.Padding = new Padding(2, 3, 2, 3);
-            tabMaxMinProducts.Size = new Size(1114, 412);
+            tabMaxMinProducts.Padding = new Padding(3, 6, 3, 6);
+            tabMaxMinProducts.Size = new Size(1915, 837);
             tabMaxMinProducts.TabIndex = 1;
             tabMaxMinProducts.Text = "Max/Min Products";
             tabMaxMinProducts.UseVisualStyleBackColor = true;
@@ -331,8 +324,8 @@ namespace BakeryBI {
             // splitContainerMaxMin
             // 
             splitContainerMaxMin.Dock = DockStyle.Fill;
-            splitContainerMaxMin.Location = new Point(2, 53);
-            splitContainerMaxMin.Margin = new Padding(2);
+            splitContainerMaxMin.Location = new Point(3, 106);
+            splitContainerMaxMin.Margin = new Padding(3, 4, 3, 4);
             splitContainerMaxMin.Name = "splitContainerMaxMin";
             // 
             // splitContainerMaxMin.Panel1
@@ -342,9 +335,9 @@ namespace BakeryBI {
             // splitContainerMaxMin.Panel2
             // 
             splitContainerMaxMin.Panel2.Controls.Add(dgvProductSales);
-            splitContainerMaxMin.Size = new Size(1110, 356);
-            splitContainerMaxMin.SplitterDistance = 892;
-            splitContainerMaxMin.SplitterWidth = 2;
+            splitContainerMaxMin.Size = new Size(1909, 725);
+            splitContainerMaxMin.SplitterDistance = 1535;
+            splitContainerMaxMin.SplitterWidth = 3;
             splitContainerMaxMin.TabIndex = 2;
             // 
             // chartMaxMinProducts
@@ -362,13 +355,13 @@ namespace BakeryBI {
             legend2.Name = "Legend1";
             chartMaxMinProducts.Legends.Add(legend2);
             chartMaxMinProducts.Location = new Point(0, 0);
-            chartMaxMinProducts.Margin = new Padding(2, 3, 2, 3);
+            chartMaxMinProducts.Margin = new Padding(3, 6, 3, 6);
             chartMaxMinProducts.Name = "chartMaxMinProducts";
             series2.ChartArea = "ChartArea1";
             series2.Legend = "Legend1";
             series2.Name = "Sales";
             chartMaxMinProducts.Series.Add(series2);
-            chartMaxMinProducts.Size = new Size(892, 356);
+            chartMaxMinProducts.Size = new Size(1535, 725);
             chartMaxMinProducts.TabIndex = 0;
             chartMaxMinProducts.Text = "chart2";
             // 
@@ -380,12 +373,12 @@ namespace BakeryBI {
             dgvProductSales.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvProductSales.Dock = DockStyle.Fill;
             dgvProductSales.Location = new Point(0, 0);
-            dgvProductSales.Margin = new Padding(2, 3, 2, 3);
+            dgvProductSales.Margin = new Padding(3, 6, 3, 6);
             dgvProductSales.Name = "dgvProductSales";
             dgvProductSales.ReadOnly = true;
             dgvProductSales.RowHeadersWidth = 51;
             dgvProductSales.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvProductSales.Size = new Size(216, 356);
+            dgvProductSales.Size = new Size(371, 725);
             dgvProductSales.TabIndex = 0;
             // 
             // panelMaxMin
@@ -394,10 +387,10 @@ namespace BakeryBI {
             panelMaxMin.Controls.Add(lblMinProduct);
             panelMaxMin.Controls.Add(lblMaxProduct);
             panelMaxMin.Dock = DockStyle.Top;
-            panelMaxMin.Location = new Point(2, 3);
-            panelMaxMin.Margin = new Padding(2, 3, 2, 3);
+            panelMaxMin.Location = new Point(3, 6);
+            panelMaxMin.Margin = new Padding(3, 6, 3, 6);
             panelMaxMin.Name = "panelMaxMin";
-            panelMaxMin.Size = new Size(1110, 50);
+            panelMaxMin.Size = new Size(1909, 100);
             panelMaxMin.TabIndex = 1;
             // 
             // lblMinProduct
@@ -405,10 +398,9 @@ namespace BakeryBI {
             lblMinProduct.AutoSize = true;
             lblMinProduct.Font = new Font("Arial", 11F, FontStyle.Bold);
             lblMinProduct.ForeColor = Color.Red;
-            lblMinProduct.Location = new Point(18, 28);
-            lblMinProduct.Margin = new Padding(2, 0, 2, 0);
+            lblMinProduct.Location = new Point(31, 56);
             lblMinProduct.Name = "lblMinProduct";
-            lblMinProduct.Size = new Size(49, 18);
+            lblMinProduct.Size = new Size(89, 30);
             lblMinProduct.TabIndex = 1;
             lblMinProduct.Text = "MIN: -";
             // 
@@ -417,20 +409,20 @@ namespace BakeryBI {
             lblMaxProduct.AutoSize = true;
             lblMaxProduct.Font = new Font("Arial", 11F, FontStyle.Bold);
             lblMaxProduct.ForeColor = Color.Green;
-            lblMaxProduct.Location = new Point(18, 8);
-            lblMaxProduct.Margin = new Padding(2, 0, 2, 0);
+            lblMaxProduct.Location = new Point(31, 16);
             lblMaxProduct.Name = "lblMaxProduct";
-            lblMaxProduct.Size = new Size(53, 18);
+            lblMaxProduct.Size = new Size(98, 30);
             lblMaxProduct.TabIndex = 0;
             lblMaxProduct.Text = "MAX: -";
             // 
             // tabFutureSalesEstimation
             // 
             tabFutureSalesEstimation.Controls.Add(splitContainerFutureSalesEstimation);
-            tabFutureSalesEstimation.Location = new Point(4, 24);
+            tabFutureSalesEstimation.Location = new Point(4, 39);
+            tabFutureSalesEstimation.Margin = new Padding(5, 6, 5, 6);
             tabFutureSalesEstimation.Name = "tabFutureSalesEstimation";
-            tabFutureSalesEstimation.Padding = new Padding(3);
-            tabFutureSalesEstimation.Size = new Size(1114, 412);
+            tabFutureSalesEstimation.Padding = new Padding(5, 6, 5, 6);
+            tabFutureSalesEstimation.Size = new Size(1915, 837);
             tabFutureSalesEstimation.TabIndex = 2;
             tabFutureSalesEstimation.Text = "Future Sales Estimation";
             tabFutureSalesEstimation.UseVisualStyleBackColor = true;
@@ -438,31 +430,22 @@ namespace BakeryBI {
             // splitContainerFutureSalesEstimation
             // 
             splitContainerFutureSalesEstimation.Dock = DockStyle.Fill;
-            splitContainerFutureSalesEstimation.Location = new Point(3, 3);
+            splitContainerFutureSalesEstimation.Location = new Point(5, 6);
+            splitContainerFutureSalesEstimation.Margin = new Padding(5, 6, 5, 6);
             splitContainerFutureSalesEstimation.Name = "splitContainerFutureSalesEstimation";
             // 
             // splitContainerFutureSalesEstimation.Panel1
             // 
-            splitContainerFutureSalesEstimation.Panel1.Controls.Add(exportToExcel3);
             splitContainerFutureSalesEstimation.Panel1.Controls.Add(chartFutureSalesEstimation);
             splitContainerFutureSalesEstimation.Panel1.Controls.Add(cmbForecastMonths);
             // 
             // splitContainerFutureSalesEstimation.Panel2
             // 
             splitContainerFutureSalesEstimation.Panel2.Controls.Add(dgvSalesData);
-            splitContainerFutureSalesEstimation.Size = new Size(1108, 406);
-            splitContainerFutureSalesEstimation.SplitterDistance = 749;
+            splitContainerFutureSalesEstimation.Size = new Size(1905, 825);
+            splitContainerFutureSalesEstimation.SplitterDistance = 1289;
+            splitContainerFutureSalesEstimation.SplitterWidth = 7;
             splitContainerFutureSalesEstimation.TabIndex = 0;
-            // 
-            // exportToExcel3
-            // 
-            exportToExcel3.Location = new Point(0, 23);
-            exportToExcel3.Name = "exportToExcel3";
-            exportToExcel3.Size = new Size(103, 23);
-            exportToExcel3.TabIndex = 2;
-            exportToExcel3.Text = "Export To Excel";
-            exportToExcel3.UseVisualStyleBackColor = true;
-            exportToExcel3.Click += exportToExcel3_Click;
             // 
             // chartFutureSalesEstimation
             // 
@@ -471,13 +454,14 @@ namespace BakeryBI {
             chartFutureSalesEstimation.Dock = DockStyle.Fill;
             legend3.Name = "Legend1";
             chartFutureSalesEstimation.Legends.Add(legend3);
-            chartFutureSalesEstimation.Location = new Point(0, 23);
+            chartFutureSalesEstimation.Location = new Point(0, 38);
+            chartFutureSalesEstimation.Margin = new Padding(5, 6, 5, 6);
             chartFutureSalesEstimation.Name = "chartFutureSalesEstimation";
             series3.ChartArea = "ChartArea1";
             series3.Legend = "Legend1";
             series3.Name = "Series1";
             chartFutureSalesEstimation.Series.Add(series3);
-            chartFutureSalesEstimation.Size = new Size(749, 383);
+            chartFutureSalesEstimation.Size = new Size(1289, 787);
             chartFutureSalesEstimation.TabIndex = 1;
             chartFutureSalesEstimation.Text = "chart1";
             // 
@@ -486,8 +470,9 @@ namespace BakeryBI {
             cmbForecastMonths.Dock = DockStyle.Top;
             cmbForecastMonths.FormattingEnabled = true;
             cmbForecastMonths.Location = new Point(0, 0);
+            cmbForecastMonths.Margin = new Padding(5, 6, 5, 6);
             cmbForecastMonths.Name = "cmbForecastMonths";
-            cmbForecastMonths.Size = new Size(749, 23);
+            cmbForecastMonths.Size = new Size(1289, 38);
             cmbForecastMonths.TabIndex = 0;
             // 
             // dgvSalesData
@@ -495,18 +480,20 @@ namespace BakeryBI {
             dgvSalesData.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvSalesData.Dock = DockStyle.Fill;
             dgvSalesData.Location = new Point(0, 0);
+            dgvSalesData.Margin = new Padding(5, 6, 5, 6);
             dgvSalesData.Name = "dgvSalesData";
             dgvSalesData.RowHeadersWidth = 72;
-            dgvSalesData.Size = new Size(355, 406);
+            dgvSalesData.Size = new Size(609, 825);
             dgvSalesData.TabIndex = 0;
             // 
             // tabEvolutionOfProfits
             // 
             tabEvolutionOfProfits.Controls.Add(splitContainerEvolutionOfProfit);
-            tabEvolutionOfProfits.Location = new Point(4, 24);
+            tabEvolutionOfProfits.Location = new Point(4, 39);
+            tabEvolutionOfProfits.Margin = new Padding(5, 6, 5, 6);
             tabEvolutionOfProfits.Name = "tabEvolutionOfProfits";
-            tabEvolutionOfProfits.Padding = new Padding(3);
-            tabEvolutionOfProfits.Size = new Size(1114, 412);
+            tabEvolutionOfProfits.Padding = new Padding(5, 6, 5, 6);
+            tabEvolutionOfProfits.Size = new Size(1915, 837);
             tabEvolutionOfProfits.TabIndex = 3;
             tabEvolutionOfProfits.Text = "Evolution of Profits";
             tabEvolutionOfProfits.UseVisualStyleBackColor = true;
@@ -514,12 +501,12 @@ namespace BakeryBI {
             // splitContainerEvolutionOfProfit
             // 
             splitContainerEvolutionOfProfit.Dock = DockStyle.Fill;
-            splitContainerEvolutionOfProfit.Location = new Point(3, 3);
+            splitContainerEvolutionOfProfit.Location = new Point(5, 6);
+            splitContainerEvolutionOfProfit.Margin = new Padding(5, 6, 5, 6);
             splitContainerEvolutionOfProfit.Name = "splitContainerEvolutionOfProfit";
             // 
             // splitContainerEvolutionOfProfit.Panel1
             // 
-            splitContainerEvolutionOfProfit.Panel1.Controls.Add(exportToExcel4);
             splitContainerEvolutionOfProfit.Panel1.Controls.Add(pnlStoreFilters);
             splitContainerEvolutionOfProfit.Panel1.Controls.Add(chartEvolutionOfProfits);
             splitContainerEvolutionOfProfit.Panel1.Controls.Add(pnlClientTypeFilters);
@@ -527,19 +514,10 @@ namespace BakeryBI {
             // splitContainerEvolutionOfProfit.Panel2
             // 
             splitContainerEvolutionOfProfit.Panel2.Controls.Add(dgvProfitData);
-            splitContainerEvolutionOfProfit.Size = new Size(1108, 406);
-            splitContainerEvolutionOfProfit.SplitterDistance = 749;
+            splitContainerEvolutionOfProfit.Size = new Size(1905, 825);
+            splitContainerEvolutionOfProfit.SplitterDistance = 1289;
+            splitContainerEvolutionOfProfit.SplitterWidth = 7;
             splitContainerEvolutionOfProfit.TabIndex = 0;
-            // 
-            // exportToExcel4
-            // 
-            exportToExcel4.Location = new Point(631, 346);
-            exportToExcel4.Name = "exportToExcel4";
-            exportToExcel4.Size = new Size(103, 23);
-            exportToExcel4.TabIndex = 3;
-            exportToExcel4.Text = "Export To Excel";
-            exportToExcel4.UseVisualStyleBackColor = true;
-            exportToExcel4.Click += exportToExcel4_Click;
             // 
             // pnlStoreFilters
             // 
@@ -556,13 +534,14 @@ namespace BakeryBI {
             chartEvolutionOfProfits.Dock = DockStyle.Fill;
             legend4.Name = "Legend1";
             chartEvolutionOfProfits.Legends.Add(legend4);
-            chartEvolutionOfProfits.Location = new Point(0, 50);
+            chartEvolutionOfProfits.Location = new Point(0, 100);
+            chartEvolutionOfProfits.Margin = new Padding(5, 6, 5, 6);
             chartEvolutionOfProfits.Name = "chartEvolutionOfProfits";
             series4.ChartArea = "ChartArea1";
             series4.Legend = "Legend1";
             series4.Name = "Series1";
             chartEvolutionOfProfits.Series.Add(series4);
-            chartEvolutionOfProfits.Size = new Size(749, 356);
+            chartEvolutionOfProfits.Size = new Size(1289, 725);
             chartEvolutionOfProfits.TabIndex = 1;
             chartEvolutionOfProfits.Text = "chart1";
             // 
@@ -570,8 +549,9 @@ namespace BakeryBI {
             // 
             pnlClientTypeFilters.Dock = DockStyle.Top;
             pnlClientTypeFilters.Location = new Point(0, 0);
+            pnlClientTypeFilters.Margin = new Padding(5, 6, 5, 6);
             pnlClientTypeFilters.Name = "pnlClientTypeFilters";
-            pnlClientTypeFilters.Size = new Size(749, 50);
+            pnlClientTypeFilters.Size = new Size(1289, 100);
             pnlClientTypeFilters.TabIndex = 0;
             // 
             // dgvProfitData
@@ -579,19 +559,20 @@ namespace BakeryBI {
             dgvProfitData.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvProfitData.Dock = DockStyle.Fill;
             dgvProfitData.Location = new Point(0, 0);
+            dgvProfitData.Margin = new Padding(5, 6, 5, 6);
             dgvProfitData.Name = "dgvProfitData";
             dgvProfitData.RowHeadersWidth = 72;
-            dgvProfitData.Size = new Size(355, 406);
+            dgvProfitData.Size = new Size(609, 825);
             dgvProfitData.TabIndex = 0;
             // 
             // MainForm
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(12F, 30F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1122, 530);
+            ClientSize = new Size(1923, 1060);
             Controls.Add(tabControl);
             Controls.Add(panelFilters);
-            Margin = new Padding(2, 3, 2, 3);
+            Margin = new Padding(3, 6, 3, 6);
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Bakery BI - Sales Analysis";
@@ -668,7 +649,5 @@ namespace BakeryBI {
         private System.Windows.Forms.DataVisualization.Charting.Chart chartEvolutionOfProfits;
         private DataGridView dgvProfitData;
         private Panel pnlStoreFilters;
-        private Button exportToExcel3;
-        private Button exportToExcel4;
     }
 }
