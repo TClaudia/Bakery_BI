@@ -1,5 +1,8 @@
-﻿namespace BakeryBI
-{
+﻿
+    using System;
+using System.Drawing;
+using System.Windows.Forms;
+namespace BakeryBI { 
     partial class MainForm
     {
         private System.ComponentModel.IContainer components = null;
@@ -244,7 +247,6 @@
             // 
             splitContainerSales.Dock = DockStyle.Fill;
             splitContainerSales.Location = new Point(3, 6);
-            splitContainerSales.Margin = new Padding(3, 4, 3, 4);
             splitContainerSales.Name = "splitContainerSales";
             // 
             // splitContainerSales.Panel1
@@ -255,8 +257,7 @@
             // 
             splitContainerSales.Panel2.Controls.Add(dgvSalesTimeData);
             splitContainerSales.Size = new Size(1909, 825);
-            splitContainerSales.SplitterDistance = 1539;
-            splitContainerSales.SplitterWidth = 3;
+            splitContainerSales.SplitterDistance = 504;
             splitContainerSales.TabIndex = 0;
             // 
             // chartSalesOverTime
@@ -286,9 +287,10 @@
             series1.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
             series1.Name = "Sales";
             chartSalesOverTime.Series.Add(series1);
-            chartSalesOverTime.Size = new Size(1539, 825);
+            chartSalesOverTime.Size = new Size(504, 825);
             chartSalesOverTime.TabIndex = 0;
             chartSalesOverTime.Text = "chart1";
+            chartSalesOverTime.Click += chartSalesOverTime_Click;
             // 
             // dgvSalesTimeData
             // 
@@ -303,7 +305,7 @@
             dgvSalesTimeData.ReadOnly = true;
             dgvSalesTimeData.RowHeadersWidth = 51;
             dgvSalesTimeData.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvSalesTimeData.Size = new Size(367, 825);
+            dgvSalesTimeData.Size = new Size(1401, 825);
             dgvSalesTimeData.TabIndex = 0;
             // 
             // tabMaxMinProducts
@@ -520,9 +522,9 @@
             // pnlStoreFilters
             // 
             pnlStoreFilters.Dock = DockStyle.Top;
-            pnlStoreFilters.Location = new Point(0, 30);
+            pnlStoreFilters.Location = new Point(0, 100);
             pnlStoreFilters.Name = "pnlStoreFilters";
-            pnlStoreFilters.Size = new Size(750, 100);
+            pnlStoreFilters.Size = new Size(1289, 100);
             pnlStoreFilters.TabIndex = 2;
             // 
             // chartEvolutionOfProfits
