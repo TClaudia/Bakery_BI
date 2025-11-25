@@ -47,7 +47,9 @@ namespace BakeryBI.Data
                                 Quarter = int.Parse(values[18]),
                                 DayOfWeek = values[19],
                                 WeekNumber = int.Parse(values[20]),
-                                CustomerType = values[21]
+                                CustomerType = values[21],
+                                StoreCity = values[22],
+                                StoreCountry = values[23]
                             };
 
                             records.Add(record);

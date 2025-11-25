@@ -1,0 +1,303 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Product Sales Map</title>
+    <link rel='stylesheet' href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css' />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .legend {
+            background: white;
+            padding: 12px;
+            border-radius: 5px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            line-height: 22px;
+            color: #555;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+            .legend h4 {
+                margin: 0 0 10px 0;
+                font-size: 14px;
+                font-weight: bold;
+            }
+
+            .legend i {
+                width: 18px;
+                height: 18px;
+                float: left;
+                margin-right: 8px;
+                opacity: 0.8;
+                border-radius: 50%;
+            }
+
+        .legend-item {
+            margin-bottom: 5px;
+            clear: both;
+        }
+
+        /* MAX/MIN Indicators */
+        .max-indicator {
+            background: #27ae60;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 10px;
+            margin-left: 5px;
+        }
+
+        .min-indicator {
+            background: #e74c3c;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 10px;
+            margin-left: 5px;
+        }
+
+        .store-popup {
+            text-align: left;
+            min-width: 250px;
+        }
+
+            .store-popup h3 {
+                margin: 0 0 10px 0;
+                color: #2c3e50;
+                text-align: center;
+                border-bottom: 2px solid #3498db;
+                padding-bottom: 5px;
+            }
+
+            .store-popup .city {
+                text-align: center;
+                color: #7f8c8d;
+                font-size: 12px;
+                margin-bottom: 10px;
+            }
+
+        .product-item {
+            margin: 8px 0;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border-left: 4px solid;
+        }
+
+            .product-item.top {
+                border-left-color: #27ae60;
+            }
+
+            .product-item.second {
+                border-left-color: #f39c12;
+            }
+
+            .product-item.third {
+                border-left-color: #e74c3c;
+            }
+
+        .product-name {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .product-sales {
+            color: #7f8c8d;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+
+        /* Custom marker labels */
+        .marker-label {
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid #333;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-weight: bold;
+            font-size: 11px;
+            white-space: nowrap;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+            .marker-label.max {
+                background: #27ae60;
+                color: white;
+                border-color: #1e8449;
+            }
+
+            .marker-label.min {
+                background: #e74c3c;
+                color: white;
+                border-color: #c0392b;
+            }
+    </style>
+</head>
+<body>
+    <div id='map'></div>
+    <script src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'></script>
+    <script>
+        var map = L.map('map').setView([45.9432, 24.9668], 7.5);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 18
+        }).addTo(map);
+
+        var markersLayer = L.layerGroup().addTo(map);
+        var productColors = {};
+
+        function updateMap(storesData) {
+            markersLayer.clearLayers();
+
+            if (!storesData || storesData.length === 0) return;
+
+            // Find MAX and MIN products globally
+            var maxSales = Math.max(...storesData.map(s => s.topProductSales));
+            var minSales = Math.min(...storesData.map(s => s.topProductSales));
+
+            var uniqueProducts = new Set();
+
+            storesData.forEach(function (store) {
+                if (store.topProduct && store.topProduct !== 'N/A') {
+                    uniqueProducts.add(store.topProduct);
+
+                    var color = store.topProductColor || '#808080';
+                    productColors[store.topProduct] = color;
+
+                    var isMax = store.topProductSales === maxSales;
+                    var isMin = store.topProductSales === minSales;
+
+                    // SIZE: MAX largest, MIN smallest, others medium
+                    var baseRadius = 20;
+                    var radius = isMax ? 35 : (isMin ? 12 : baseRadius);
+
+                    // BORDER: Thicker for MAX and MIN
+                    var borderWidth = isMax ? 5 : (isMin ? 4 : 2);
+                    var borderColor = isMax ? '#1e8449' : (isMin ? '#c0392b' : '#000');
+
+                    var circle = L.circleMarker([store.latitude, store.longitude], {
+                        radius: radius,
+                        fillColor: color,
+                        color: borderColor,
+                        weight: borderWidth,
+                        opacity: 1,
+                        fillOpacity: isMax || isMin ? 0.9 : 0.7
+                    });
+
+                    // POPUP with MAX/MIN badge
+                    var badge = '';
+                    if (isMax) badge = '<span class="max-indicator">⭐ TOP SELLER</span>';
+                    if (isMin) badge = '<span class="min-indicator">⚠️ LOWEST</span>';
+
+                    var popupContent = '<div class="store-popup">' +
+                        '<h3>' + store.storeName + badge + '</h3>' +
+                        '<div class="city">' + store.city + ', ' + store.country + '</div>';
+
+                    if (store.topProduct !== 'N/A') {
+                        popupContent += '<div class="product-item top">' +
+                            '<div class="product-name">🥇 ' + store.topProduct + '</div>' +
+                            '<div class="product-sales">Sales: $' + store.topProductSales.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + '</div>' +
+                            '</div>';
+                    }
+
+                    if (store.secondProduct !== 'N/A') {
+                        popupContent += '<div class="product-item second">' +
+                            '<div class="product-name">🥈 ' + store.secondProduct + '</div>' +
+                            '<div class="product-sales">Sales: $' + store.secondProductSales.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + '</div>' +
+                            '</div>';
+                    }
+
+                    if (store.thirdProduct !== 'N/A') {
+                        popupContent += '<div class="product-item third">' +
+                            '<div class="product-name">🥉 ' + store.thirdProduct + '</div>' +
+                            '<div class="product-sales">Sales: $' + store.thirdProductSales.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + '</div>' +
+                            '</div>';
+                    }
+
+                    popupContent += '<div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #ddd; text-align: center; color: #7f8c8d; font-size: 11px;">' +
+                        'Total Transactions: ' + store.totalTransactions.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') +
+                        '</div></div>';
+
+                    circle.bindPopup(popupContent);
+
+                    // PERMANENT LABEL for MAX and MIN
+                    if (isMax || isMin) {
+                        var labelClass = isMax ? 'max' : 'min';
+                        var labelText = isMax ? '⭐ MAX' : '⚠️ MIN';
+
+                        var divIcon = L.divIcon({
+                            className: 'marker-label ' + labelClass,
+                            html: labelText,
+                            iconSize: [60, 20],
+                            iconAnchor: [30, -radius - 5]
+                        });
+
+                        L.marker([store.latitude, store.longitude], { icon: divIcon }).addTo(markersLayer);
+                    }
+
+                    circle.addTo(markersLayer);
+                }
+            });
+
+            updateLegend(uniqueProducts);
+
+            if (storesData.length > 0) {
+                var group = new L.featureGroup(markersLayer.getLayers());
+                map.fitBounds(group.getBounds().pad(0.1));
+            }
+        }
+
+        var legend = L.control({ position: 'bottomright' });
+        legend.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'legend');
+            div.id = 'legend-content';
+            div.innerHTML = '<h4>Top Products by City</h4>' +
+                '<div style="margin-bottom:10px;"><strong>⭐ Largest = MAX seller</strong></div>' +
+                '<div style="margin-bottom:10px;"><strong>⚠️ Smallest = MIN seller</strong></div>' +
+                '<div id="legend-items"></div>';
+            return div;
+        };
+        legend.addTo(map);
+
+        function updateLegend(products) {
+            var legendItems = document.getElementById('legend-items');
+            if (legendItems) {
+                legendItems.innerHTML = '';
+                var sortedProducts = Array.from(products).sort();
+                sortedProducts.forEach(function (product) {
+                    var color = productColors[product] || '#808080';
+                    legendItems.innerHTML +=
+                        '<div class="legend-item">' +
+                        '<i style="background:' + color + '"></i> ' +
+                        '<span>' + product + '</span>' +
+                        '</div>';
+                });
+            }
+        }
+
+        window.updateProductMapData = function (jsonData) {
+            try {
+                var data = JSON.parse(jsonData);
+                updateMap(data);
+            } catch (e) {
+                console.error('Error parsing map data:', e);
+            }
+        };
+    </script>
+</body>
+</html>

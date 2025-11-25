@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'/>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Bakery Sales Map</title>
+    <link rel='stylesheet' href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css' />
+    <style>
+        body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        #map { position: absolute; top: 0; bottom: 0; width: 100%; height: 100%; }
+        .legend { 
+            background: white; 
+            padding: 10px; 
+            border-radius: 5px; 
+            box-shadow: 0 0 15px rgba(0,0,0,0.2); 
+            line-height: 24px; 
+            color: #555; 
+        }
+        .legend i { 
+            width: 18px; 
+            height: 18px; 
+            float: left; 
+            margin-right: 8px; 
+            opacity: 0.7; 
+            border-radius: 50%; 
+        }
+        .store-popup { text-align: center; }
+        .store-popup h3 { margin: 0 0 10px 0; color: #2c3e50; }
+        .store-popup p { margin: 5px 0; }
+    </style>
+</head>
+<body>
+    <div id='map'></div>
+    <script src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'></script>
+    <script>
+        var map = L.map('map').setView([45.9432, 24.9668], 7);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 18
+        }).addTo(map);
+        
+        var markersLayer = L.layerGroup().addTo(map);
+        
+        function getColor(sales) {
+            return sales > 100000 ? '#800026' :
+                   sales > 50000  ? '#BD0026' :
+                   sales > 25000  ? '#E31A1C' :
+                   sales > 10000  ? '#FC4E2A' :
+                   sales > 5000   ? '#FD8D3C' :
+                   sales > 2000   ? '#FEB24C' :
+                   sales > 1000   ? '#FED976' : '#FFEDA0';
+        }
+        
+        function getRadius(sales) {
+            return Math.sqrt(sales) / 10 + 10;
+        }
+        
+        function updateMap(storesData) {
+            markersLayer.clearLayers();
+            storesData.forEach(function(store) {
+                var radius = getRadius(store.totalSales);
+                var color = getColor(store.totalSales);
+                var circle = L.circleMarker([store.latitude, store.longitude], {
+                    radius: radius,
+                    fillColor: color,
+                    color: '#000',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.7
+                });
+                
+                var popupContent = '<div class="store-popup">' +
+                    '<h3>' + store.storeName + '</h3>' +
+                    '<p><strong>City:</strong> ' + store.city + '</p>' +
+                    '<p><strong>Total Sales:</strong> $' + store.totalSales.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + '</p>' +
+                    '<p><strong>Transactions:</strong> ' + store.transactionCount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '</p>' +
+                    '</div>';
+                
+                circle.bindPopup(popupContent);
+                circle.addTo(markersLayer);
+            });
+            
+            if (storesData.length > 0) {
+                var group = new L.featureGroup(markersLayer.getLayers());
+                map.fitBounds(group.getBounds().pad(0.1));
+            }
+        }
+        
+        var legend = L.control({position: 'bottomright'});
+        legend.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'legend');
+            div.innerHTML = '<h4 style="margin: 0 0 10px 0;">Sales Volume</h4>';
+            var grades = [0, 1000, 2000, 5000, 10000, 25000, 50000, 100000];
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+                    '$' + grades[i].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + 
+                    (grades[i + 1] ? '&ndash;$' + grades[i + 1].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '<br>' : '+');
+            }
+            return div;
+        };
+        legend.addTo(map);
+        
+        window.updateMapData = function(jsonData) {
+            try {
+                var data = JSON.parse(jsonData);
+                updateMap(data);
+            } catch (e) {
+                console.error('Error parsing map data:', e);
+            }
+        };
+    </script>
+</body>
+</html>

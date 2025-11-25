@@ -22,6 +22,9 @@ namespace BakeryBI
         {
             InitializeComponent();
             dataLoader = new SalesDataLoader();
+
+            InitializeMapComponents();
+            InitializeProductMapComponents();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -38,7 +41,7 @@ namespace BakeryBI
         {
             try
             {
-                string csvPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bakery_sales_cleaned.csv");
+                string csvPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data/bakery_sales_cleaned_locations.csv");
                 allSalesData = dataLoader.LoadFromCsv(csvPath);
 
                 if (allSalesData == null || allSalesData.Count == 0)
@@ -54,7 +57,7 @@ namespace BakeryBI
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error loading data: {ex.Message}\n\nPlease ensure 'bakery_sales_cleaned.csv' is in the application folder.",
+                MessageBox.Show($"Error loading data: {ex.Message}\n\nPlease ensure 'bakery_sales_cleaned_locations.csv' is in the application folder.",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 allSalesData = new List<SalesRecord>();
             }
@@ -135,11 +138,15 @@ namespace BakeryBI
                 SyncStoreCheckBoxStates();
             }
 
-            // Update both tabs
+            // Update tabs - FĂRĂ DUPLICATE!
             UpdateSalesOverTimeTab();
             UpdateMaxMinProductsTab();
             UpdateFutureSalesEstimationTab();
             UpdateEvolutionOfProfitsTab();
+
+            // Update maps
+            UpdateMapWithCurrentData();
+            UpdateProductMapWithCurrentData();
         }
 
         #region Sales Over Time Tab
@@ -231,96 +238,8 @@ namespace BakeryBI
 
         private void UpdateMaxMinProductsTab()
         {
-            UpdateMaxMinProductsChart();
-            UpdateMaxMinProductsDataGrid();
-        }
+            if (filteredData == null || !filteredData.Any()) return;
 
-        private void UpdateMaxMinProductsChart()
-        {
-            var salesSeries = chartMaxMinProducts.Series["Sales"];
-            salesSeries.Points.Clear();
-            salesSeries.ChartType = SeriesChartType.Column;
-
-            if (filteredData == null || filteredData.Count == 0)
-            {
-                lblMaxProduct.Text = "MAX: No data";
-                lblMinProduct.Text = "MIN: No data";
-                return;
-            }
-
-            var productSales = filteredData
-                .GroupBy(r => r.ProductName)
-                .Select(g => new { Product = g.Key, TotalSales = g.Sum(r => r.FinalAmount) })
-                .OrderByDescending(x => x.TotalSales)
-                .ToList();
-
-            if (productSales.Count == 0) return;
-
-            var maxProduct = productSales.First();
-            var minProduct = productSales.Last();
-
-            lblMaxProduct.Text = $"MAX: {maxProduct.Product} - ${maxProduct.TotalSales:N2}";
-            lblMaxProduct.ForeColor = Color.Green;
-            lblMinProduct.Text = $"MIN: {minProduct.Product} - ${minProduct.TotalSales:N2}";
-            lblMinProduct.ForeColor = Color.Red;
-
-            // Add all points
-            int index = 0;
-            foreach (var item in productSales)
-            {
-                int pointIndex = salesSeries.Points.AddXY(index, (double)item.TotalSales);
-
-                if (item.Product == maxProduct.Product)
-                {
-                    salesSeries.Points[pointIndex].Color = Color.Green;
-                    salesSeries.Points[pointIndex].Label = $"MAX\n${item.TotalSales:N0}";
-                    salesSeries.Points[pointIndex].LabelForeColor = Color.DarkGreen;
-                    salesSeries.Points[pointIndex].Font = new Font("Arial", 9, FontStyle.Bold);
-                }
-                else if (item.Product == minProduct.Product)
-                {
-                    salesSeries.Points[pointIndex].Color = Color.Red;
-                    salesSeries.Points[pointIndex].Label = $"MIN\n${item.TotalSales:N0}";
-                    salesSeries.Points[pointIndex].LabelForeColor = Color.DarkRed;
-                    salesSeries.Points[pointIndex].Font = new Font("Arial", 9, FontStyle.Bold);
-                }
-                else
-                {
-                    salesSeries.Points[pointIndex].Color = Color.SteelBlue;
-                }
-                index++;
-            }
-
-            var chartArea = chartMaxMinProducts.ChartAreas[0];
-            chartArea.AxisX.CustomLabels.Clear();
-
-            for (int i = 0; i < productSales.Count; i++)
-            {
-                CustomLabel label = new CustomLabel();
-                label.FromPosition = i - 0.5;
-                label.ToPosition = i + 0.5;
-                label.Text = productSales[i].Product;  // Set product name
-                chartArea.AxisX.CustomLabels.Add(label);
-            }
-
-            chartArea.AxisX.Minimum = -0.5;
-            chartArea.AxisX.Maximum = productSales.Count - 0.5;
-            chartArea.AxisX.Interval = 1;
-            chartArea.AxisX.LabelStyle.Angle = -45;
-            chartArea.AxisX.LabelStyle.Font = new Font("Arial", 9, FontStyle.Bold);
-            chartArea.RecalculateAxesScale();
-            chartMaxMinProducts.Invalidate();
-        }
-
-        private void UpdateMaxMinProductsDataGrid()
-        {
-            if (filteredData == null || filteredData.Count == 0)
-            {
-                dgvProductSales.DataSource = null;
-                return;
-            }
-
-            // Create DataTable with aggregated product sales
             var productSales = filteredData
                 .GroupBy(r => r.ProductName)
                 .Select(g => new
@@ -328,27 +247,113 @@ namespace BakeryBI
                     Product = g.Key,
                     TotalSales = g.Sum(r => r.FinalAmount)
                 })
-                .OrderByDescending(x => x.TotalSales)
+                .OrderByDescending(p => p.TotalSales)
                 .ToList();
 
-            DataTable dt = new DataTable();
-            dt.Columns.Add("Product Name", typeof(string));
-            dt.Columns.Add("Total Sales", typeof(decimal));
+            if (!productSales.Any()) return;
 
-            foreach (var item in productSales)
+            // Update MAX/MIN labels
+            var maxProduct = productSales.First();
+            var minProduct = productSales.Last();
+            lblMaxProduct.Text = $"MAX: {maxProduct.Product} - ${maxProduct.TotalSales:N2}";
+            lblMinProduct.Text = $"MIN: {minProduct.Product} - ${minProduct.TotalSales:N2}";
+
+            // Clear chart
+            chartMaxMinProducts.Series.Clear();
+
+            // Configure chart area
+            if (chartMaxMinProducts.ChartAreas.Count > 0)
             {
-                dt.Rows.Add(item.Product, item.TotalSales);
+                var chartArea = chartMaxMinProducts.ChartAreas[0];
+                chartArea.AxisX.Title = "Product";
+                chartArea.AxisY.Title = "Sales Amount ($)";
+                chartArea.AxisX.Interval = 1;
+                chartArea.AxisX.LabelStyle.Angle = -45;
+                chartArea.BackColor = Color.LightYellow;
+
+                // Clear custom labels
+                chartArea.AxisX.CustomLabels.Clear();
             }
 
-            dgvProductSales.DataSource = dt;
+            // Create single series for ALL products
+            var series = new Series
+            {
+                Name = "Sales",
+                ChartType = SeriesChartType.Column
+            };
 
-           
-            dgvProductSales.ColumnHeadersVisible = true;
+            // Add ALL products with INDEX as X value (not product name!)
+            for (int i = 0; i < productSales.Count; i++)
+            {
+                var product = productSales[i];
 
-            // Format currency column
-            if (dgvProductSales.Columns.Contains("Total Sales"))
-                dgvProductSales.Columns["Total Sales"].DefaultCellStyle.Format = "C2";
+                // Use INDEX i as X value, not product name!
+                int pointIndex = series.Points.AddXY(i, product.TotalSales);
+                var point = series.Points[pointIndex];
+
+                // Color coding: Green for MAX, Red for MIN, Blue for others
+                if (product.Product == maxProduct.Product)
+                {
+                    point.Color = Color.Green;
+                    point.BorderWidth = 3;
+                    point.BorderColor = Color.DarkGreen;
+                }
+                else if (product.Product == minProduct.Product)
+                {
+                    point.Color = Color.Red;
+                    point.BorderWidth = 3;
+                    point.BorderColor = Color.DarkRed;
+                }
+                else
+                {
+                    point.Color = Color.SteelBlue;
+                }
+
+                // Add custom label for product name
+                var chartArea = chartMaxMinProducts.ChartAreas[0];
+                CustomLabel label = new CustomLabel
+                {
+                    FromPosition = i - 0.5,
+                    ToPosition = i + 0.5,
+                    Text = product.Product
+                };
+                chartArea.AxisX.CustomLabels.Add(label);
+            }
+
+            chartMaxMinProducts.Series.Add(series);
+
+            // Set axis range
+            if (chartMaxMinProducts.ChartAreas.Count > 0)
+            {
+                var chartArea = chartMaxMinProducts.ChartAreas[0];
+                chartArea.AxisX.Minimum = -0.5;
+                chartArea.AxisX.Maximum = productSales.Count - 0.5;
+            }
+
+            // Configure legend
+            if (chartMaxMinProducts.Legends.Count > 0)
+            {
+                chartMaxMinProducts.Legends[0].Docking = Docking.Top;
+                chartMaxMinProducts.Legends[0].Alignment = StringAlignment.Center;
+            }
+
+            // Update data grid
+            dgvProductSales.DataSource = productSales.Select(p => new
+            {
+                ProductName = p.Product,
+                TotalSales = p.TotalSales
+            }).ToList();
+
+            if (dgvProductSales.Columns.Contains("TotalSales"))
+            {
+                dgvProductSales.Columns["TotalSales"].DefaultCellStyle.Format = "C2";
+            }
+
+            // Update product map
+            UpdateProductMapWithCurrentData();
         }
+
+
         #endregion
 
         //Sales analysis
@@ -759,5 +764,9 @@ namespace BakeryBI
             RenderProfitEvolutionChart(filteredData, selectedClientTypes);
         }
 
+        private void chartSalesOverTime_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
