@@ -7,7 +7,6 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using BakeryBI.Data;
 using BakeryBI.Utils;
-using System.IO;
 
 namespace BakeryBI
 {
@@ -350,10 +349,6 @@ namespace BakeryBI
                 dgvProductSales.Columns["TotalSales"].DefaultCellStyle.Format = "C2";
             }
 
-            dgvProductSales.DataSource = dt;
-
-
-            dgvProductSales.ColumnHeadersVisible = true;
             // Update product map
             UpdateProductMapWithCurrentData();
         }
@@ -769,57 +764,6 @@ namespace BakeryBI
             RenderProfitEvolutionChart(filteredData, selectedClientTypes);
         }
 
-        private void exportToExcel3_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                SaveFileDialog saveDialog = new SaveFileDialog
-                {
-                    Filter = "Excel Files|*.xlsx",
-                    FileName = $"FutureSalesEstimation_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx"
-                };
-
-                if (saveDialog.ShowDialog() == DialogResult.OK)
-                {
-                    int forecastMonths = cmbForecastMonths.SelectedItem != null
-                        ? (int)cmbForecastMonths.SelectedItem : 3;
-                    ExcelExporter.ExportFutureSalesToExcel(saveDialog.FileName, filteredData, forecastMonths);
-                    MessageBox.Show($"Data exported successfully to:\n{saveDialog.FileName}",
-                    "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error exporting to Excel: {ex.Message}", "Error",
-                MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        private void exportToExcel4_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                SaveFileDialog saveDialog = new SaveFileDialog
-                {
-                    Filter = "Excel Files|*.xlsx",
-                    FileName = $"EvolutionOfProfits_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx"
-                };
-
-                if (saveDialog.ShowDialog() == DialogResult.OK)
-                {
-                    ExcelExporter.ExportProfitsToExcel(saveDialog.FileName, filteredData, selectedClientTypes, selectedStoreNames);
-                    MessageBox.Show($"Data exported successfully to:\n{saveDialog.FileName}",
-                    "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error exporting to Excel: {ex.Message}", "Error",
-                MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-    }
-}
         private void chartSalesOverTime_Click(object sender, EventArgs e)
         {
 
