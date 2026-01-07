@@ -40,6 +40,12 @@ namespace BakeryBI
         {
             // Set default trendline type to Linear
             cmbTrendlineType.SelectedIndex = 0;
+
+            UpdateTrendlineOptionsVisibility();
+            cmbTrendlineType.SelectedIndexChanged += (s, e) =>
+            {
+                UpdateTrendlineOptionsVisibility();
+            };
             
             // Thresholds are already set in Designer (33 and 67)
             // Add validation to ensure low < high
@@ -58,6 +64,20 @@ namespace BakeryBI
                     numHighThreshold.Value = numLowThreshold.Value + 1;
                 }
             };
+        }
+
+        private void UpdateTrendlineOptionsVisibility()
+        {
+            string trendlineType = cmbTrendlineType.SelectedItem?.ToString() ?? "Linear";
+
+            bool isPolynomial = trendlineType.Equals("Polynomial", StringComparison.OrdinalIgnoreCase);
+            bool isMovingAverage = trendlineType.Equals("Moving Average", StringComparison.OrdinalIgnoreCase);
+
+            lblPolynomialOrder.Visible = isPolynomial;
+            numPolynomialOrder.Visible = isPolynomial;
+
+            lblMovingAveragePeriod.Visible = isMovingAverage;
+            numMovingAveragePeriod.Visible = isMovingAverage;
         }
 
         private void LoadData()
@@ -384,6 +404,7 @@ namespace BakeryBI
             // Prepare for fresh redraw of the chart
             chartFutureSalesEstimation.Series.Clear();
             chartFutureSalesEstimation.ChartAreas.Clear();
+            chartFutureSalesEstimation.Legends.Clear();
 
             // Calculate actual monthly sales for both chart and table
             var monthlySalesSummary = filteredData
@@ -412,6 +433,15 @@ namespace BakeryBI
             chartArea.AxisX.LabelStyle.Format = "MMM yy";
             chartFutureSalesEstimation.ChartAreas.Add(chartArea);
 
+            // Legend: dock at bottom/outside so it never gets covered by the top option controls
+            var legend = new Legend("SalesLegend")
+            {
+                Docking = Docking.Bottom,
+                Alignment = StringAlignment.Center,
+                IsDockedInsideChartArea = false
+            };
+            chartFutureSalesEstimation.Legends.Add(legend);
+
             // Get forecast and trend points
             var trendAndForecastPoints = SalesUtility.CalculateTrendAndForecast(filteredData, forecastMonths);
 
@@ -422,6 +452,7 @@ namespace BakeryBI
                 Color = Color.LightBlue,
                 XValueType = ChartValueType.DateTime
             };
+            actualSeries.Legend = legend.Name;
             monthlySalesSummary.ForEach(p => actualSeries.Points.AddXY(p.Month.ToOADate(), (double)p.TotalSales));
             chartFutureSalesEstimation.Series.Add(actualSeries);
 
@@ -433,6 +464,7 @@ namespace BakeryBI
                 BorderWidth = 3,
                 XValueType = ChartValueType.DateTime
             };
+            trendSeries.Legend = legend.Name;
 
             foreach (var p in trendAndForecastPoints)
             {
@@ -807,9 +839,12 @@ namespace BakeryBI
                     // Get threshold percentages from numeric up-down controls
                     int lowThreshold = (int)numLowThreshold.Value;
                     int highThreshold = (int)numHighThreshold.Value;
+
+                    int polynomialOrder = (int)numPolynomialOrder.Value;
+                    int movingAveragePeriod = (int)numMovingAveragePeriod.Value;
                     
                     ExcelExporter.ExportFutureSalesToExcel(saveDialog.FileName, filteredData, forecastMonths, 
-                        trendlineType, lowThreshold, highThreshold);
+                        trendlineType, lowThreshold, highThreshold, polynomialOrder, movingAveragePeriod);
                     MessageBox.Show($"Data exported successfully to:\n{saveDialog.FileName}",
                     "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }

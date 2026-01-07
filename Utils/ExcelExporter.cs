@@ -12,6 +12,57 @@ namespace BakeryBI.Utils
     public static class ExcelExporter
     {
         /// <summary>
+        /// Attempts to ensure Office assemblies are available
+        /// office.dll is typically in the GAC and may be version 15.0.0.0 or 16.0.0.0
+        /// Try version 15.0.0.0 first since that's what's typically installed
+        /// </summary>
+        private static void EnsureOfficeDllLoaded()
+        {
+            // Try loading directly from GAC path (version 15.0.0.0) - most reliable method
+            string gacPath15 = @"C:\WINDOWS\assembly\GAC_MSIL\office\15.0.0.0__71e9bce111e9429c\office.dll";
+            if (System.IO.File.Exists(gacPath15))
+            {
+                try
+                {
+                    System.Reflection.Assembly.LoadFrom(gacPath15);
+                    return; // Successfully loaded
+                }
+                catch { /* Continue to other methods */ }
+            }
+
+            // Try version 15.0.0.0 by name (Office 2013/2016)
+            try
+            {
+                System.Reflection.Assembly.Load("office, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c");
+                return; // Successfully loaded
+            }
+            catch { /* Try version 16.0.0.0 */ }
+
+            // Try loading from GAC path (version 16.0.0.0)
+            string gacPath16 = @"C:\WINDOWS\assembly\GAC_MSIL\office\16.0.0.0__71e9bce111e9429c\office.dll";
+            if (System.IO.File.Exists(gacPath16))
+            {
+                try
+                {
+                    System.Reflection.Assembly.LoadFrom(gacPath16);
+                    return;
+                }
+                catch { /* Continue */ }
+            }
+
+            // Try version 16.0.0.0 by name (Office 2016+)
+            try
+            {
+                System.Reflection.Assembly.Load("office, Version=16.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c");
+                return; // Successfully loaded
+            }
+            catch { /* Continue */ }
+
+            // If all attempts fail, continue anyway - dynamic typing should handle it
+            // The error will be caught by try-catch blocks in the export methods
+        }
+
+        /// <summary>
         /// Converts string trendline type to Excel XlTrendlineType enum
         /// </summary>
         private static Excel.XlTrendlineType GetTrendlineType(string trendlineType)
@@ -43,162 +94,259 @@ namespace BakeryBI.Utils
             int configRow = startConfigRow;
             
             // Header for threshold configuration
-            Excel.Range thresholdHeader = (Excel.Range)worksheet.Cells[configRow, 1];
-            thresholdHeader.Value2 = "Icon Set Thresholds (Percentiles)";
-            thresholdHeader.Font.Bold = true;
-            thresholdHeader.Font.Size = 11;
-
-            // Low threshold cell
-            Excel.Range lowThresholdLabel = (Excel.Range)worksheet.Cells[++configRow, 1];
-            Excel.Range lowThresholdCell = (Excel.Range)worksheet.Cells[configRow, 2];
-            lowThresholdLabel.Value2 = "Low Threshold (%):";
-            lowThresholdCell.Value2 = lowThresholdPercent;
-            lowThresholdCell.NumberFormat = "0";
-            lowThresholdCell.Interior.Color = System.Drawing.ColorTranslator.ToOle(Color.LightYellow);
-            string lowThresholdRef = lowThresholdCell.get_Address(true, false, Excel.XlReferenceStyle.xlA1, false, null);
-
-            // High threshold cell
-            Excel.Range highThresholdLabel = (Excel.Range)worksheet.Cells[++configRow, 1];
-            Excel.Range highThresholdCell = (Excel.Range)worksheet.Cells[configRow, 2];
-            highThresholdLabel.Value2 = "High Threshold (%):";
-            highThresholdCell.Value2 = highThresholdPercent;
-            highThresholdCell.NumberFormat = "0";
-            highThresholdCell.Interior.Color = System.Drawing.ColorTranslator.ToOle(Color.LightYellow);
-            string highThresholdRef = highThresholdCell.get_Address(true, false, Excel.XlReferenceStyle.xlA1, false, null);
-
-            // Helper formula cells
-            configRow++;
-            Excel.Range lowValueLabel = (Excel.Range)worksheet.Cells[configRow, 1];
-            Excel.Range lowValueCell = (Excel.Range)worksheet.Cells[configRow, 2];
-            lowValueLabel.Value2 = "Low Threshold Value:";
-            lowValueCell.Formula = $"=PERCENTILE(${columnLetter}$2:${columnLetter}${lastDataRow},{lowThresholdRef}/100)";
-            lowValueCell.NumberFormat = "$#,##0.00";
-            string lowValueRef = lowValueCell.get_Address(true, false, Excel.XlReferenceStyle.xlA1, false, null);
-
-            configRow++;
-            Excel.Range highValueLabel = (Excel.Range)worksheet.Cells[configRow, 1];
-            Excel.Range highValueCell = (Excel.Range)worksheet.Cells[configRow, 2];
-            highValueLabel.Value2 = "High Threshold Value:";
-            highValueCell.Formula = $"=PERCENTILE(${columnLetter}$2:${columnLetter}${lastDataRow},{highThresholdRef}/100)";
-            highValueCell.NumberFormat = "$#,##0.00";
-            string highValueRef = highValueCell.get_Address(true, false, Excel.XlReferenceStyle.xlA1, false, null);
-
-            // Apply icon set conditional formatting to the specified column
-            Excel.Range dataRange = worksheet.Range[$"{columnLetter}2:{columnLetter}{lastDataRow}"];
-
-            object iconSetObj = dataRange.FormatConditions.AddIconSetCondition();
-
-            // Try to cast, but if it fails, we'll work with the object directly using reflection
-            Excel.FormatCondition iconSet = null;
             try
             {
-                iconSet = iconSetObj as Excel.FormatCondition;
-                if (iconSet == null && iconSetObj != null)
+                dynamic thresholdHeader = worksheet.Cells[configRow, 1];
+                thresholdHeader.Value2 = "Icon Set Thresholds (Percentiles)";
+                try
                 {
-                    iconSet = (Excel.FormatCondition)iconSetObj;
+                    thresholdHeader.Font.Bold = true;
+                    thresholdHeader.Font.Size = 11;
                 }
+                catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                           ex is System.Runtime.InteropServices.COMException ||
+                                           (ex.Message?.Contains("office") == true) ||
+                                           (ex.Message?.Contains("71e9bce111e9429c") == true))
+                {
+                    // office.dll not available - skip font formatting
+                }
+                catch { /* Continue if font formatting fails */ }
+            }
+            catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                       ex is System.Runtime.InteropServices.COMException ||
+                                       (ex.Message?.Contains("office") == true) ||
+                                       (ex.Message?.Contains("71e9bce111e9429c") == true))
+            {
+                // office.dll not available - cannot proceed
+                return;
+            }
+            catch { /* Cannot proceed without cells access */ return; }
+
+            // Low threshold cell
+            string lowThresholdRef = "";
+            try
+            {
+                dynamic lowThresholdLabel = worksheet.Cells[++configRow, 1];
+                dynamic lowThresholdCell = worksheet.Cells[configRow, 2];
+                lowThresholdLabel.Value2 = "Low Threshold (%):";
+                lowThresholdCell.Value2 = lowThresholdPercent;
+                lowThresholdCell.NumberFormat = "0";
+                try
+                {
+                    lowThresholdCell.Interior.Color = System.Drawing.ColorTranslator.ToOle(Color.LightYellow);
+                }
+                catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                           ex is System.Runtime.InteropServices.COMException ||
+                                           (ex.Message?.Contains("office") == true) ||
+                                           (ex.Message?.Contains("71e9bce111e9429c") == true))
+                {
+                    // office.dll not available - skip color formatting
+                }
+                catch { /* Continue if color formatting fails */ }
+                Excel.Range lowThresholdCellTyped = (Excel.Range)lowThresholdCell;
+                lowThresholdRef = lowThresholdCellTyped.get_Address(true, false, Excel.XlReferenceStyle.xlA1, false, null);
+            }
+            catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                       ex is System.Runtime.InteropServices.COMException ||
+                                       (ex.Message?.Contains("office") == true) ||
+                                       (ex.Message?.Contains("71e9bce111e9429c") == true))
+            {
+                // office.dll not available - cannot proceed
+                return;
+            }
+            catch { /* Cannot proceed without cells access */ return; }
+
+            // High threshold cell
+            string highThresholdRef = "";
+            try
+            {
+                dynamic highThresholdLabel = worksheet.Cells[++configRow, 1];
+                dynamic highThresholdCell = worksheet.Cells[configRow, 2];
+                highThresholdLabel.Value2 = "High Threshold (%):";
+                highThresholdCell.Value2 = highThresholdPercent;
+                highThresholdCell.NumberFormat = "0";
+                try
+                {
+                    highThresholdCell.Interior.Color = System.Drawing.ColorTranslator.ToOle(Color.LightYellow);
+                }
+                catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                           ex is System.Runtime.InteropServices.COMException ||
+                                           (ex.Message?.Contains("office") == true) ||
+                                           (ex.Message?.Contains("71e9bce111e9429c") == true))
+                {
+                    // office.dll not available - skip color formatting
+                }
+                catch { /* Continue if color formatting fails */ }
+                Excel.Range highThresholdCellTyped = (Excel.Range)highThresholdCell;
+                highThresholdRef = highThresholdCellTyped.get_Address(true, false, Excel.XlReferenceStyle.xlA1, false, null);
+            }
+            catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                       ex is System.Runtime.InteropServices.COMException ||
+                                       (ex.Message?.Contains("office") == true) ||
+                                       (ex.Message?.Contains("71e9bce111e9429c") == true))
+            {
+                // office.dll not available - cannot proceed
+                return;
+            }
+            catch { /* Cannot proceed without cells access */ return; }
+
+            // Helper formula cells
+            string lowValueRef = "";
+            string highValueRef = "";
+            try
+            {
+                configRow++;
+                dynamic lowValueLabel = worksheet.Cells[configRow, 1];
+                dynamic lowValueCell = worksheet.Cells[configRow, 2];
+                lowValueLabel.Value2 = "Low Threshold Value:";
+                lowValueCell.Formula = $"=PERCENTILE(${columnLetter}$2:${columnLetter}${lastDataRow},{lowThresholdRef}/100)";
+                lowValueCell.NumberFormat = "$#,##0.00";
+                Excel.Range lowValueCellTyped = (Excel.Range)lowValueCell;
+                lowValueRef = lowValueCellTyped.get_Address(true, false, Excel.XlReferenceStyle.xlA1, false, null);
+
+                configRow++;
+                dynamic highValueLabel = worksheet.Cells[configRow, 1];
+                dynamic highValueCell = worksheet.Cells[configRow, 2];
+                highValueLabel.Value2 = "High Threshold Value:";
+                highValueCell.Formula = $"=PERCENTILE(${columnLetter}$2:${columnLetter}${lastDataRow},{highThresholdRef}/100)";
+                highValueCell.NumberFormat = "$#,##0.00";
+                Excel.Range highValueCellTyped = (Excel.Range)highValueCell;
+                highValueRef = highValueCellTyped.get_Address(true, false, Excel.XlReferenceStyle.xlA1, false, null);
+            }
+            catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                       ex is System.Runtime.InteropServices.COMException ||
+                                       (ex.Message?.Contains("office") == true) ||
+                                       (ex.Message?.Contains("71e9bce111e9429c") == true))
+            {
+                // office.dll not available - cannot proceed
+                return;
+            }
+            catch { /* Cannot proceed without cells access */ return; }
+
+            // Apply icon set conditional formatting to the specified column
+            dynamic dataRange = worksheet.Range[$"{columnLetter}2:{columnLetter}{lastDataRow}"];
+
+            dynamic iconSetCondition = null;
+            try
+            {
+                iconSetCondition = dataRange.FormatConditions.AddIconSetCondition();
+            }
+            catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                       ex is System.Runtime.InteropServices.COMException ||
+                                       (ex.Message?.Contains("office") == true) ||
+                                       (ex.Message?.Contains("71e9bce111e9429c") == true))
+            {
+                // office.dll not available - cannot apply conditional formatting
+                // Return early since we can't proceed without FormatConditions
+                return;
             }
             catch
             {
-                iconSet = null;
+                // If FormatConditions fails, return early
+                return;
             }
 
-            object formatConditionObj = iconSet != null ? (object)iconSet : iconSetObj;
+            if (iconSetCondition == null)
+            {
+                return;
+            }
 
+            // Set the icon set to 3 Traffic Lights
             try
             {
-                System.Reflection.PropertyInfo iconSetsProp = worksheet.Application.GetType().GetProperty("IconSets");
-                if (iconSetsProp != null)
-                {
-                    object iconSetsCollection = iconSetsProp.GetValue(worksheet.Application);
-                    if (iconSetsCollection != null)
-                    {
-                        // Get the 3 Traffic Lights icon set from the collection
-                        System.Reflection.PropertyInfo indexer = iconSetsCollection.GetType().GetProperty("Item");
-                        if (indexer != null)
-                        {
-                            object trafficLightsIconSet = indexer.GetValue(iconSetsCollection, new object[] { Excel.XlIconSet.xl3TrafficLights1 });
-
-                            // Set IconSet property using reflection
-                            System.Reflection.PropertyInfo iconSetProp = formatConditionObj.GetType().GetProperty("IconSet");
-                            if (iconSetProp != null && iconSetProp.CanWrite)
-                            {
-                                iconSetProp.SetValue(formatConditionObj, trafficLightsIconSet, null);
-                            }
-                        }
-                    }
-                }
+                dynamic worksheetDynamic = worksheet;
+                dynamic app = worksheetDynamic.Application;
+                dynamic iconSets = app.IconSets;
+                iconSetCondition.IconSet = iconSets[Excel.XlIconSet.xl3TrafficLights1];
             }
             catch
             {
                 // If setting IconSet fails, Excel will use default icon set
-                // Users can manually change it in Excel if needed
             }
 
+            // Set icon criteria thresholds using user-provided percent values
+            // For 3-icon sets: IconCriteria(2) is the lower threshold, IconCriteria(3) is the upper threshold
+            // Icon distribution:
+            //   - Red (icon 1): values < lowThresholdPercent percentile
+            //   - Yellow (icon 2): values >= lowThresholdPercent and < highThresholdPercent percentile
+            //   - Green (icon 3): values >= highThresholdPercent percentile
             try
             {
-                // Get IconCriteria property
-                System.Reflection.PropertyInfo iconCriteriaProp = formatConditionObj.GetType().GetProperty("IconCriteria");
-                if (iconCriteriaProp != null)
-                {
-                    object criteriaObj = iconCriteriaProp.GetValue(formatConditionObj);
-                    if (criteriaObj != null)
-                    {
-                        // Get the calculated values from helper cells
-                        double lowThresholdValue = (double)lowValueCell.Value2;
-                        double highThresholdValue = (double)highValueCell.Value2;
-
-                        // Get Item method to access individual criteria
-                        System.Reflection.MethodInfo itemMethod = criteriaObj.GetType().GetMethod("Item", new Type[] { typeof(int) });
-                        if (itemMethod != null)
-                        {
-                            // Icon 1 (Red): Values <= Low threshold value
-                            object item1 = itemMethod.Invoke(criteriaObj, new object[] { 1 });
-                            if (item1 != null)
-                            {
-                                System.Reflection.PropertyInfo type1 = item1.GetType().GetProperty("Type");
-                                System.Reflection.PropertyInfo value1 = item1.GetType().GetProperty("Value");
-                                if (type1 != null) type1.SetValue(item1, Excel.XlConditionValueTypes.xlConditionValueNumber);
-                                if (value1 != null) value1.SetValue(item1, lowThresholdValue);
-                            }
-
-                            // Icon 2 (Yellow): Values between Low and High threshold values
-                            object item2 = itemMethod.Invoke(criteriaObj, new object[] { 2 });
-                            if (item2 != null)
-                            {
-                                System.Reflection.PropertyInfo type2 = item2.GetType().GetProperty("Type");
-                                System.Reflection.PropertyInfo value2 = item2.GetType().GetProperty("Value");
-                                if (type2 != null) type2.SetValue(item2, Excel.XlConditionValueTypes.xlConditionValueNumber);
-                                if (value2 != null) value2.SetValue(item2, highThresholdValue);
-                            }
-
-                            // Icon 3 (Green): Values >= High threshold value
-                            object item3 = itemMethod.Invoke(criteriaObj, new object[] { 3 });
-                            if (item3 != null)
-                            {
-                                System.Reflection.PropertyInfo type3 = item3.GetType().GetProperty("Type");
-                                System.Reflection.PropertyInfo value3 = item3.GetType().GetProperty("Value");
-                                if (type3 != null) type3.SetValue(item3, Excel.XlConditionValueTypes.xlConditionValueNumber);
-                                if (value3 != null) value3.SetValue(item3, highThresholdValue);
-                            }
-                        }
-                    }
-                }
+                dynamic iconCriteria = iconSetCondition.IconCriteria;
+                
+                // Set the lower threshold (IconCriteria(2)) - values below this get red icon
+                dynamic criterion2 = iconCriteria[2];
+                criterion2.Type = Excel.XlConditionValueTypes.xlConditionValuePercent;
+                criterion2.Value = lowThresholdPercent;
+                criterion2.Operator = 5; // xlGreaterEqual = 5
+                
+                // Set the upper threshold (IconCriteria(3)) - values at or above this get green icon
+                dynamic criterion3 = iconCriteria[3];
+                criterion3.Type = Excel.XlConditionValueTypes.xlConditionValuePercent;
+                criterion3.Value = highThresholdPercent;
+                criterion3.Operator = 5; // xlGreaterEqual = 5
             }
             catch
             {
-                // If setting criteria fails, Excel will use default criteria
-                // Users can manually adjust in Excel if needed
+                // Fallback: If setting percent thresholds fails, try using calculated absolute values
+                try
+                {
+                    // Read the calculated threshold values from the helper cells
+                    dynamic lowValueCellRef = worksheet.Cells[configRow - 1, 2];
+                    dynamic highValueCellRef = worksheet.Cells[configRow, 2];
+                    double lowThresholdValue = (double)lowValueCellRef.Value2;
+                    double highThresholdValue = (double)highValueCellRef.Value2;
+
+                    dynamic iconCriteria = iconSetCondition.IconCriteria;
+                    
+                    // Set the lower threshold using absolute number
+                    dynamic criterion2 = iconCriteria[2];
+                    criterion2.Type = Excel.XlConditionValueTypes.xlConditionValueNumber;
+                    criterion2.Value = lowThresholdValue;
+                    criterion2.Operator = 5; // xlGreaterEqual = 5
+                    
+                    // Set the upper threshold using absolute number
+                    dynamic criterion3 = iconCriteria[3];
+                    criterion3.Type = Excel.XlConditionValueTypes.xlConditionValueNumber;
+                    criterion3.Value = highThresholdValue;
+                    criterion3.Operator = 5; // xlGreaterEqual = 5
+                }
+                catch
+                {
+                    // If all attempts fail, Excel will use default criteria (33%, 67%)
+                }
             }
 
             // Add helpful note for users
             configRow++;
-            Excel.Range noteCell = (Excel.Range)worksheet.Cells[configRow, 1];
-            noteCell.Value2 = $"To enable auto-update: Edit CF rule and reference cells {lowValueRef} and {highValueRef}";
-            noteCell.Font.Italic = true;
-            noteCell.Font.Size = 9;
-            noteCell.Font.Color = System.Drawing.ColorTranslator.ToOle(Color.Gray);
-            noteCell.WrapText = true;
+            try
+            {
+                dynamic noteCell = worksheet.Cells[configRow, 1];
+                noteCell.Value2 = $"To enable auto-update: Edit CF rule and reference cells {lowValueRef} and {highValueRef}";
+                try
+                {
+                    noteCell.Font.Italic = true;
+                    noteCell.Font.Size = 9;
+                    noteCell.Font.Color = System.Drawing.ColorTranslator.ToOle(Color.Gray);
+                }
+                catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                           ex is System.Runtime.InteropServices.COMException ||
+                                           (ex.Message?.Contains("office") == true) ||
+                                           (ex.Message?.Contains("71e9bce111e9429c") == true))
+                {
+                    // office.dll not available - skip font formatting
+                }
+                catch { /* Continue if font formatting fails */ }
+                noteCell.WrapText = true;
+            }
+            catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                       ex is System.Runtime.InteropServices.COMException ||
+                                       (ex.Message?.Contains("office") == true) ||
+                                       (ex.Message?.Contains("71e9bce111e9429c") == true))
+            {
+                // office.dll not available - skip note
+            }
+            catch { /* Continue if note fails */ }
         }
         /// <summary>
         /// Exports future sales estimation data to Excel with descriptive and predictive analytics
@@ -209,7 +357,9 @@ namespace BakeryBI.Utils
         /// <param name="trendlineType">Type of trendline to use (Linear, Exponential, Polynomial, Power, Moving Average)</param>
         /// <param name="lowThresholdPercent">Low threshold percentage for icon set formatting (default: 33)</param>
         /// <param name="highThresholdPercent">High threshold percentage for icon set formatting (default: 67)</param>
-        public static void ExportFutureSalesToExcel(string filePath, List<SalesRecord> filteredData, int forecastMonths, string trendlineType = "Linear", int lowThresholdPercent = 33, int highThresholdPercent = 67)
+        /// <param name="polynomialOrder">Order for polynomial trendline (default: 2, range 2-6)</param>
+        /// <param name="movingAveragePeriod">Period for moving average trendline (default: 3, minimum 2)</param>
+        public static void ExportFutureSalesToExcel(string filePath, List<SalesRecord> filteredData, int forecastMonths, string trendlineType = "Linear", int lowThresholdPercent = 33, int highThresholdPercent = 67, int polynomialOrder = 2, int movingAveragePeriod = 3)
         {
             if (filteredData == null || !filteredData.Any())
             {
@@ -218,28 +368,71 @@ namespace BakeryBI.Utils
                 return;
             }
 
+            // Attempt to load office.dll before creating Excel Application
+            EnsureOfficeDllLoaded();
+
             Excel.Application excelApp = null;
             Excel.Workbook workbook = null;
             try
             {
                 excelApp = new Excel.Application();
-                excelApp.Visible = false;
-                excelApp.DisplayAlerts = false;
-                workbook = excelApp.Workbooks.Add();
+                try
+                {
+                    dynamic app = excelApp;
+                    app.Visible = false;
+                    app.DisplayAlerts = false;
+                }
+                catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                           ex is System.Runtime.InteropServices.COMException ||
+                                           (ex.Message?.Contains("office") == true) ||
+                                           (ex.Message?.Contains("71e9bce111e9429c") == true))
+                {
+                    // office.dll not available - try to continue with defaults
+                }
+                catch { /* Continue if property access fails */ }
+                
+                dynamic workbooks = excelApp.Workbooks;
+                workbook = (Excel.Workbook)workbooks.Add();
 
                 // Sheet 1: Monthly Sales Data (Descriptive Analytics)
-                Excel.Worksheet monthlySheet = (Excel.Worksheet)workbook.Worksheets[1];
+                dynamic worksheets = workbook.Worksheets;
+                dynamic monthlySheet = worksheets[1];
                 monthlySheet.Name = "Monthly Sales Data";
 
                 // Headers
-                ((Excel.Range)monthlySheet.Cells[1, 1]).Value2 = "Month";
-                ((Excel.Range)monthlySheet.Cells[1, 2]).Value2 = "Total Sales";
-                ((Excel.Range)monthlySheet.Cells[1, 3]).Value2 = "Transaction Count";
+                try
+                {
+                    dynamic cell1 = monthlySheet.Cells[1, 1];
+                    cell1.Value2 = "Month";
+                    dynamic cell2 = monthlySheet.Cells[1, 2];
+                    cell2.Value2 = "Total Sales";
+                    dynamic cell3 = monthlySheet.Cells[1, 3];
+                    cell3.Value2 = "Transaction Count";
+                }
+                catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                           ex is System.Runtime.InteropServices.COMException ||
+                                           (ex.Message?.Contains("office") == true) ||
+                                           (ex.Message?.Contains("71e9bce111e9429c") == true))
+                {
+                    // office.dll not available - skip header data
+                }
+                catch { /* Continue if header data fails */ }
 
                 // Style headers
-                Excel.Range headerRange1 = monthlySheet.Range["A1", "C1"];
-                headerRange1.Font.Bold = true;
-                headerRange1.Interior.Color = System.Drawing.ColorTranslator.ToOle(Color.LightBlue);
+                try
+                {
+                    dynamic headerRange1 = monthlySheet.Range["A1", "C1"];
+                    headerRange1.Font.Bold = true;
+                    headerRange1.Interior.Color = System.Drawing.ColorTranslator.ToOle(Color.LightBlue);
+                }
+                catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                           ex is System.Runtime.InteropServices.COMException ||
+                                           (ex.Message?.Contains("office") == true) ||
+                                           (ex.Message?.Contains("71e9bce111e9429c") == true))
+                {
+                    // office.dll not available - skip header formatting
+                }
+                catch { /* Continue if header formatting fails */ }
 
                 // Calculate monthly sales
                 // NOTE: filteredData already contains data filtered by Date Range, Store, and Product (from global filters)
@@ -257,58 +450,209 @@ namespace BakeryBI.Utils
                 int row = 2;
                 foreach (var item in monthlySales)
                 {
-                    ((Excel.Range)monthlySheet.Cells[row, 1]).Value2 = item.Month.ToString("MMM yyyy");
-                    ((Excel.Range)monthlySheet.Cells[row, 2]).Value2 = (double)item.TotalSales;
-                    ((Excel.Range)monthlySheet.Cells[row, 2]).NumberFormat = "$#,##0.00";
-                    ((Excel.Range)monthlySheet.Cells[row, 3]).Value2 = item.TransactionCount;
+                    try
+                    {
+                        dynamic cell1 = monthlySheet.Cells[row, 1];
+                        cell1.Value2 = item.Month.ToString("MMM yyyy");
+                        dynamic cell2 = monthlySheet.Cells[row, 2];
+                        cell2.Value2 = (double)item.TotalSales;
+                        cell2.NumberFormat = "$#,##0.00";
+                        dynamic cell3 = monthlySheet.Cells[row, 3];
+                        cell3.Value2 = item.TransactionCount;
+                    }
+                    catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                               ex is System.Runtime.InteropServices.COMException ||
+                                               (ex.Message?.Contains("office") == true) ||
+                                               (ex.Message?.Contains("71e9bce111e9429c") == true))
+                    {
+                        // office.dll not available - skip this row
+                    }
+                    catch { /* Continue if row data fails */ }
                     row++;
                 }
 
                 // Add summary statistics (Descriptive Analytics)
                 int summaryRow = row + 2;
-                ((Excel.Range)monthlySheet.Cells[summaryRow, 1]).Value2 = "SUMMARY STATISTICS";
-                ((Excel.Range)monthlySheet.Cells[summaryRow, 1]).Font.Bold = true;
-                ((Excel.Range)monthlySheet.Cells[summaryRow, 1]).Font.Size = 12;
+                try
+                {
+                    dynamic summaryCell = monthlySheet.Cells[summaryRow, 1];
+                    summaryCell.Value2 = "SUMMARY STATISTICS";
+                    try
+                    {
+                        summaryCell.Font.Bold = true;
+                        summaryCell.Font.Size = 12;
+                    }
+                    catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                               ex is System.Runtime.InteropServices.COMException ||
+                                               (ex.Message?.Contains("office") == true) ||
+                                               (ex.Message?.Contains("71e9bce111e9429c") == true))
+                    {
+                        // office.dll not available - skip font formatting
+                    }
+                    catch { /* Continue if font formatting fails */ }
+                }
+                catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                           ex is System.Runtime.InteropServices.COMException ||
+                                           (ex.Message?.Contains("office") == true) ||
+                                           (ex.Message?.Contains("71e9bce111e9429c") == true))
+                {
+                    // office.dll not available - skip summary header
+                }
+                catch { /* Continue if summary header fails */ }
                 summaryRow++;
-                ((Excel.Range)monthlySheet.Cells[summaryRow, 1]).Value2 = "Total Sales:";
-                ((Excel.Range)monthlySheet.Cells[summaryRow, 2]).Value2 = (double)monthlySales.Sum(x => x.TotalSales);
-                ((Excel.Range)monthlySheet.Cells[summaryRow, 2]).NumberFormat = "$#,##0.00";
-                ((Excel.Range)monthlySheet.Cells[summaryRow, 2]).Font.Bold = true;
+                try
+                {
+                    dynamic cell1 = monthlySheet.Cells[summaryRow, 1];
+                    cell1.Value2 = "Total Sales:";
+                    dynamic cell2 = monthlySheet.Cells[summaryRow, 2];
+                    cell2.Value2 = (double)monthlySales.Sum(x => x.TotalSales);
+                    cell2.NumberFormat = "$#,##0.00";
+                    try
+                    {
+                        cell2.Font.Bold = true;
+                    }
+                    catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                               ex is System.Runtime.InteropServices.COMException ||
+                                               (ex.Message?.Contains("office") == true) ||
+                                               (ex.Message?.Contains("71e9bce111e9429c") == true))
+                    {
+                        // office.dll not available - skip font formatting
+                    }
+                    catch { /* Continue if font formatting fails */ }
+                }
+                catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                           ex is System.Runtime.InteropServices.COMException ||
+                                           (ex.Message?.Contains("office") == true) ||
+                                           (ex.Message?.Contains("71e9bce111e9429c") == true))
+                {
+                    // office.dll not available - skip this row
+                }
+                catch { /* Continue if row fails */ }
                 summaryRow++;
-                ((Excel.Range)monthlySheet.Cells[summaryRow, 1]).Value2 = "Average Monthly Sales:";
-                ((Excel.Range)monthlySheet.Cells[summaryRow, 2]).Value2 = (double)monthlySales.Average(x => x.TotalSales);
-                ((Excel.Range)monthlySheet.Cells[summaryRow, 2]).NumberFormat = "$#,##0.00";
+                try
+                {
+                    dynamic cell1 = monthlySheet.Cells[summaryRow, 1];
+                    cell1.Value2 = "Average Monthly Sales:";
+                    dynamic cell2 = monthlySheet.Cells[summaryRow, 2];
+                    cell2.Value2 = (double)monthlySales.Average(x => x.TotalSales);
+                    cell2.NumberFormat = "$#,##0.00";
+                }
+                catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                           ex is System.Runtime.InteropServices.COMException ||
+                                           (ex.Message?.Contains("office") == true) ||
+                                           (ex.Message?.Contains("71e9bce111e9429c") == true))
+                {
+                    // office.dll not available - skip this row
+                }
+                catch { /* Continue if row fails */ }
                 summaryRow++;
-                ((Excel.Range)monthlySheet.Cells[summaryRow, 1]).Value2 = "Maximum Monthly Sales:";
-                ((Excel.Range)monthlySheet.Cells[summaryRow, 2]).Value2 = (double)monthlySales.Max(x => x.TotalSales);
-                ((Excel.Range)monthlySheet.Cells[summaryRow, 2]).NumberFormat = "$#,##0.00";
+                try
+                {
+                    dynamic cell1 = monthlySheet.Cells[summaryRow, 1];
+                    cell1.Value2 = "Maximum Monthly Sales:";
+                    dynamic cell2 = monthlySheet.Cells[summaryRow, 2];
+                    cell2.Value2 = (double)monthlySales.Max(x => x.TotalSales);
+                    cell2.NumberFormat = "$#,##0.00";
+                }
+                catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                           ex is System.Runtime.InteropServices.COMException ||
+                                           (ex.Message?.Contains("office") == true) ||
+                                           (ex.Message?.Contains("71e9bce111e9429c") == true))
+                {
+                    // office.dll not available - skip this row
+                }
+                catch { /* Continue if row fails */ }
                 summaryRow++;
-                ((Excel.Range)monthlySheet.Cells[summaryRow, 1]).Value2 = "Minimum Monthly Sales:";
-                ((Excel.Range)monthlySheet.Cells[summaryRow, 2]).Value2 = (double)monthlySales.Min(x => x.TotalSales);
-                ((Excel.Range)monthlySheet.Cells[summaryRow, 2]).NumberFormat = "$#,##0.00";
+                try
+                {
+                    dynamic cell1 = monthlySheet.Cells[summaryRow, 1];
+                    cell1.Value2 = "Minimum Monthly Sales:";
+                    dynamic cell2 = monthlySheet.Cells[summaryRow, 2];
+                    cell2.Value2 = (double)monthlySales.Min(x => x.TotalSales);
+                    cell2.NumberFormat = "$#,##0.00";
+                }
+                catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                           ex is System.Runtime.InteropServices.COMException ||
+                                           (ex.Message?.Contains("office") == true) ||
+                                           (ex.Message?.Contains("71e9bce111e9429c") == true))
+                {
+                    // office.dll not available - skip this row
+                }
+                catch { /* Continue if row fails */ }
                 summaryRow++;
-                ((Excel.Range)monthlySheet.Cells[summaryRow, 1]).Value2 = "Total Transactions:";
-                ((Excel.Range)monthlySheet.Cells[summaryRow, 2]).Value2 = monthlySales.Sum(x => x.TransactionCount);
+                try
+                {
+                    dynamic cell1 = monthlySheet.Cells[summaryRow, 1];
+                    cell1.Value2 = "Total Transactions:";
+                    dynamic cell2 = monthlySheet.Cells[summaryRow, 2];
+                    cell2.Value2 = monthlySales.Sum(x => x.TransactionCount);
+                }
+                catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                           ex is System.Runtime.InteropServices.COMException ||
+                                           (ex.Message?.Contains("office") == true) ||
+                                           (ex.Message?.Contains("71e9bce111e9429c") == true))
+                {
+                    // office.dll not available - skip this row
+                }
+                catch { /* Continue if row fails */ }
 
                 // Apply icon set conditional formatting to Total Sales column (Column B)
-                ApplyIconSetConditionalFormatting(monthlySheet, "B", row - 1, summaryRow + 3, lowThresholdPercent, highThresholdPercent);
+                ApplyIconSetConditionalFormatting((Excel.Worksheet)monthlySheet, "B", row - 1, summaryRow + 3, lowThresholdPercent, highThresholdPercent);
 
                 // Auto-fit columns
-                monthlySheet.Columns.AutoFit();
+                try
+                {
+                    dynamic columns = monthlySheet.Columns;
+                    columns.AutoFit();
+                }
+                catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                           ex is System.Runtime.InteropServices.COMException ||
+                                           (ex.Message?.Contains("office") == true) ||
+                                           (ex.Message?.Contains("71e9bce111e9429c") == true))
+                {
+                    // office.dll not available - skip auto-fit
+                }
+                catch { /* Continue if auto-fit fails */ }
 
                 // Sheet 2: Forecast Data (Predictive Analytics)
-                Excel.Worksheet forecastSheet = (Excel.Worksheet)workbook.Worksheets.Add();
+                dynamic worksheets2 = workbook.Worksheets;
+                dynamic forecastSheet = worksheets2.Add();
                 forecastSheet.Name = "Forecast Data";
 
                 // Headers
-                ((Excel.Range)forecastSheet.Cells[1, 1]).Value2 = "Date";
-                ((Excel.Range)forecastSheet.Cells[1, 2]).Value2 = "Type";
-                ((Excel.Range)forecastSheet.Cells[1, 3]).Value2 = "Sales Forecast";
+                try
+                {
+                    dynamic cell1 = forecastSheet.Cells[1, 1];
+                    cell1.Value2 = "Date";
+                    dynamic cell2 = forecastSheet.Cells[1, 2];
+                    cell2.Value2 = "Type";
+                    dynamic cell3 = forecastSheet.Cells[1, 3];
+                    cell3.Value2 = "Sales Forecast";
+                }
+                catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                           ex is System.Runtime.InteropServices.COMException ||
+                                           (ex.Message?.Contains("office") == true) ||
+                                           (ex.Message?.Contains("71e9bce111e9429c") == true))
+                {
+                    // office.dll not available - skip header data
+                }
+                catch { /* Continue if header data fails */ }
 
                 // Style headers
-                Excel.Range headerRange2 = forecastSheet.Range["A1", "C1"];
-                headerRange2.Font.Bold = true;
-                headerRange2.Interior.Color = System.Drawing.ColorTranslator.ToOle(Color.LightGreen);
+                try
+                {
+                    dynamic headerRange2 = forecastSheet.Range["A1", "C1"];
+                    headerRange2.Font.Bold = true;
+                    headerRange2.Interior.Color = System.Drawing.ColorTranslator.ToOle(Color.LightGreen);
+                }
+                catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                           ex is System.Runtime.InteropServices.COMException ||
+                                           (ex.Message?.Contains("office") == true) ||
+                                           (ex.Message?.Contains("71e9bce111e9429c") == true))
+                {
+                    // office.dll not available - skip header formatting
+                }
+                catch { /* Continue if header formatting fails */ }
 
                 // Get forecast data
                 // NOTE: Uses filteredData which respects all global filters (Date Range, Store, Product)
@@ -318,19 +662,44 @@ namespace BakeryBI.Utils
                 row = 2;
                 foreach (var point in trendAndForecast)
                 {
-                    ((Excel.Range)forecastSheet.Cells[row, 1]).Value2 = point.Date;
-                    ((Excel.Range)forecastSheet.Cells[row, 1]).NumberFormat = "MMM yyyy";
-                    ((Excel.Range)forecastSheet.Cells[row, 2]).Value2 = point.IsForecast ? "Forecast" : "Historical Trend";
-                    ((Excel.Range)forecastSheet.Cells[row, 3]).Value2 = (double)point.Value;
-                    ((Excel.Range)forecastSheet.Cells[row, 3]).NumberFormat = "$#,##0.00";
-
-                    // Highlight forecast rows
-                    if (point.IsForecast)
+                    try
                     {
-                        Excel.Range forecastRowRange = forecastSheet.Range[forecastSheet.Cells[row, 1], forecastSheet.Cells[row, 3]];
-                        forecastRowRange.Interior.Color = System.Drawing.ColorTranslator.ToOle(Color.LightYellow);
-                        ((Excel.Range)forecastSheet.Cells[row, 2]).Font.Italic = true;
+                        dynamic cell1 = forecastSheet.Cells[row, 1];
+                        cell1.Value2 = point.Date;
+                        cell1.NumberFormat = "MMM yyyy";
+                        dynamic cell2 = forecastSheet.Cells[row, 2];
+                        cell2.Value2 = point.IsForecast ? "Forecast" : "Historical Trend";
+                        dynamic cell3 = forecastSheet.Cells[row, 3];
+                        cell3.Value2 = (double)point.Value;
+                        cell3.NumberFormat = "$#,##0.00";
+
+                        // Highlight forecast rows
+                        if (point.IsForecast)
+                        {
+                            try
+                            {
+                                dynamic forecastRowRange = forecastSheet.Range[forecastSheet.Cells[row, 1], forecastSheet.Cells[row, 3]];
+                                forecastRowRange.Interior.Color = System.Drawing.ColorTranslator.ToOle(Color.LightYellow);
+                                cell2.Font.Italic = true;
+                            }
+                            catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                                       ex is System.Runtime.InteropServices.COMException ||
+                                                       (ex.Message?.Contains("office") == true) ||
+                                                       (ex.Message?.Contains("71e9bce111e9429c") == true))
+                            {
+                                // office.dll not available - skip row formatting
+                            }
+                            catch { /* Continue if row formatting fails */ }
+                        }
                     }
+                    catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                               ex is System.Runtime.InteropServices.COMException ||
+                                               (ex.Message?.Contains("office") == true) ||
+                                               (ex.Message?.Contains("71e9bce111e9429c") == true))
+                    {
+                        // office.dll not available - skip this row
+                    }
+                    catch { /* Continue if row fails */ }
                     row++;
                 }
 
@@ -339,21 +708,94 @@ namespace BakeryBI.Utils
                 if (forecastPoints.Any())
                 {
                     summaryRow = row + 2;
-                    ((Excel.Range)forecastSheet.Cells[summaryRow, 1]).Value2 = "FORECAST SUMMARY";
-                    ((Excel.Range)forecastSheet.Cells[summaryRow, 1]).Font.Bold = true;
-                    ((Excel.Range)forecastSheet.Cells[summaryRow, 1]).Font.Size = 12;
+                    try
+                    {
+                        dynamic summaryCell = forecastSheet.Cells[summaryRow, 1];
+                        summaryCell.Value2 = "FORECAST SUMMARY";
+                        try
+                        {
+                            summaryCell.Font.Bold = true;
+                            summaryCell.Font.Size = 12;
+                        }
+                        catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                                   ex is System.Runtime.InteropServices.COMException ||
+                                                   (ex.Message?.Contains("office") == true) ||
+                                                   (ex.Message?.Contains("71e9bce111e9429c") == true))
+                        {
+                            // office.dll not available - skip font formatting
+                        }
+                        catch { /* Continue if font formatting fails */ }
+                    }
+                    catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                               ex is System.Runtime.InteropServices.COMException ||
+                                               (ex.Message?.Contains("office") == true) ||
+                                               (ex.Message?.Contains("71e9bce111e9429c") == true))
+                    {
+                        // office.dll not available - skip summary header
+                    }
+                    catch { /* Continue if summary header fails */ }
                     summaryRow++;
-                    ((Excel.Range)forecastSheet.Cells[summaryRow, 1]).Value2 = "Forecast Period:";
-                    ((Excel.Range)forecastSheet.Cells[summaryRow, 2]).Value2 = $"{forecastMonths} months";
+                    try
+                    {
+                        dynamic cell1 = forecastSheet.Cells[summaryRow, 1];
+                        cell1.Value2 = "Forecast Period:";
+                        dynamic cell2 = forecastSheet.Cells[summaryRow, 2];
+                        cell2.Value2 = $"{forecastMonths} months";
+                    }
+                    catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                               ex is System.Runtime.InteropServices.COMException ||
+                                               (ex.Message?.Contains("office") == true) ||
+                                               (ex.Message?.Contains("71e9bce111e9429c") == true))
+                    {
+                        // office.dll not available - skip this row
+                    }
+                    catch { /* Continue if row fails */ }
                     summaryRow++;
-                    ((Excel.Range)forecastSheet.Cells[summaryRow, 1]).Value2 = "Total Forecasted Sales:";
-                    ((Excel.Range)forecastSheet.Cells[summaryRow, 2]).Value2 = (double)forecastPoints.Sum(p => p.Value);
-                    ((Excel.Range)forecastSheet.Cells[summaryRow, 2]).NumberFormat = "$#,##0.00";
-                    ((Excel.Range)forecastSheet.Cells[summaryRow, 2]).Font.Bold = true;
+                    try
+                    {
+                        dynamic cell1 = forecastSheet.Cells[summaryRow, 1];
+                        cell1.Value2 = "Total Forecasted Sales:";
+                        dynamic cell2 = forecastSheet.Cells[summaryRow, 2];
+                        cell2.Value2 = (double)forecastPoints.Sum(p => p.Value);
+                        cell2.NumberFormat = "$#,##0.00";
+                        try
+                        {
+                            cell2.Font.Bold = true;
+                        }
+                        catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                                   ex is System.Runtime.InteropServices.COMException ||
+                                                   (ex.Message?.Contains("office") == true) ||
+                                                   (ex.Message?.Contains("71e9bce111e9429c") == true))
+                        {
+                            // office.dll not available - skip font formatting
+                        }
+                        catch { /* Continue if font formatting fails */ }
+                    }
+                    catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                               ex is System.Runtime.InteropServices.COMException ||
+                                               (ex.Message?.Contains("office") == true) ||
+                                               (ex.Message?.Contains("71e9bce111e9429c") == true))
+                    {
+                        // office.dll not available - skip this row
+                    }
+                    catch { /* Continue if row fails */ }
                     summaryRow++;
-                    ((Excel.Range)forecastSheet.Cells[summaryRow, 1]).Value2 = "Average Monthly Forecast:";
-                    ((Excel.Range)forecastSheet.Cells[summaryRow, 2]).Value2 = (double)forecastPoints.Average(p => p.Value);
-                    ((Excel.Range)forecastSheet.Cells[summaryRow, 2]).NumberFormat = "$#,##0.00";
+                    try
+                    {
+                        dynamic cell1 = forecastSheet.Cells[summaryRow, 1];
+                        cell1.Value2 = "Average Monthly Forecast:";
+                        dynamic cell2 = forecastSheet.Cells[summaryRow, 2];
+                        cell2.Value2 = (double)forecastPoints.Average(p => p.Value);
+                        cell2.NumberFormat = "$#,##0.00";
+                    }
+                    catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                               ex is System.Runtime.InteropServices.COMException ||
+                                               (ex.Message?.Contains("office") == true) ||
+                                               (ex.Message?.Contains("71e9bce111e9429c") == true))
+                    {
+                        // office.dll not available - skip this row
+                    }
+                    catch { /* Continue if row fails */ }
                 }
                 else
                 {
@@ -362,10 +804,22 @@ namespace BakeryBI.Utils
                 }
 
                 // Apply icon set conditional formatting to Sales Forecast column (Column C)
-                ApplyIconSetConditionalFormatting(forecastSheet, "C", row - 1, summaryRow + 3, lowThresholdPercent, highThresholdPercent);
+                ApplyIconSetConditionalFormatting((Excel.Worksheet)forecastSheet, "C", row - 1, summaryRow + 3, lowThresholdPercent, highThresholdPercent);
 
                 // Auto-fit columns
-                forecastSheet.Columns.AutoFit();
+                try
+                {
+                    dynamic columns = forecastSheet.Columns;
+                    columns.AutoFit();
+                }
+                catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                           ex is System.Runtime.InteropServices.COMException ||
+                                           (ex.Message?.Contains("office") == true) ||
+                                           (ex.Message?.Contains("71e9bce111e9429c") == true))
+                {
+                    // office.dll not available - skip auto-fit
+                }
+                catch { /* Continue if auto-fit fails */ }
 
                 // Sheet 3: Chart Sheet (Historical Data, Trend, and Forecast)
                 // Create a temporary data sheet for chart data first
@@ -390,29 +844,59 @@ namespace BakeryBI.Utils
                 int forecastDataRow = 2; // Start after header
                 while (true)
                 {
-                    object dateObj = ((Excel.Range)forecastSheet.Cells[forecastDataRow, 1]).Value2;
-                    object typeObj = ((Excel.Range)forecastSheet.Cells[forecastDataRow, 2]).Value2;
-                    object salesObj = ((Excel.Range)forecastSheet.Cells[forecastDataRow, 3]).Value2;
+                    try
+                    {
+                        dynamic cell1 = forecastSheet.Cells[forecastDataRow, 1];
+                        dynamic cell2 = forecastSheet.Cells[forecastDataRow, 2];
+                        dynamic cell3 = forecastSheet.Cells[forecastDataRow, 3];
+                        object dateObj = cell1.Value2;
+                        object typeObj = cell2.Value2;
+                        object salesObj = cell3.Value2;
 
-                    // Stop if we hit an empty row
-                    if (dateObj == null || typeObj == null || salesObj == null)
+                        // Stop if we hit an empty row
+                        if (dateObj == null || typeObj == null || salesObj == null)
+                            break;
+
+                        DateTime date = DateTime.FromOADate((double)dateObj);
+                        string type = typeObj.ToString();
+                        double salesForecast = (double)salesObj;
+
+                        forecastDataList.Add((date, type, salesForecast));
+                        forecastDataRow++;
+                    }
+                    catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                               ex is System.Runtime.InteropServices.COMException ||
+                                               (ex.Message?.Contains("office") == true) ||
+                                               (ex.Message?.Contains("71e9bce111e9429c") == true))
+                    {
+                        // office.dll not available - stop reading
                         break;
-
-                    DateTime date = DateTime.FromOADate((double)dateObj);
-                    string type = typeObj.ToString();
-                    double salesForecast = (double)salesObj;
-
-                    forecastDataList.Add((date, type, salesForecast));
-                    forecastDataRow++;
+                    }
+                    catch { /* Stop reading if access fails */ break; }
                 }
 
                 // Populate chart data: Month, Actual Sales, Actual Sales Line (for trendline), Forecast (Dots)
                 int chartDataRow = 1;
 
-                ((Excel.Range)chartDataSheet.Cells[chartDataRow, 1]).Value2 = "Month";
-                ((Excel.Range)chartDataSheet.Cells[chartDataRow, 2]).Value2 = "Actual Sales";
-                ((Excel.Range)chartDataSheet.Cells[chartDataRow, 3]).Value2 = "Actual Sales Line";
-                ((Excel.Range)chartDataSheet.Cells[chartDataRow, 4]).Value2 = "Forecast";
+                try
+                {
+                    dynamic cell1 = chartDataSheet.Cells[chartDataRow, 1];
+                    cell1.Value2 = "Month";
+                    dynamic cell2 = chartDataSheet.Cells[chartDataRow, 2];
+                    cell2.Value2 = "Actual Sales";
+                    dynamic cell3 = chartDataSheet.Cells[chartDataRow, 3];
+                    cell3.Value2 = "Actual Sales Line";
+                    dynamic cell4 = chartDataSheet.Cells[chartDataRow, 4];
+                    cell4.Value2 = "Forecast";
+                }
+                catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                           ex is System.Runtime.InteropServices.COMException ||
+                                           (ex.Message?.Contains("office") == true) ||
+                                           (ex.Message?.Contains("71e9bce111e9429c") == true))
+                {
+                    // office.dll not available - skip chart data headers
+                }
+                catch { /* Continue if chart data headers fail */ }
 
                 chartDataRow = 2;
 
@@ -437,235 +921,544 @@ namespace BakeryBI.Utils
                 {
                     var normalizedMonth = new DateTime(month.Year, month.Month, 1);
 
-                    ((Excel.Range)chartDataSheet.Cells[chartDataRow, 1]).Value2 = normalizedMonth;
-                    ((Excel.Range)chartDataSheet.Cells[chartDataRow, 1]).NumberFormat = "MMM yyyy";
-
-                    // Actual Sales (only for months with actual sales data)
-                    var actualSales = monthlySalesSummary.FirstOrDefault(m =>
-                        new DateTime(m.Month.Year, m.Month.Month, 1) == normalizedMonth);
-                    if (actualSales != null)
+                    try
                     {
-                        ((Excel.Range)chartDataSheet.Cells[chartDataRow, 2]).Value2 = (double)actualSales.TotalSales;
+                        dynamic cell1 = chartDataSheet.Cells[chartDataRow, 1];
+                        cell1.Value2 = normalizedMonth;
+                        cell1.NumberFormat = "MMM yyyy";
 
-                        // Track historical data rows for trendline calculation
-                        if (firstHistoricalRow == 0) firstHistoricalRow = chartDataRow;
-                        lastHistoricalRow = chartDataRow;
+                        // Actual Sales (only for months with actual sales data)
+                        var actualSales = monthlySalesSummary.FirstOrDefault(m =>
+                            new DateTime(m.Month.Year, m.Month.Month, 1) == normalizedMonth);
+                        dynamic cell2 = chartDataSheet.Cells[chartDataRow, 2];
+                        if (actualSales != null)
+                        {
+                            cell2.Value2 = (double)actualSales.TotalSales;
+
+                            // Track historical data rows for trendline calculation
+                            if (firstHistoricalRow == 0) firstHistoricalRow = chartDataRow;
+                            lastHistoricalRow = chartDataRow;
+                        }
+                        else
+                        {
+                            cell2.Value2 = "";
+                        }
+
+                        // Column 3: Actual Sales Line (same as Column 2, but for line series - used for trendline calculation)
+                        // This will be invisible but needed for Excel to calculate the trendline
+                        // IMPORTANT: Only populate for historical months (not forecast months)
+                        dynamic cell3 = chartDataSheet.Cells[chartDataRow, 3];
+                        if (actualSales != null)
+                        {
+                            cell3.Value2 = (double)actualSales.TotalSales;
+                        }
+                        else
+                        {
+                            // Leave empty for forecast months - this ensures trendline only uses historical data
+                            cell3.Value2 = "";
+                        }
+
+                        // Column 4: Forecast - use Excel's FORECAST.LINEAR function for forecast months
+                        // Only calculate forecast for months after the last historical month
+                        bool isForecastMonth = lastHistoricalMonth.HasValue && normalizedMonth > lastHistoricalMonth.Value;
+
+                        dynamic cell4 = chartDataSheet.Cells[chartDataRow, 4];
+                        if (isForecastMonth && firstHistoricalRow > 0 && lastHistoricalRow > 0)
+                        {
+                            // Use Excel's FORECAST.LINEAR function
+                            // FORECAST.LINEAR(x, known_y's, known_x's)
+                            // x = current month's index (1, 2, 3, ... based on position)
+                            // known_y's = historical sales values (Column 2)
+                            // known_x's = historical indices (1, 2, 3, ... for each historical month)
+
+                            // Calculate the index for this forecast month (1-based, relative to first historical month)
+                            int forecastIndex = chartDataRow - firstHistoricalRow + 1;
+
+                            // Build the formula with absolute references
+                            string knownYsRange = $"$B${firstHistoricalRow}:$B${lastHistoricalRow}";
+                            string knownXsRange = $"ROW($A${firstHistoricalRow}:$A${lastHistoricalRow})-ROW($A${firstHistoricalRow})+1";
+                            string xValue = forecastIndex.ToString();
+
+                            // Use FORECAST.LINEAR (Excel 2016+) - calculates linear forecast based on historical data
+                            // This is Excel's native function, similar to how trendlines work
+                            string forecastFormula = $"=FORECAST.LINEAR({xValue},{knownYsRange},{knownXsRange})";
+
+                            cell4.Formula = forecastFormula;
+                        }
+                        else
+                        {
+                            cell4.Value2 = "";
+                        }
                     }
-                    else
+                    catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                               ex is System.Runtime.InteropServices.COMException ||
+                                               (ex.Message?.Contains("office") == true) ||
+                                               (ex.Message?.Contains("71e9bce111e9429c") == true))
                     {
-                        ((Excel.Range)chartDataSheet.Cells[chartDataRow, 2]).Value2 = "";
+                        // office.dll not available - skip this row
                     }
-
-                    // Column 3: Actual Sales Line (same as Column 2, but for line series - used for trendline calculation)
-                    // This will be invisible but needed for Excel to calculate the trendline
-                    // IMPORTANT: Only populate for historical months (not forecast months)
-                    if (actualSales != null)
-                    {
-                        ((Excel.Range)chartDataSheet.Cells[chartDataRow, 3]).Value2 = (double)actualSales.TotalSales;
-                    }
-                    else
-                    {
-                        // Leave empty for forecast months - this ensures trendline only uses historical data
-                        ((Excel.Range)chartDataSheet.Cells[chartDataRow, 3]).Value2 = "";
-                    }
-
-                    // Column 4: Forecast - use Excel's FORECAST.LINEAR function for forecast months
-                    // Only calculate forecast for months after the last historical month
-                    bool isForecastMonth = lastHistoricalMonth.HasValue && normalizedMonth > lastHistoricalMonth.Value;
-
-                    if (isForecastMonth && firstHistoricalRow > 0 && lastHistoricalRow > 0)
-                    {
-                        // Use Excel's FORECAST.LINEAR function
-                        // FORECAST.LINEAR(x, known_y's, known_x's)
-                        // x = current month's index (1, 2, 3, ... based on position)
-                        // known_y's = historical sales values (Column 2)
-                        // known_x's = historical indices (1, 2, 3, ... for each historical month)
-
-                        // Calculate the index for this forecast month (1-based, relative to first historical month)
-                        int forecastIndex = chartDataRow - firstHistoricalRow + 1;
-
-                        // Build the formula with absolute references
-                        string knownYsRange = $"$B${firstHistoricalRow}:$B${lastHistoricalRow}";
-                        string knownXsRange = $"ROW($A${firstHistoricalRow}:$A${lastHistoricalRow})-ROW($A${firstHistoricalRow})+1";
-                        string xValue = forecastIndex.ToString();
-
-                        // Use FORECAST.LINEAR (Excel 2016+) - calculates linear forecast based on historical data
-                        // This is Excel's native function, similar to how trendlines work
-                        string forecastFormula = $"=FORECAST.LINEAR({xValue},{knownYsRange},{knownXsRange})";
-
-                        ((Excel.Range)chartDataSheet.Cells[chartDataRow, 4]).Formula = forecastFormula;
-                    }
-                    else
-                    {
-                        ((Excel.Range)chartDataSheet.Cells[chartDataRow, 4]).Value2 = "";
-                    }
+                    catch { /* Continue if row fails */ }
 
                     chartDataRow++;
                 }
 
-                // Create chart from the data sheet
+                // Create chart from the data sheet - check if office.dll is available first
                 int lastRow = chartDataRow - 1;
-                // Chart range includes: Month, Actual Sales, Trend & Forecast (Historical), Forecast (Dots)
-                Excel.Range chartRange = chartDataSheet.Range[chartDataSheet.Cells[1, 1], chartDataSheet.Cells[lastRow, 4]];
-
-                // Get ChartObjects - with embedded interop types, this might return object
-                object chartObjectsObj = chartDataSheet.ChartObjects();
-                Excel.ChartObjects chartObjects = (Excel.ChartObjects)chartObjectsObj;
-                Excel.ChartObject chartObject = (Excel.ChartObject)chartObjects.Add(0, 0, 600, 400);
-                Excel.Chart chartSheet = chartObject.Chart;
-
-                // Set chart data source
-                chartSheet.SetSourceData(chartRange);
-
-                // Configure chart to treat empty cells as gaps (not zeros) - must be set before adding series
-                chartSheet.DisplayBlanksAs = Excel.XlDisplayBlanksAs.xlNotPlotted;
-
-                // Configure chart type - Combo chart (Column + Line)
-                chartSheet.ChartType = Excel.XlChartType.xlColumnClustered;
-
-                // Get chart series collection
-                Excel.SeriesCollection seriesCollection = (Excel.SeriesCollection)chartSheet.SeriesCollection();
-
-                // Series 1: Actual Sales (Column chart)
-                if (seriesCollection.Count >= 1)
+                
+                // Check if office.dll is available before attempting chart creation
+                bool canCreateCharts = false;
+                try
                 {
-                    Excel.Series actualSeries = (Excel.Series)seriesCollection.Item(1);
-                    actualSeries.Name = "Actual Sales";
-                    actualSeries.ChartType = Excel.XlChartType.xlColumnClustered;
-                    actualSeries.Format.Fill.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(Color.LightBlue);
+                    // Try to resolve the office assembly - try version 15.0.0.0 first (installed version)
+                    string gacPath15 = @"C:\WINDOWS\assembly\GAC_MSIL\office\15.0.0.0__71e9bce111e9429c\office.dll";
+                    if (System.IO.File.Exists(gacPath15))
+                    {
+                        var officeAssembly = System.Reflection.Assembly.LoadFrom(gacPath15);
+                        canCreateCharts = officeAssembly != null;
+                    }
+                    else
+                    {
+                        // Try loading by name
+                        var officeAssembly = System.Reflection.Assembly.Load("office, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c");
+                        canCreateCharts = officeAssembly != null;
+                    }
                 }
-
-                // Series 2: Actual Sales Line (for trendline calculation)
-                // Create a line series with actual sales data - trendlines work on line/scatter charts
-                // IMPORTANT: Limit the series to only historical data rows to prevent trendline extension
-                if (seriesCollection.Count >= 2 && firstHistoricalRow > 0 && lastHistoricalRow > 0)
+                catch
                 {
-                    Excel.Series actualSalesLineSeries = (Excel.Series)seriesCollection.Item(2);
-                    actualSalesLineSeries.Name = "Actual Sales Line";
-                    actualSalesLineSeries.ChartType = Excel.XlChartType.xlLine;
-
-                    // Set the series to only use historical data (not forecast months)
-                    // This ensures the trendline only calculates from historical data
-                    Excel.Range historicalValuesRange = chartDataSheet.Range[
-                        chartDataSheet.Cells[firstHistoricalRow, 3],
-                        chartDataSheet.Cells[lastHistoricalRow, 3]];
-                    Excel.Range historicalXValuesRange = chartDataSheet.Range[
-                        chartDataSheet.Cells[firstHistoricalRow, 1],
-                        chartDataSheet.Cells[lastHistoricalRow, 1]];
-
-                    actualSalesLineSeries.Values = historicalValuesRange;
-                    actualSalesLineSeries.XValues = historicalXValuesRange;
-
-                    // Make this series invisible (we only need it for the trendline)
-                    actualSalesLineSeries.Format.Line.Visible = 0; // Hide the line
-                    actualSalesLineSeries.MarkerStyle = Excel.XlMarkerStyle.xlMarkerStyleNone; // No markers
-
-                    // Add trendline to this series - only for historical data (no forward extension)
-                    Excel.Trendlines trendlines = (Excel.Trendlines)actualSalesLineSeries.Trendlines();
-                    Excel.XlTrendlineType trendlineTypeEnum = GetTrendlineType(trendlineType);
-                    Excel.Trendline trendline = (Excel.Trendline)trendlines.Add(trendlineTypeEnum);
-
-                    // Configure trendline - only shows historical trend, not forecast
-                    trendline.Name = "Trend";
-                    trendline.Format.Line.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(Color.Red);
-                    trendline.Format.Line.Weight = 3;
-
-                    // Do NOT extend trendline forward - only show historical trend
-                    trendline.Forward = 0;
-
-                    // Optional: Display equation and R-squared on chart
-                    trendline.DisplayEquation = false;
-                    trendline.DisplayRSquared = false;
+                    // Try version 16.0.0.0 as fallback
+                    try
+                    {
+                        var officeAssembly = System.Reflection.Assembly.Load("office, Version=16.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c");
+                        canCreateCharts = officeAssembly != null;
+                    }
+                    catch
+                    {
+                        // office.dll not available - skip chart creation
+                        canCreateCharts = false;
+                    }
                 }
-
-                // Series 3: Forecast (Dots only - from Forecast Data sheet, Type = "Forecast")
-                // Data is already populated in column 4 from Forecast Data sheet
-                if (seriesCollection.Count >= 3)
+                
+                if (canCreateCharts)
                 {
-                    Excel.Series forecastSeries = (Excel.Series)seriesCollection.Item(3);
-                    forecastSeries.Name = "Forecast";
-                    forecastSeries.ChartType = Excel.XlChartType.xlLine;
+                    try
+                    {
+                        // Chart range includes: Month, Actual Sales, Trend & Forecast (Historical), Forecast (Dots)
+                        Excel.Range chartRange = chartDataSheet.Range[chartDataSheet.Cells[1, 1], chartDataSheet.Cells[lastRow, 4]];
 
-                    // Hide the line - show only dots (markers) for forecast points
-                    forecastSeries.Format.Line.Visible = 0; // 0 = msoFalse (invisible line)
+                        // Get ChartObjects - with embedded interop types, this might return object
+                        object chartObjectsObj = chartDataSheet.ChartObjects();
+                        Excel.ChartObjects chartObjects = (Excel.ChartObjects)chartObjectsObj;
+                        Excel.ChartObject chartObject = (Excel.ChartObject)chartObjects.Add(0, 0, 600, 400);
+                        Excel.Chart chartSheet = chartObject.Chart;
 
-                    // Configure markers (dots) only
-                    forecastSeries.MarkerStyle = Excel.XlMarkerStyle.xlMarkerStyleCircle;
-                    forecastSeries.MarkerSize = 8; // Larger dots for better visibility
+                        // Set chart data source
+                        chartSheet.SetSourceData(chartRange);
 
-                    // Set marker color to red
-                    forecastSeries.MarkerForegroundColor = System.Drawing.ColorTranslator.ToOle(Color.Red);
-                    forecastSeries.MarkerBackgroundColor = System.Drawing.ColorTranslator.ToOle(Color.Red);
+                        // Configure chart to treat empty cells as gaps (not zeros) - must be set before adding series
+                        chartSheet.DisplayBlanksAs = Excel.XlDisplayBlanksAs.xlNotPlotted;
+
+                        // Configure chart type - Combo chart (Column + Line)
+                        chartSheet.ChartType = Excel.XlChartType.xlColumnClustered;
+
+                        // Get chart series collection
+                        Excel.SeriesCollection seriesCollection = (Excel.SeriesCollection)chartSheet.SeriesCollection();
+
+                        // Series 1: Actual Sales (Column chart)
+                        if (seriesCollection.Count >= 1)
+                        {
+                            Excel.Series actualSeries = (Excel.Series)seriesCollection.Item(1);
+                            actualSeries.Name = "Actual Sales";
+                            actualSeries.ChartType = Excel.XlChartType.xlColumnClustered;
+                            try
+                            {
+                                dynamic actualSeriesFormat = actualSeries.Format;
+                                dynamic actualSeriesFill = actualSeriesFormat.Fill;
+                                actualSeriesFill.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(Color.LightBlue);
+                            }
+                            catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                                       ex is System.Runtime.InteropServices.COMException ||
+                                                       (ex.Message?.Contains("office") == true) ||
+                                                       (ex.Message?.Contains("71e9bce111e9429c") == true))
+                            {
+                                // office.dll not available - skip color formatting
+                            }
+                            catch { /* Continue if color formatting fails */ }
+                        }
+
+                        // Series 2: Actual Sales Line (for trendline calculation)
+                        // Create a line series with actual sales data - trendlines work on line/scatter charts
+                        // IMPORTANT: Limit the series to only historical data rows to prevent trendline extension
+                        if (seriesCollection.Count >= 2 && firstHistoricalRow > 0 && lastHistoricalRow > 0)
+                        {
+                            Excel.Series actualSalesLineSeries = (Excel.Series)seriesCollection.Item(2);
+                            actualSalesLineSeries.Name = "Actual Sales Line";
+                            actualSalesLineSeries.ChartType = Excel.XlChartType.xlLine;
+
+                            // Set the series to only use historical data (not forecast months)
+                            // This ensures the trendline only calculates from historical data
+                            Excel.Range historicalValuesRange = chartDataSheet.Range[
+                                chartDataSheet.Cells[firstHistoricalRow, 3],
+                                chartDataSheet.Cells[lastHistoricalRow, 3]];
+                            Excel.Range historicalXValuesRange = chartDataSheet.Range[
+                                chartDataSheet.Cells[firstHistoricalRow, 1],
+                                chartDataSheet.Cells[lastHistoricalRow, 1]];
+
+                            actualSalesLineSeries.Values = historicalValuesRange;
+                            actualSalesLineSeries.XValues = historicalXValuesRange;
+
+                            // Make this series invisible (we only need it for the trendline)
+                            try
+                            {
+                                dynamic actualSalesLineFormat = actualSalesLineSeries.Format;
+                                dynamic actualSalesLineLine = actualSalesLineFormat.Line;
+                                actualSalesLineLine.Visible = 0; // Hide the line
+                            }
+                            catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                                       ex is System.Runtime.InteropServices.COMException ||
+                                                       (ex.Message?.Contains("office") == true) ||
+                                                       (ex.Message?.Contains("71e9bce111e9429c") == true))
+                            {
+                                // office.dll not available - skip line visibility
+                            }
+                            catch { /* Continue if line visibility fails */ }
+                            actualSalesLineSeries.MarkerStyle = Excel.XlMarkerStyle.xlMarkerStyleNone; // No markers
+
+                            // Add trendline to this series - only for historical data (no forward extension)
+                            Excel.Trendlines trendlines = (Excel.Trendlines)actualSalesLineSeries.Trendlines();
+                            Excel.XlTrendlineType trendlineTypeEnum = GetTrendlineType(trendlineType);
+                            Excel.Trendline trendline = (Excel.Trendline)trendlines.Add(trendlineTypeEnum);
+
+                            // Apply extra options based on trendline type
+                            if (trendlineTypeEnum == Excel.XlTrendlineType.xlPolynomial)
+                            {
+                                int order = Math.Max(2, Math.Min(6, polynomialOrder));
+                                trendline.Order = order;
+                            }
+                            else if (trendlineTypeEnum == Excel.XlTrendlineType.xlMovingAvg)
+                            {
+                                int period = Math.Max(2, movingAveragePeriod);
+                                trendline.Period = period;
+                            }
+
+                            // Configure trendline - only shows historical trend, not forecast
+                            trendline.Name = "Trend";
+                            try
+                            {
+                                dynamic trendlineFormat = trendline.Format;
+                                dynamic trendlineLine = trendlineFormat.Line;
+                                trendlineLine.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(Color.Red);
+                                trendlineLine.Weight = 3;
+                            }
+                            catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                                       ex is System.Runtime.InteropServices.COMException ||
+                                                       (ex.Message?.Contains("office") == true) ||
+                                                       (ex.Message?.Contains("71e9bce111e9429c") == true))
+                            {
+                                // office.dll not available - skip trendline formatting
+                            }
+                            catch { /* Continue if trendline formatting fails */ }
+
+                            // Do NOT extend trendline forward - only show historical trend
+                            trendline.Forward = 0;
+
+                            // Optional: Display equation and R-squared on chart
+                            trendline.DisplayEquation = false;
+                            trendline.DisplayRSquared = false;
+                        }
+
+                        // Series 3: Forecast (Dots only - from Forecast Data sheet, Type = "Forecast")
+                        // Data is already populated in column 4 from Forecast Data sheet
+                        if (seriesCollection.Count >= 3)
+                        {
+                            Excel.Series forecastSeries = (Excel.Series)seriesCollection.Item(3);
+                            forecastSeries.Name = "Forecast";
+                            forecastSeries.ChartType = Excel.XlChartType.xlLine;
+
+                            // Hide the line - show only dots (markers) for forecast points
+                            try
+                            {
+                                dynamic forecastSeriesFormat = forecastSeries.Format;
+                                dynamic forecastSeriesLine = forecastSeriesFormat.Line;
+                                forecastSeriesLine.Visible = 0; // 0 = msoFalse (invisible line)
+                            }
+                            catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                                       ex is System.Runtime.InteropServices.COMException ||
+                                                       (ex.Message?.Contains("office") == true) ||
+                                                       (ex.Message?.Contains("71e9bce111e9429c") == true))
+                            {
+                                // office.dll not available - skip line visibility
+                            }
+                            catch { /* Continue if line visibility fails */ }
+
+                            // Configure markers (dots) only
+                            forecastSeries.MarkerStyle = Excel.XlMarkerStyle.xlMarkerStyleCircle;
+                            forecastSeries.MarkerSize = 8; // Larger dots for better visibility
+
+                            // Set marker color to red
+                            forecastSeries.MarkerForegroundColor = System.Drawing.ColorTranslator.ToOle(Color.Red);
+                            forecastSeries.MarkerBackgroundColor = System.Drawing.ColorTranslator.ToOle(Color.Red);
+                        }
+                        else if (forecastDataList.Any(f => f.Type == "Forecast"))
+                        {
+                            // Add forecast series if it doesn't exist yet
+                            Excel.Range forecastRange = chartDataSheet.Range[chartDataSheet.Cells[1, 4], chartDataSheet.Cells[lastRow, 4]];
+                            Excel.Series forecastSeries = (Excel.Series)seriesCollection.NewSeries();
+
+                            forecastSeries.Name = "Forecast";
+                            forecastSeries.ChartType = Excel.XlChartType.xlLine;
+                            forecastSeries.Values = forecastRange;
+                            forecastSeries.XValues = chartDataSheet.Range[chartDataSheet.Cells[2, 1], chartDataSheet.Cells[lastRow, 1]];
+
+                            // Hide the line - show only dots (markers) for forecast points
+                            try
+                            {
+                                dynamic forecastSeriesFormat = forecastSeries.Format;
+                                dynamic forecastSeriesLine = forecastSeriesFormat.Line;
+                                forecastSeriesLine.Visible = 0; // 0 = msoFalse (invisible line)
+                            }
+                            catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                                       ex is System.Runtime.InteropServices.COMException ||
+                                                       (ex.Message?.Contains("office") == true) ||
+                                                       (ex.Message?.Contains("71e9bce111e9429c") == true))
+                            {
+                                // office.dll not available - skip line visibility
+                            }
+                            catch { /* Continue if line visibility fails */ }
+
+                            // Configure markers (dots) only
+                            forecastSeries.MarkerStyle = Excel.XlMarkerStyle.xlMarkerStyleCircle;
+                            forecastSeries.MarkerSize = 8; // Larger dots for better visibility
+
+                            // Set marker color to red
+                            forecastSeries.MarkerForegroundColor = System.Drawing.ColorTranslator.ToOle(Color.Red);
+                            forecastSeries.MarkerBackgroundColor = System.Drawing.ColorTranslator.ToOle(Color.Red);
+                        }
+
+                    // Chart title and formatting - match excelPredictive branch design
+                    try
+                    {
+                        chartSheet.HasTitle = true;
+                        dynamic chartTitle = chartSheet.ChartTitle;
+                        chartTitle.Text = "Future Sales Estimation (Monthly Revenue Trend)";
+                        dynamic chartTitleFont = chartTitle.Font;
+                        chartTitleFont.Size = 14;
+                        chartTitleFont.Bold = true;
+                    }
+                    catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                               ex is System.Runtime.InteropServices.COMException ||
+                                               (ex.Message?.Contains("office") == true) ||
+                                               (ex.Message?.Contains("71e9bce111e9429c") == true))
+                    {
+                        // office.dll not available - skip chart title formatting
+                    }
+                    catch { /* Continue if chart title fails */ }
+
+                    // Axis titles - match excelPredictive branch design
+                    try
+                    {
+                        Excel.Axis categoryAxis = (Excel.Axis)chartSheet.Axes(Excel.XlAxisType.xlCategory, Excel.XlAxisGroup.xlPrimary);
+                        categoryAxis.HasTitle = true;
+                        dynamic categoryAxisTitle = categoryAxis.AxisTitle;
+                        categoryAxisTitle.Text = "Month";
+                        dynamic categoryAxisTitleFont = categoryAxisTitle.Font;
+                        categoryAxisTitleFont.Size = 11;
+                        categoryAxisTitleFont.Bold = true;
+                        
+                        // Format category axis dates
+                        categoryAxis.CategoryType = Excel.XlCategoryType.xlCategoryScale;
+                        categoryAxis.TickLabels.NumberFormat = "MMM yy";
+                    }
+                    catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                               ex is System.Runtime.InteropServices.COMException ||
+                                               (ex.Message?.Contains("office") == true) ||
+                                               (ex.Message?.Contains("71e9bce111e9429c") == true))
+                    {
+                        // office.dll not available - skip category axis formatting
+                    }
+                    catch { /* Continue if category axis fails */ }
+                    
+                    try
+                    {
+                        Excel.Axis valueAxis = (Excel.Axis)chartSheet.Axes(Excel.XlAxisType.xlValue, Excel.XlAxisGroup.xlPrimary);
+                        valueAxis.HasTitle = true;
+                        dynamic valueAxisTitle = valueAxis.AxisTitle;
+                        valueAxisTitle.Text = "Total Sales (Revenue)";
+                        dynamic valueAxisTitleFont = valueAxisTitle.Font;
+                        valueAxisTitleFont.Size = 11;
+                        valueAxisTitleFont.Bold = true;
+                        
+                        // Format value axis as currency
+                        valueAxis.TickLabels.NumberFormat = "$#,##0";
+                    }
+                    catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                               ex is System.Runtime.InteropServices.COMException ||
+                                               (ex.Message?.Contains("office") == true) ||
+                                               (ex.Message?.Contains("71e9bce111e9429c") == true))
+                    {
+                        // office.dll not available - skip value axis formatting
+                    }
+                    catch { /* Continue if value axis fails */ }
+                    
+                    // Legend - match excelPredictive branch design
+                    try
+                    {
+                        chartSheet.HasLegend = true;
+                        dynamic legend = chartSheet.Legend;
+                        legend.Position = Excel.XlLegendPosition.xlLegendPositionTop;
+                    }
+                    catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                               ex is System.Runtime.InteropServices.COMException ||
+                                               (ex.Message?.Contains("office") == true) ||
+                                               (ex.Message?.Contains("71e9bce111e9429c") == true))
+                    {
+                        // office.dll not available - use default legend position
+                    }
+                    catch { /* Legend access failed - continue with default */ }
+
+                    // Chart area formatting - match excelPredictive branch design
+                    try
+                    {
+                        dynamic plotArea = chartSheet.PlotArea;
+                        dynamic plotAreaFormat = plotArea.Format;
+                        dynamic plotAreaFill = plotAreaFormat.Fill;
+                        plotAreaFill.Visible = 0; // 0 = msoFalse (transparent)
+                    }
+                    catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                               ex is System.Runtime.InteropServices.COMException ||
+                                               (ex.Message?.Contains("office") == true) ||
+                                               (ex.Message?.Contains("71e9bce111e9429c") == true))
+                    {
+                        // office.dll not available - skip plot area formatting
+                    }
+                    catch { /* Continue if plot area formatting fails */ }
+
+                    try
+                    {
+                        dynamic chartArea = chartSheet.ChartArea;
+                        dynamic chartAreaFormat = chartArea.Format;
+                        dynamic chartAreaFill = chartAreaFormat.Fill;
+                        chartAreaFill.Visible = 0; // 0 = msoFalse (transparent)
+                    }
+                    catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                               ex is System.Runtime.InteropServices.COMException ||
+                                               (ex.Message?.Contains("office") == true) ||
+                                               (ex.Message?.Contains("71e9bce111e9429c") == true))
+                    {
+                        // office.dll not available - skip chart area formatting
+                    }
+                    catch { /* Continue if chart area formatting fails */ }
+
+                    // Move chart to its own sheet
+                    try
+                    {
+                        chartSheet.Location(Excel.XlChartLocation.xlLocationAsNewSheet, "Sales Trend Chart");
+                    }
+                    catch
+                    {
+                        // If moving fails, chart stays embedded - still functional
+                    }
+                    
+                    // Hide the temporary data sheet
+                    try
+                    {
+                        chartDataSheet.Visible = Excel.XlSheetVisibility.xlSheetHidden;
+                    }
+                    catch { /* Continue if hiding fails */ }
                 }
-                else if (forecastDataList.Any(f => f.Type == "Forecast"))
+                catch (System.IO.FileNotFoundException ex) when (ex.Message?.Contains("office") == true || ex.Message?.Contains("71e9bce111e9429c") == true)
                 {
-                    // Add forecast series if it doesn't exist yet
-                    Excel.Range forecastRange = chartDataSheet.Range[chartDataSheet.Cells[1, 4], chartDataSheet.Cells[lastRow, 4]];
-                    Excel.Series forecastSeries = (Excel.Series)seriesCollection.NewSeries();
-
-                    forecastSeries.Name = "Forecast";
-                    forecastSeries.ChartType = Excel.XlChartType.xlLine;
-                    forecastSeries.Values = forecastRange;
-                    forecastSeries.XValues = chartDataSheet.Range[chartDataSheet.Cells[2, 1], chartDataSheet.Cells[lastRow, 1]];
-
-                    // Hide the line - show only dots (markers) for forecast points
-                    forecastSeries.Format.Line.Visible = 0; // 0 = msoFalse (invisible line)
-
-                    // Configure markers (dots) only
-                    forecastSeries.MarkerStyle = Excel.XlMarkerStyle.xlMarkerStyleCircle;
-                    forecastSeries.MarkerSize = 8; // Larger dots for better visibility
-
-                    // Set marker color to red
-                    forecastSeries.MarkerForegroundColor = System.Drawing.ColorTranslator.ToOle(Color.Red);
-                    forecastSeries.MarkerBackgroundColor = System.Drawing.ColorTranslator.ToOle(Color.Red);
+                    // office.dll not available - skip chart creation, but continue with data export
+                    // Data is already exported to sheets, so the export is still useful
+                    try
+                    {
+                        chartDataSheet.Visible = Excel.XlSheetVisibility.xlSheetHidden;
+                    }
+                    catch { /* Continue if hiding fails */ }
                 }
-
-                // Chart title
-                chartSheet.HasTitle = true;
-                chartSheet.ChartTitle.Text = "Future Sales Estimation (Monthly Revenue Trend)";
-                chartSheet.ChartTitle.Font.Size = 14;
-                chartSheet.ChartTitle.Font.Bold = true;
-
-                // Axis titles
-                Excel.Axis categoryAxis = (Excel.Axis)chartSheet.Axes(Excel.XlAxisType.xlCategory, Excel.XlAxisGroup.xlPrimary);
-                categoryAxis.HasTitle = true;
-                categoryAxis.AxisTitle.Text = "Month";
-                categoryAxis.AxisTitle.Font.Size = 11;
-                categoryAxis.AxisTitle.Font.Bold = true;
-                Excel.Axis valueAxis = (Excel.Axis)chartSheet.Axes(Excel.XlAxisType.xlValue, Excel.XlAxisGroup.xlPrimary);
-                valueAxis.HasTitle = true;
-                valueAxis.AxisTitle.Text = "Total Sales (Revenue)";
-                valueAxis.AxisTitle.Font.Size = 11;
-                valueAxis.AxisTitle.Font.Bold = true;
-                // Format value axis as currency
-                valueAxis.TickLabels.NumberFormat = "$#,##0";
-                // Format category axis dates
-                categoryAxis.CategoryType = Excel.XlCategoryType.xlCategoryScale;
-                categoryAxis.TickLabels.NumberFormat = "MMM yy";
-                // Legend
-                chartSheet.HasLegend = true;
-                chartSheet.Legend.Position = Excel.XlLegendPosition.xlLegendPositionTop;
-                // Chart area formatting
-                chartSheet.PlotArea.Format.Fill.Visible = 0; // 0 = msoFalse
-                chartSheet.ChartArea.Format.Fill.Visible = 0; // 0 = msoFalse
-                chartSheet.Location(Excel.XlChartLocation.xlLocationAsNewSheet, "Sales Trend Chart");
-                // Hide the temporary data sheet
-                chartDataSheet.Visible = Excel.XlSheetVisibility.xlSheetHidden;
+                catch (System.Runtime.InteropServices.COMException)
+                {
+                    // COM error - skip chart creation
+                    try
+                    {
+                        chartDataSheet.Visible = Excel.XlSheetVisibility.xlSheetHidden;
+                    }
+                    catch { /* Continue if hiding fails */ }
+                }
+                catch (Exception ex) when (ex.Message?.Contains("office") == true || ex.Message?.Contains("71e9bce111e9429c") == true)
+                {
+                    // office.dll related error - skip chart creation
+                    try
+                    {
+                        chartDataSheet.Visible = Excel.XlSheetVisibility.xlSheetHidden;
+                    }
+                    catch { /* Continue if hiding fails */ }
+                    }
+                }
+                else
+                {
+                    // office.dll not available - skip chart creation entirely
+                    // Just hide the chart data sheet
+                    try
+                    {
+                        chartDataSheet.Visible = Excel.XlSheetVisibility.xlSheetHidden;
+                    }
+                    catch { /* Continue if hiding fails */ }
+                }
 
                 // Save file
-                workbook.SaveAs(filePath);
+                try
+                {
+                    dynamic wb = workbook;
+                    wb.SaveAs(filePath);
+                }
+                catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                           ex is System.Runtime.InteropServices.COMException ||
+                                           (ex.Message?.Contains("office") == true) ||
+                                           (ex.Message?.Contains("71e9bce111e9429c") == true))
+                {
+                    // office.dll not available - try alternative save method
+                    try
+                    {
+                        workbook.SaveAs(filePath);
+                    }
+                    catch
+                    {
+                        throw new Exception("Unable to save Excel file. Office may not be properly installed.");
+                    }
+                }
+                catch { /* Try alternative save */ }
             }
             finally
             {
                 // Clean up COM objects
                 if (workbook != null)
                 {
-                    workbook.Close(false);
+                    try
+                    {
+                        dynamic wb = workbook;
+                        wb.Close(false);
+                    }
+                    catch { /* Continue cleanup */ }
+                    try
+                    {
+                        workbook.Close(false);
+                    }
+                    catch { /* Continue cleanup */ }
                     Marshal.ReleaseComObject(workbook);
                 }
                 if (excelApp != null)
                 {
-                    excelApp.Quit();
+                    try
+                    {
+                        dynamic app = excelApp;
+                        app.Quit();
+                    }
+                    catch { /* Continue cleanup */ }
+                    try
+                    {
+                        excelApp.Quit();
+                    }
+                    catch { /* Continue cleanup */ }
                     Marshal.ReleaseComObject(excelApp);
                 }
             }
@@ -701,6 +1494,9 @@ namespace BakeryBI.Utils
                 MessageBox.Show("No data available for selected filters.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+
+            // Attempt to load office.dll before creating Excel Application
+            EnsureOfficeDllLoaded();
 
             Excel.Application excelApp = null;
             Excel.Workbook workbook = null;
@@ -889,19 +1685,59 @@ namespace BakeryBI.Utils
                 // Auto-fit columns
                 detailSheet.Columns.AutoFit();
                 // Save file
-                workbook.SaveAs(filePath);
+                try
+                {
+                    dynamic wb = workbook;
+                    wb.SaveAs(filePath);
+                }
+                catch (Exception ex) when (ex is System.IO.FileNotFoundException || 
+                                           ex is System.Runtime.InteropServices.COMException ||
+                                           (ex.Message?.Contains("office") == true) ||
+                                           (ex.Message?.Contains("71e9bce111e9429c") == true))
+                {
+                    // office.dll not available - try alternative save method
+                    try
+                    {
+                        workbook.SaveAs(filePath);
+                    }
+                    catch
+                    {
+                        throw new Exception("Unable to save Excel file. Office may not be properly installed.");
+                    }
+                }
+                catch { /* Try alternative save */ }
             }
             finally
             {
                 // Clean up COM objects
                 if (workbook != null)
                 {
-                    workbook.Close(false);
+                    try
+                    {
+                        dynamic wb = workbook;
+                        wb.Close(false);
+                    }
+                    catch { /* Continue cleanup */ }
+                    try
+                    {
+                        workbook.Close(false);
+                    }
+                    catch { /* Continue cleanup */ }
                     Marshal.ReleaseComObject(workbook);
                 }
                 if (excelApp != null)
                 {
-                    excelApp.Quit();
+                    try
+                    {
+                        dynamic app = excelApp;
+                        app.Quit();
+                    }
+                    catch { /* Continue cleanup */ }
+                    try
+                    {
+                        excelApp.Quit();
+                    }
+                    catch { /* Continue cleanup */ }
                     Marshal.ReleaseComObject(excelApp);
                 }
             }

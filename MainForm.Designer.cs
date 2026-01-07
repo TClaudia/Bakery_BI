@@ -59,6 +59,10 @@
             cmbForecastMonths = new ComboBox();
             dgvSalesData = new DataGridView();
             pnlExcelExportOptions = new Panel();
+			lblPolynomialOrder = new Label();
+			numPolynomialOrder = new NumericUpDown();
+			lblMovingAveragePeriod = new Label();
+			numMovingAveragePeriod = new NumericUpDown();
             lblTrendlineType = new Label();
             cmbTrendlineType = new ComboBox();
             lblLowThreshold = new Label();
@@ -97,6 +101,8 @@
             ((System.ComponentModel.ISupportInitialize)chartFutureSalesEstimation).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvSalesData).BeginInit();
             pnlExcelExportOptions.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)numPolynomialOrder).BeginInit();
+			((System.ComponentModel.ISupportInitialize)numMovingAveragePeriod).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numLowThreshold).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numHighThreshold).BeginInit();
             tabEvolutionOfProfits.SuspendLayout();
@@ -451,9 +457,8 @@
             // 
             // splitContainerFutureSalesEstimation.Panel1
             // 
-            splitContainerFutureSalesEstimation.Panel1.Controls.Add(pnlExcelExportOptions);
-            splitContainerFutureSalesEstimation.Panel1.Controls.Add(exportToExcel3);
             splitContainerFutureSalesEstimation.Panel1.Controls.Add(chartFutureSalesEstimation);
+            splitContainerFutureSalesEstimation.Panel1.Controls.Add(pnlExcelExportOptions);
             splitContainerFutureSalesEstimation.Panel1.Controls.Add(cmbForecastMonths);
             // 
             // splitContainerFutureSalesEstimation.Panel2
@@ -465,10 +470,11 @@
             // 
             // exportToExcel3
             // 
-            exportToExcel3.Location = new Point(0, 73);
+            exportToExcel3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            exportToExcel3.Location = new Point(629, 20);
             exportToExcel3.Name = "exportToExcel3";
-            exportToExcel3.Size = new Size(103, 23);
-            exportToExcel3.TabIndex = 2;
+            exportToExcel3.Size = new Size(110, 27);
+            exportToExcel3.TabIndex = 10;
             exportToExcel3.Text = "Export To Excel";
             exportToExcel3.UseVisualStyleBackColor = true;
             exportToExcel3.Click += exportToExcel3_Click;
@@ -501,6 +507,11 @@
             // 
             // pnlExcelExportOptions
             // 
+            pnlExcelExportOptions.Controls.Add(exportToExcel3);
+            pnlExcelExportOptions.Controls.Add(lblPolynomialOrder);
+            pnlExcelExportOptions.Controls.Add(numPolynomialOrder);
+            pnlExcelExportOptions.Controls.Add(lblMovingAveragePeriod);
+            pnlExcelExportOptions.Controls.Add(numMovingAveragePeriod);
             pnlExcelExportOptions.Controls.Add(lblHighThreshold);
             pnlExcelExportOptions.Controls.Add(numHighThreshold);
             pnlExcelExportOptions.Controls.Add(lblLowThreshold);
@@ -512,6 +523,48 @@
             pnlExcelExportOptions.Name = "pnlExcelExportOptions";
             pnlExcelExportOptions.Size = new Size(749, 50);
             pnlExcelExportOptions.TabIndex = 3;
+            // 
+            // lblPolynomialOrder
+            // 
+            lblPolynomialOrder.AutoSize = true;
+            lblPolynomialOrder.Location = new Point(240, 6);
+            lblPolynomialOrder.Name = "lblPolynomialOrder";
+            lblPolynomialOrder.Size = new Size(64, 15);
+            lblPolynomialOrder.TabIndex = 2;
+            lblPolynomialOrder.Text = "Poly Order:";
+            lblPolynomialOrder.Visible = false;
+            // 
+            // numPolynomialOrder
+            // 
+            numPolynomialOrder.Location = new Point(240, 24);
+            numPolynomialOrder.Maximum = new decimal(new int[] { 6, 0, 0, 0 });
+            numPolynomialOrder.Minimum = new decimal(new int[] { 2, 0, 0, 0 });
+            numPolynomialOrder.Name = "numPolynomialOrder";
+            numPolynomialOrder.Size = new Size(70, 23);
+            numPolynomialOrder.TabIndex = 3;
+            numPolynomialOrder.Value = new decimal(new int[] { 2, 0, 0, 0 });
+            numPolynomialOrder.Visible = false;
+            // 
+            // lblMovingAveragePeriod
+            // 
+            lblMovingAveragePeriod.AutoSize = true;
+            lblMovingAveragePeriod.Location = new Point(320, 6);
+            lblMovingAveragePeriod.Name = "lblMovingAveragePeriod";
+            lblMovingAveragePeriod.Size = new Size(63, 15);
+            lblMovingAveragePeriod.TabIndex = 4;
+            lblMovingAveragePeriod.Text = "MA Period:";
+            lblMovingAveragePeriod.Visible = false;
+            // 
+            // numMovingAveragePeriod
+            // 
+            numMovingAveragePeriod.Location = new Point(320, 24);
+            numMovingAveragePeriod.Maximum = new decimal(new int[] { 24, 0, 0, 0 });
+            numMovingAveragePeriod.Minimum = new decimal(new int[] { 2, 0, 0, 0 });
+            numMovingAveragePeriod.Name = "numMovingAveragePeriod";
+            numMovingAveragePeriod.Size = new Size(80, 23);
+            numMovingAveragePeriod.TabIndex = 5;
+            numMovingAveragePeriod.Value = new decimal(new int[] { 3, 0, 0, 0 });
+            numMovingAveragePeriod.Visible = false;
             // 
             // lblTrendlineType
             // 
@@ -535,39 +588,39 @@
             // lblLowThreshold
             // 
             lblLowThreshold.AutoSize = true;
-            lblLowThreshold.Location = new Point(240, 6);
+            lblLowThreshold.Location = new Point(410, 6);
             lblLowThreshold.Name = "lblLowThreshold";
-            lblLowThreshold.Size = new Size(84, 15);
-            lblLowThreshold.TabIndex = 2;
-            lblLowThreshold.Text = "Low Threshold:";
+            lblLowThreshold.Size = new Size(45, 15);
+            lblLowThreshold.TabIndex = 6;
+            lblLowThreshold.Text = "Low %:";
             // 
             // numLowThreshold
             // 
-            numLowThreshold.Location = new Point(240, 24);
+            numLowThreshold.Location = new Point(410, 24);
             numLowThreshold.Maximum = new decimal(new int[] { 100, 0, 0, 0 });
             numLowThreshold.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numLowThreshold.Name = "numLowThreshold";
             numLowThreshold.Size = new Size(60, 23);
-            numLowThreshold.TabIndex = 3;
+            numLowThreshold.TabIndex = 7;
             numLowThreshold.Value = new decimal(new int[] { 33, 0, 0, 0 });
             // 
             // lblHighThreshold
             // 
             lblHighThreshold.AutoSize = true;
-            lblHighThreshold.Location = new Point(310, 6);
+            lblHighThreshold.Location = new Point(480, 6);
             lblHighThreshold.Name = "lblHighThreshold";
-            lblHighThreshold.Size = new Size(86, 15);
-            lblHighThreshold.TabIndex = 4;
-            lblHighThreshold.Text = "High Threshold:";
+            lblHighThreshold.Size = new Size(48, 15);
+            lblHighThreshold.TabIndex = 9;
+            lblHighThreshold.Text = "High %:";
             // 
             // numHighThreshold
             // 
-            numHighThreshold.Location = new Point(310, 24);
+            numHighThreshold.Location = new Point(480, 24);
             numHighThreshold.Maximum = new decimal(new int[] { 100, 0, 0, 0 });
             numHighThreshold.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numHighThreshold.Name = "numHighThreshold";
             numHighThreshold.Size = new Size(60, 23);
-            numHighThreshold.TabIndex = 5;
+            numHighThreshold.TabIndex = 8;
             numHighThreshold.Value = new decimal(new int[] { 67, 0, 0, 0 });
             // 
             // dgvSalesData
@@ -705,6 +758,8 @@
             ((System.ComponentModel.ISupportInitialize)dgvSalesData).EndInit();
             pnlExcelExportOptions.ResumeLayout(false);
             pnlExcelExportOptions.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)numPolynomialOrder).EndInit();
+			((System.ComponentModel.ISupportInitialize)numMovingAveragePeriod).EndInit();
             ((System.ComponentModel.ISupportInitialize)numLowThreshold).EndInit();
             ((System.ComponentModel.ISupportInitialize)numHighThreshold).EndInit();
             tabEvolutionOfProfits.ResumeLayout(false);
@@ -756,6 +811,10 @@
         private Button exportToExcel3;
         private Button exportToExcel4;
         private Panel pnlExcelExportOptions;
+		private Label lblPolynomialOrder;
+		private NumericUpDown numPolynomialOrder;
+		private Label lblMovingAveragePeriod;
+		private NumericUpDown numMovingAveragePeriod;
         private Label lblTrendlineType;
         private ComboBox cmbTrendlineType;
         private Label lblLowThreshold;
