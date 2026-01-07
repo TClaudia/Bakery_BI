@@ -12,13 +12,30 @@ namespace BakeryBI.Utils
     public static class ExcelExporter
     {
         /// <summary>
+        /// Converts string trendline type to Excel XlTrendlineType enum
+        /// </summary>
+        private static Excel.XlTrendlineType GetTrendlineType(string trendlineType)
+        {
+            return trendlineType?.ToLower() switch
+            {
+                "exponential" => Excel.XlTrendlineType.xlExponential,
+                "polynomial" => Excel.XlTrendlineType.xlPolynomial,
+                "power" => Excel.XlTrendlineType.xlPower,
+                "moving average" => Excel.XlTrendlineType.xlMovingAvg,
+                _ => Excel.XlTrendlineType.xlLinear // Default to Linear
+            };
+        }
+
+        /// <summary>
         /// Applies icon set conditional formatting to a column in an Excel worksheet
         /// </summary>
         /// <param name="worksheet">The Excel worksheet to apply formatting to</param>
         /// <param name="columnLetter">The column letter (e.g., "B", "C") to apply formatting to</param>
         /// <param name="lastDataRow">The last row number containing data (1-based)</param>
         /// <param name="startConfigRow">The starting row number for configuration cells (1-based)</param>
-        private static void ApplyIconSetConditionalFormatting(Excel.Worksheet worksheet, string columnLetter, int lastDataRow, int startConfigRow)
+        /// <param name="lowThresholdPercent">Low threshold percentage (default: 33)</param>
+        /// <param name="highThresholdPercent">High threshold percentage (default: 67)</param>
+        private static void ApplyIconSetConditionalFormatting(Excel.Worksheet worksheet, string columnLetter, int lastDataRow, int startConfigRow, int lowThresholdPercent = 33, int highThresholdPercent = 67)
         {
             if (lastDataRow < 2)
                 return;
@@ -26,41 +43,41 @@ namespace BakeryBI.Utils
             int configRow = startConfigRow;
             
             // Header for threshold configuration
-            Excel.Range thresholdHeader = worksheet.Cells[configRow, 1];
+            Excel.Range thresholdHeader = (Excel.Range)worksheet.Cells[configRow, 1];
             thresholdHeader.Value2 = "Icon Set Thresholds (Percentiles)";
             thresholdHeader.Font.Bold = true;
             thresholdHeader.Font.Size = 11;
 
             // Low threshold cell
-            Excel.Range lowThresholdLabel = worksheet.Cells[++configRow, 1];
-            Excel.Range lowThresholdCell = worksheet.Cells[configRow, 2];
+            Excel.Range lowThresholdLabel = (Excel.Range)worksheet.Cells[++configRow, 1];
+            Excel.Range lowThresholdCell = (Excel.Range)worksheet.Cells[configRow, 2];
             lowThresholdLabel.Value2 = "Low Threshold (%):";
-            lowThresholdCell.Value2 = 33;
+            lowThresholdCell.Value2 = lowThresholdPercent;
             lowThresholdCell.NumberFormat = "0";
             lowThresholdCell.Interior.Color = System.Drawing.ColorTranslator.ToOle(Color.LightYellow);
             string lowThresholdRef = lowThresholdCell.get_Address(true, false, Excel.XlReferenceStyle.xlA1, false, null);
 
             // High threshold cell
-            Excel.Range highThresholdLabel = worksheet.Cells[++configRow, 1];
-            Excel.Range highThresholdCell = worksheet.Cells[configRow, 2];
+            Excel.Range highThresholdLabel = (Excel.Range)worksheet.Cells[++configRow, 1];
+            Excel.Range highThresholdCell = (Excel.Range)worksheet.Cells[configRow, 2];
             highThresholdLabel.Value2 = "High Threshold (%):";
-            highThresholdCell.Value2 = 67;
+            highThresholdCell.Value2 = highThresholdPercent;
             highThresholdCell.NumberFormat = "0";
             highThresholdCell.Interior.Color = System.Drawing.ColorTranslator.ToOle(Color.LightYellow);
             string highThresholdRef = highThresholdCell.get_Address(true, false, Excel.XlReferenceStyle.xlA1, false, null);
 
             // Helper formula cells
             configRow++;
-            Excel.Range lowValueLabel = worksheet.Cells[configRow, 1];
-            Excel.Range lowValueCell = worksheet.Cells[configRow, 2];
+            Excel.Range lowValueLabel = (Excel.Range)worksheet.Cells[configRow, 1];
+            Excel.Range lowValueCell = (Excel.Range)worksheet.Cells[configRow, 2];
             lowValueLabel.Value2 = "Low Threshold Value:";
             lowValueCell.Formula = $"=PERCENTILE(${columnLetter}$2:${columnLetter}${lastDataRow},{lowThresholdRef}/100)";
             lowValueCell.NumberFormat = "$#,##0.00";
             string lowValueRef = lowValueCell.get_Address(true, false, Excel.XlReferenceStyle.xlA1, false, null);
 
             configRow++;
-            Excel.Range highValueLabel = worksheet.Cells[configRow, 1];
-            Excel.Range highValueCell = worksheet.Cells[configRow, 2];
+            Excel.Range highValueLabel = (Excel.Range)worksheet.Cells[configRow, 1];
+            Excel.Range highValueCell = (Excel.Range)worksheet.Cells[configRow, 2];
             highValueLabel.Value2 = "High Threshold Value:";
             highValueCell.Formula = $"=PERCENTILE(${columnLetter}$2:${columnLetter}${lastDataRow},{highThresholdRef}/100)";
             highValueCell.NumberFormat = "$#,##0.00";
@@ -176,7 +193,7 @@ namespace BakeryBI.Utils
 
             // Add helpful note for users
             configRow++;
-            Excel.Range noteCell = worksheet.Cells[configRow, 1];
+            Excel.Range noteCell = (Excel.Range)worksheet.Cells[configRow, 1];
             noteCell.Value2 = $"To enable auto-update: Edit CF rule and reference cells {lowValueRef} and {highValueRef}";
             noteCell.Font.Italic = true;
             noteCell.Font.Size = 9;
@@ -189,7 +206,10 @@ namespace BakeryBI.Utils
         /// <param name="filePath">Path where the Excel file will be saved</param>
         /// <param name="filteredData">Filtered sales data to export</param>
         /// <param name="forecastMonths">Number of months to forecast</param>
-        public static void ExportFutureSalesToExcel(string filePath, List<SalesRecord> filteredData, int forecastMonths)
+        /// <param name="trendlineType">Type of trendline to use (Linear, Exponential, Polynomial, Power, Moving Average)</param>
+        /// <param name="lowThresholdPercent">Low threshold percentage for icon set formatting (default: 33)</param>
+        /// <param name="highThresholdPercent">High threshold percentage for icon set formatting (default: 67)</param>
+        public static void ExportFutureSalesToExcel(string filePath, List<SalesRecord> filteredData, int forecastMonths, string trendlineType = "Linear", int lowThresholdPercent = 33, int highThresholdPercent = 67)
         {
             if (filteredData == null || !filteredData.Any())
             {
@@ -271,7 +291,7 @@ namespace BakeryBI.Utils
                 ((Excel.Range)monthlySheet.Cells[summaryRow, 2]).Value2 = monthlySales.Sum(x => x.TransactionCount);
 
                 // Apply icon set conditional formatting to Total Sales column (Column B)
-                ApplyIconSetConditionalFormatting(monthlySheet, "B", row - 1, summaryRow + 3);
+                ApplyIconSetConditionalFormatting(monthlySheet, "B", row - 1, summaryRow + 3, lowThresholdPercent, highThresholdPercent);
 
                 // Auto-fit columns
                 monthlySheet.Columns.AutoFit();
@@ -342,7 +362,7 @@ namespace BakeryBI.Utils
                 }
 
                 // Apply icon set conditional formatting to Sales Forecast column (Column C)
-                ApplyIconSetConditionalFormatting(forecastSheet, "C", row - 1, summaryRow + 3);
+                ApplyIconSetConditionalFormatting(forecastSheet, "C", row - 1, summaryRow + 3, lowThresholdPercent, highThresholdPercent);
 
                 // Auto-fit columns
                 forecastSheet.Columns.AutoFit();
@@ -540,9 +560,10 @@ namespace BakeryBI.Utils
                     actualSalesLineSeries.Format.Line.Visible = 0; // Hide the line
                     actualSalesLineSeries.MarkerStyle = Excel.XlMarkerStyle.xlMarkerStyleNone; // No markers
 
-                    // Add linear trendline to this series - only for historical data (no forward extension)
+                    // Add trendline to this series - only for historical data (no forward extension)
                     Excel.Trendlines trendlines = (Excel.Trendlines)actualSalesLineSeries.Trendlines();
-                    Excel.Trendline trendline = (Excel.Trendline)trendlines.Add(Excel.XlTrendlineType.xlLinear);
+                    Excel.XlTrendlineType trendlineTypeEnum = GetTrendlineType(trendlineType);
+                    Excel.Trendline trendline = (Excel.Trendline)trendlines.Add(trendlineTypeEnum);
 
                     // Configure trendline - only shows historical trend, not forecast
                     trendline.Name = "Trend";

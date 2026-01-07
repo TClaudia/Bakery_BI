@@ -58,6 +58,13 @@
             chartFutureSalesEstimation = new System.Windows.Forms.DataVisualization.Charting.Chart();
             cmbForecastMonths = new ComboBox();
             dgvSalesData = new DataGridView();
+            pnlExcelExportOptions = new Panel();
+            lblTrendlineType = new Label();
+            cmbTrendlineType = new ComboBox();
+            lblLowThreshold = new Label();
+            numLowThreshold = new NumericUpDown();
+            lblHighThreshold = new Label();
+            numHighThreshold = new NumericUpDown();
             tabEvolutionOfProfits = new TabPage();
             splitContainerEvolutionOfProfit = new SplitContainer();
             exportToExcel4 = new Button();
@@ -89,6 +96,9 @@
             splitContainerFutureSalesEstimation.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)chartFutureSalesEstimation).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvSalesData).BeginInit();
+            pnlExcelExportOptions.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numLowThreshold).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numHighThreshold).BeginInit();
             tabEvolutionOfProfits.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainerEvolutionOfProfit).BeginInit();
             splitContainerEvolutionOfProfit.Panel1.SuspendLayout();
@@ -441,6 +451,7 @@
             // 
             // splitContainerFutureSalesEstimation.Panel1
             // 
+            splitContainerFutureSalesEstimation.Panel1.Controls.Add(pnlExcelExportOptions);
             splitContainerFutureSalesEstimation.Panel1.Controls.Add(exportToExcel3);
             splitContainerFutureSalesEstimation.Panel1.Controls.Add(chartFutureSalesEstimation);
             splitContainerFutureSalesEstimation.Panel1.Controls.Add(cmbForecastMonths);
@@ -454,7 +465,7 @@
             // 
             // exportToExcel3
             // 
-            exportToExcel3.Location = new Point(0, 23);
+            exportToExcel3.Location = new Point(0, 73);
             exportToExcel3.Name = "exportToExcel3";
             exportToExcel3.Size = new Size(103, 23);
             exportToExcel3.TabIndex = 2;
@@ -469,7 +480,7 @@
             chartFutureSalesEstimation.Dock = DockStyle.Fill;
             legend3.Name = "Legend1";
             chartFutureSalesEstimation.Legends.Add(legend3);
-            chartFutureSalesEstimation.Location = new Point(0, 23);
+            chartFutureSalesEstimation.Location = new Point(0, 96);
             chartFutureSalesEstimation.Name = "chartFutureSalesEstimation";
             series3.ChartArea = "ChartArea1";
             series3.Legend = "Legend1";
@@ -487,6 +498,77 @@
             cmbForecastMonths.Name = "cmbForecastMonths";
             cmbForecastMonths.Size = new Size(749, 23);
             cmbForecastMonths.TabIndex = 0;
+            // 
+            // pnlExcelExportOptions
+            // 
+            pnlExcelExportOptions.Controls.Add(lblHighThreshold);
+            pnlExcelExportOptions.Controls.Add(numHighThreshold);
+            pnlExcelExportOptions.Controls.Add(lblLowThreshold);
+            pnlExcelExportOptions.Controls.Add(numLowThreshold);
+            pnlExcelExportOptions.Controls.Add(lblTrendlineType);
+            pnlExcelExportOptions.Controls.Add(cmbTrendlineType);
+            pnlExcelExportOptions.Dock = DockStyle.Top;
+            pnlExcelExportOptions.Location = new Point(0, 23);
+            pnlExcelExportOptions.Name = "pnlExcelExportOptions";
+            pnlExcelExportOptions.Size = new Size(749, 50);
+            pnlExcelExportOptions.TabIndex = 3;
+            // 
+            // lblTrendlineType
+            // 
+            lblTrendlineType.AutoSize = true;
+            lblTrendlineType.Location = new Point(110, 6);
+            lblTrendlineType.Name = "lblTrendlineType";
+            lblTrendlineType.Size = new Size(79, 15);
+            lblTrendlineType.TabIndex = 0;
+            lblTrendlineType.Text = "Trendline Type:";
+            // 
+            // cmbTrendlineType
+            // 
+            cmbTrendlineType.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbTrendlineType.FormattingEnabled = true;
+            cmbTrendlineType.Items.AddRange(new object[] { "Linear", "Exponential", "Polynomial", "Power", "Moving Average" });
+            cmbTrendlineType.Location = new Point(110, 24);
+            cmbTrendlineType.Name = "cmbTrendlineType";
+            cmbTrendlineType.Size = new Size(120, 23);
+            cmbTrendlineType.TabIndex = 1;
+            // 
+            // lblLowThreshold
+            // 
+            lblLowThreshold.AutoSize = true;
+            lblLowThreshold.Location = new Point(240, 6);
+            lblLowThreshold.Name = "lblLowThreshold";
+            lblLowThreshold.Size = new Size(84, 15);
+            lblLowThreshold.TabIndex = 2;
+            lblLowThreshold.Text = "Low Threshold:";
+            // 
+            // numLowThreshold
+            // 
+            numLowThreshold.Location = new Point(240, 24);
+            numLowThreshold.Maximum = new decimal(new int[] { 100, 0, 0, 0 });
+            numLowThreshold.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            numLowThreshold.Name = "numLowThreshold";
+            numLowThreshold.Size = new Size(60, 23);
+            numLowThreshold.TabIndex = 3;
+            numLowThreshold.Value = new decimal(new int[] { 33, 0, 0, 0 });
+            // 
+            // lblHighThreshold
+            // 
+            lblHighThreshold.AutoSize = true;
+            lblHighThreshold.Location = new Point(310, 6);
+            lblHighThreshold.Name = "lblHighThreshold";
+            lblHighThreshold.Size = new Size(86, 15);
+            lblHighThreshold.TabIndex = 4;
+            lblHighThreshold.Text = "High Threshold:";
+            // 
+            // numHighThreshold
+            // 
+            numHighThreshold.Location = new Point(310, 24);
+            numHighThreshold.Maximum = new decimal(new int[] { 100, 0, 0, 0 });
+            numHighThreshold.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            numHighThreshold.Name = "numHighThreshold";
+            numHighThreshold.Size = new Size(60, 23);
+            numHighThreshold.TabIndex = 5;
+            numHighThreshold.Value = new decimal(new int[] { 67, 0, 0, 0 });
             // 
             // dgvSalesData
             // 
@@ -621,6 +703,10 @@
             splitContainerFutureSalesEstimation.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)chartFutureSalesEstimation).EndInit();
             ((System.ComponentModel.ISupportInitialize)dgvSalesData).EndInit();
+            pnlExcelExportOptions.ResumeLayout(false);
+            pnlExcelExportOptions.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numLowThreshold).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numHighThreshold).EndInit();
             tabEvolutionOfProfits.ResumeLayout(false);
             splitContainerEvolutionOfProfit.Panel1.ResumeLayout(false);
             splitContainerEvolutionOfProfit.Panel2.ResumeLayout(false);
@@ -669,5 +755,12 @@
         private Panel pnlStoreFilters;
         private Button exportToExcel3;
         private Button exportToExcel4;
+        private Panel pnlExcelExportOptions;
+        private Label lblTrendlineType;
+        private ComboBox cmbTrendlineType;
+        private Label lblLowThreshold;
+        private NumericUpDown numLowThreshold;
+        private Label lblHighThreshold;
+        private NumericUpDown numHighThreshold;
     }
 }

@@ -33,6 +33,31 @@ namespace BakeryBI
             PopulateFilters();
             ApplyFilters();
             InitializeCustomControlsAndEventsForSalesAnalysis();
+            InitializeExcelExportOptions();
+        }
+
+        private void InitializeExcelExportOptions()
+        {
+            // Set default trendline type to Linear
+            cmbTrendlineType.SelectedIndex = 0;
+            
+            // Thresholds are already set in Designer (33 and 67)
+            // Add validation to ensure low < high
+            numLowThreshold.ValueChanged += (s, e) =>
+            {
+                if (numLowThreshold.Value >= numHighThreshold.Value)
+                {
+                    numLowThreshold.Value = numHighThreshold.Value - 1;
+                }
+            };
+            
+            numHighThreshold.ValueChanged += (s, e) =>
+            {
+                if (numHighThreshold.Value <= numLowThreshold.Value)
+                {
+                    numHighThreshold.Value = numLowThreshold.Value + 1;
+                }
+            };
         }
 
         private void LoadData()
@@ -774,7 +799,17 @@ namespace BakeryBI
                 {
                     int forecastMonths = cmbForecastMonths.SelectedItem != null
                         ? (int)cmbForecastMonths.SelectedItem : 3;
-                    ExcelExporter.ExportFutureSalesToExcel(saveDialog.FileName, filteredData, forecastMonths);
+                    
+                    // Get trendline type from combo box
+                    string trendlineType = cmbTrendlineType.SelectedItem != null
+                        ? cmbTrendlineType.SelectedItem.ToString() : "Linear";
+                    
+                    // Get threshold percentages from numeric up-down controls
+                    int lowThreshold = (int)numLowThreshold.Value;
+                    int highThreshold = (int)numHighThreshold.Value;
+                    
+                    ExcelExporter.ExportFutureSalesToExcel(saveDialog.FileName, filteredData, forecastMonths, 
+                        trendlineType, lowThreshold, highThreshold);
                     MessageBox.Show($"Data exported successfully to:\n{saveDialog.FileName}",
                     "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
